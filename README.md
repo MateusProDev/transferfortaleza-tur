@@ -58,7 +58,10 @@ npm install
 
 ### 3. Set up environment variables
 
-Create a `.env.local` file in the root directory:
+Copy `.env.example` to `.env.local` in the project root and set the Firebase
+web configuration values for the project you want to use locally. `.env.local`
+is excluded from Git and Vercel CLI uploads; configure production variables
+separately in the Vercel project settings.
 
 ```bash
 # Firebase Configuration

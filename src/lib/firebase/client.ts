@@ -1,4 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -8,10 +9,18 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 const hasValidFirebaseConfig = () => {
-  const values = Object.values(firebaseConfig);
+  const values = [
+    firebaseConfig.apiKey,
+    firebaseConfig.authDomain,
+    firebaseConfig.projectId,
+    firebaseConfig.storageBucket,
+    firebaseConfig.messagingSenderId,
+    firebaseConfig.appId,
+  ];
   return values.every((value) => {
     if (typeof value !== 'string') return false;
     const normalized = value.trim();
@@ -22,6 +31,14 @@ const hasValidFirebaseConfig = () => {
 const app = hasValidFirebaseConfig() ? (getApps().length ? getApp() : initializeApp(firebaseConfig)) : null;
 
 export const auth = app ? getAuth(app) : null;
+export const analytics = app && typeof window !== 'undefined'
+  ? isSupported()
+      .then((supported) => supported ? getAnalytics(app) : null)
+      .catch((error: unknown) => {
+        console.error('Error initializing Firebase Analytics:', error);
+        return null;
+      })
+  : Promise.resolve(null);
 export const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
