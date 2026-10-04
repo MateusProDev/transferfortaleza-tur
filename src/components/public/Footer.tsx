@@ -39,18 +39,29 @@ export default function Footer() {
     });
   };
 
-  const socialLinks: SocialLink[] = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    ...(settings?.contactInfo?.whatsapp
-      ? [{
-          icon: MessageCircle,
-          href: `https://wa.me/${settings.contactInfo.whatsapp.replace(/\D/g, '')}`,
-          label: 'WhatsApp',
-          onClick: handleWhatsAppClick,
-        }]
-      : []),
-  ];
+  const socialLinks: SocialLink[] = (settings?.socialLinks || [])
+    .filter((social: { url?: string }) => Boolean(social.url))
+    .map((social: { platform: string; url: string }) => ({
+      icon: social.platform === 'facebook'
+        ? Facebook
+        : social.platform === 'instagram'
+          ? Instagram
+          : MessageCircle,
+      href: social.platform === 'whatsapp' && !/^https?:\/\//i.test(social.url)
+        ? `https://wa.me/${social.url.replace(/\D/g, '')}`
+        : social.url,
+      label: social.platform[0].toUpperCase() + social.platform.slice(1),
+      onClick: social.platform === 'whatsapp' ? handleWhatsAppClick : undefined,
+    }));
+
+  if (!socialLinks.some((social) => social.label === 'WhatsApp') && settings?.contactInfo?.whatsapp) {
+    socialLinks.push({
+      icon: MessageCircle,
+      href: `https://wa.me/${settings.contactInfo.whatsapp.replace(/\D/g, '')}`,
+      label: 'WhatsApp',
+      onClick: handleWhatsAppClick,
+    });
+  }
 
   const quickLinks = [
     { label: 'Início', href: '/' },
@@ -82,10 +93,10 @@ export default function Footer() {
                   <span className="text-white font-bold text-xl">PL</span>
                 </div>
               )}
-              <span className="text-xl font-bold">Passeio Legal</span>
+              <span className="text-xl font-bold">{settings?.companyName || 'Passeio Legal'}</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Descubra os melhores passeios e transfers com conforto, segurança e experiências únicas de turismo.
+              {settings?.footerText || 'Descubra os melhores passeios e transfers com conforto, segurança e experiências únicas de turismo.'}
             </p>
           </div>
 

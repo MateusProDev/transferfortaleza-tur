@@ -3,61 +3,39 @@ import { adminDb } from './firebase-admin';
 interface InitialData {
   banners: Array<{
     id: string;
-    title: string;
-    imageUrl: string;
-    link: string;
-    order: number;
-    active: boolean;
+    titulo: string;
+    imagem: string;
+    botaoLink: string;
+    ordem: number;
+    ativo: boolean;
   }>;
-  tours: Array<{
+  pacotes: Array<{
     id: string;
-    title: string;
-    description: string;
-    price: number;
-    duration: string;
-    imageUrl: string;
-    active: boolean;
+    titulo: string;
+    descricao: string;
+    categoria: string;
+    destaque: boolean;
   }>;
-  transfers: Array<{
+  avaliacoes: Array<{
     id: string;
-    title: string;
-    description: string;
-    price: number;
-    from: string;
-    to: string;
-    active: boolean;
+    nomeCliente: string;
+    comentario: string;
+    nota: number;
   }>;
-  testimonials: Array<{
-    id: string;
-    name: string;
-    text: string;
-    rating: number;
-    active: boolean;
-  }>;
-  blog: Array<{
+  blogPosts: Array<{
     id: string;
     title: string;
     content: string;
     author: string;
     publishedAt: string;
-    active: boolean;
-  }>;
-  faq: Array<{
-    id: string;
-    question: string;
-    answer: string;
-    order: number;
-    active: boolean;
   }>;
 }
 
 const initialData: InitialData = {
   banners: [],
-  tours: [],
-  transfers: [],
-  testimonials: [],
-  blog: [],
-  faq: [],
+  pacotes: [],
+  avaliacoes: [],
+  blogPosts: [],
 };
 
 let initializationPromise: Promise<boolean> | null = null;
@@ -77,7 +55,7 @@ export async function initializeFirebaseCollections(): Promise<boolean> {
     try {
       console.log('Starting Firebase collections initialization...');
 
-      const collections = ['banners', 'tours', 'transfers', 'testimonials', 'blog', 'faq'];
+      const collections = ['banners', 'pacotes', 'avaliacoes', 'blogPosts', 'content', 'settings'];
 
       for (const collectionName of collections) {
         const collectionRef = adminDb.collection(collectionName);
@@ -87,7 +65,7 @@ export async function initializeFirebaseCollections(): Promise<boolean> {
           console.log(`Creating collection: ${collectionName}`);
           
           // Add initial data if available
-          const initialItems = initialData[collectionName as keyof InitialData];
+          const initialItems = initialData[collectionName as keyof InitialData] || [];
           if (initialItems && initialItems.length > 0) {
             for (const item of initialItems) {
               await collectionRef.doc(item.id).set(item);
@@ -117,7 +95,7 @@ export async function checkFirebaseInitialization() {
   }
 
   try {
-    const collections = ['banners', 'tours', 'transfers', 'testimonials', 'blog', 'faq'];
+    const collections = ['banners', 'pacotes', 'avaliacoes', 'blogPosts', 'content', 'settings'];
     const status: Record<string, boolean> = {};
 
     for (const collectionName of collections) {
@@ -143,4 +121,3 @@ export function ensureInitialized() {
     initializeFirebaseCollections().catch(console.error);
   }
 }
-

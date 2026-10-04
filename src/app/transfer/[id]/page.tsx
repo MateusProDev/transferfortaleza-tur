@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { faqService, transferService } from "@/lib/firestore";
+import { faqService, settingsService, transferService } from "@/lib/firestore";
 import { Car, Check, ChevronDown, Users, X } from "lucide-react";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -109,7 +109,10 @@ export default async function TransferDetailPage({ params }: PageProps) {
     },
     ...(transfer.galleryImages || []),
   ].filter((image) => image.url);
-  const faqs = await faqService.getAll();
+  const [faqs, settings] = await Promise.all([
+    faqService.getAll(),
+    settingsService.get(),
+  ]);
   const transferFaqs = Array.isArray(transfer.faqs)
     ? transfer.faqs.filter((faq) => faq.question?.trim() && faq.answer?.trim())
     : [];
@@ -118,12 +121,13 @@ export default async function TransferDetailPage({ params }: PageProps) {
   const relatedTransfers = transfer.recommendedTransferIds?.length
     ? await transferService.getRecommended(transfer.recommendedTransferIds, transfer.id, 3)
     : await transferService.getRelated(transfer.id, 3);
-  const whatsappUrl = `https://wa.me/5585997314093?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
+  const whatsappNumber = (settings?.whatsappConfig?.number || "5585997314093").replace(/\D/g, "");
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
 
   return (
     <main className="min-h-screen pt-24 pb-20">
       <Header />
-      <TransferConversionBar transferName={transfer.name} />
+      <TransferConversionBar transferName={transfer.name} whatsappNumber={whatsappNumber} />
       <BreadcrumbJsonLd items={breadcrumbItems} />
 
       <section className="bg-white">

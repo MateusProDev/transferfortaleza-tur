@@ -4,7 +4,6 @@ import {
   getDoc,
   getDocs,
   query,
-  where,
   orderBy,
   addDoc,
   updateDoc,
@@ -17,6 +16,22 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 import * as Types from "@/types";
+import {
+  isTransferPackage,
+  mapBannerDocument,
+  mapBannerInputToDocument,
+  mapBlogPostDocument,
+  mapBlogPostInputToDocument,
+  mapCatalogInputToPackage,
+  mapGoogleReviewsDocument,
+  mapHomeFaqDocument,
+  mapPackageToTour,
+  mapPackageToTransfer,
+  mapSiteSettings,
+  mapTestimonialDocument,
+  mapTestimonialInputToDocument,
+  toPlainFirestoreValue,
+} from "./firestore-content";
 
 // Generic CRUD operations
 export const firebaseService = {
@@ -169,26 +184,26 @@ export const firebaseService = {
 // Specialized collection services
 export const bannerService = {
   async getAll() {
-    const banners = await firebaseService.getMany<Types.Banner>("banners", [
-      where("active", "==", true),
-    ]);
+    const documents = await firebaseService.getMany<Record<string, unknown>>("banners");
+    const banners = documents
+      .map((banner) => mapBannerDocument(String(banner.id), banner))
+      .filter((banner) => banner.active);
     return banners.sort((first, second) => {
-      const firstOrder = first.order ?? Number.MAX_SAFE_INTEGER;
-      const secondOrder = second.order ?? Number.MAX_SAFE_INTEGER;
-      return firstOrder - secondOrder;
+      return first.order - second.order;
     });
   },
 
   async getById(id: string) {
-    return firebaseService.get<Types.Banner>("banners", id);
+    const banner = await firebaseService.get<Record<string, unknown>>("banners", id);
+    return banner ? mapBannerDocument(id, banner) : null;
   },
 
   async create(data: Omit<Types.Banner, "id" | "createdAt" | "updatedAt">) {
-    return firebaseService.create<Types.Banner>("banners", data);
+    return firebaseService.create<Record<string, unknown>>("banners", mapBannerInputToDocument(data));
   },
 
   async update(id: string, data: Partial<Types.Banner>) {
-    return firebaseService.update<Types.Banner>("banners", id, data);
+    return firebaseService.update<Record<string, unknown>>("banners", id, mapBannerInputToDocument(data));
   },
 
   async delete(id: string) {
@@ -198,9 +213,11 @@ export const bannerService = {
 
 export const tourService = {
   async getAll(onlyActive = false) {
-    const constraints: QueryConstraint[] = [];
-    if (onlyActive) constraints.push(where("active", "==", true));
-    const tours = await firebaseService.getMany<Types.Tour>("tours", constraints);
+    const packages = await firebaseService.getMany<Record<string, unknown>>("pacotes");
+    const tours = packages
+      .filter((item) => !isTransferPackage(item))
+      .map((item) => mapPackageToTour(String(item.id), item))
+      .filter((tour) => !onlyActive || tour.active);
     return tours.sort((first, second) => {
       if (first.featured !== second.featured) return first.featured ? -1 : 1;
       if (first.featured && second.featured) {
@@ -211,37 +228,26 @@ export const tourService = {
   },
 
   async getById(id: string) {
-    return firebaseService.get<Types.Tour>("tours", id);
+    const packageDocument = await firebaseService.get<Record<string, unknown>>("pacotes", id);
+    return packageDocument && !isTransferPackage(packageDocument)
+      ? mapPackageToTour(id, packageDocument)
+      : null;
   },
 
   async getBySlug(slug: string) {
-    const result = await firebaseService.getMany<Types.Tour>("tours", [
-      where("slug", "==", slug),
-    ]);
-    return result[0] || null;
+    const tours = await tourService.getAll(false);
+    return tours.find((tour) => tour.slug === slug) || null;
   },
 
   async getFeatured() {
-    const tours = await firebaseService.getMany<Types.Tour>("tours", [
-      where("active", "==", true),
-      where("featured", "==", true),
-    ]);
-    return tours.sort((first, second) => {
-      const orderDifference = (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER);
-      return orderDifference || first.name.localeCompare(second.name);
-    });
+    return (await tourService.getAll(true)).filter((tour) => tour.featured);
   },
 
   // Busca tours relacionados para recomendação (mesma categoria ou featured, excluindo o atual)
   async getRelated(excludeId: string, limit: number = 3) {
     try {
-      const allTours = await firebaseService.getMany<Types.Tour>("tours", [
-        where("active", "==", true),
-        where("id", "!=", excludeId),
-        orderBy("featured", "desc"),
-        orderBy("name", "asc"),
-      ]);
-      return allTours.slice(0, limit);
+      const tours = await tourService.getAll(true);
+      return tours.filter((tour) => tour.id !== excludeId).slice(0, limit);
     } catch (error) {
       console.error("Error fetching related tours:", error);
       return [];
@@ -249,41 +255,54 @@ export const tourService = {
   },
 
   async getRecommended(ids: string[], excludeId: string, limit: number = 3) {
-    const recommendations = await Promise.all(ids.map((id) => firebaseService.get<Types.Tour>("tours", id)));
+    const recommendations = await Promise.all(ids.map((id) => tourService.getById(id)));
     return recommendations
       .filter((tour): tour is Types.Tour => Boolean(tour && tour.id !== excludeId && tour.active))
       .slice(0, limit);
   },
 
   async create(data: Omit<Types.Tour, "id" | "createdAt" | "updatedAt">) {
-    return firebaseService.create<Types.Tour>("tours", data);
+    return firebaseService.create<Record<string, unknown>>("pacotes", mapCatalogInputToPackage(data, "tour", true));
   },
 
   async update(id: string, data: Partial<Types.Tour>) {
-    return firebaseService.update<Types.Tour>("tours", id, data);
+    return firebaseService.update<Record<string, unknown>>("pacotes", id, mapCatalogInputToPackage(data, "tour"));
   },
 
   async delete(id: string) {
-    return firebaseService.delete("tours", id);
+    return firebaseService.delete("pacotes", id);
   },
 };
 
 export const transferService = {
   async getAll(onlyActive = false) {
-    const constraints: QueryConstraint[] = [orderBy("name", "asc")];
-    if (onlyActive) constraints.push(where("active", "==", true));
-    return firebaseService.getMany<Types.Transfer>("transfers", constraints);
+    const packages = await firebaseService.getMany<Record<string, unknown>>("pacotes");
+    return packages
+      .filter(isTransferPackage)
+      .map((item) => mapPackageToTransfer(String(item.id), item))
+      .filter((transfer) => !onlyActive || transfer.active)
+      .sort((first, second) => first.name.localeCompare(second.name));
+  },
+
+  async getFeatured() {
+    return (await transferService.getAll(true))
+      .filter((transfer) => transfer.featuredOnHome)
+      .sort((first, second) =>
+        (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER)
+        || first.name.localeCompare(second.name)
+      );
   },
 
   async getById(id: string) {
-    return firebaseService.get<Types.Transfer>("transfers", id);
+    const packageDocument = await firebaseService.get<Record<string, unknown>>("pacotes", id);
+    return packageDocument && isTransferPackage(packageDocument)
+      ? mapPackageToTransfer(id, packageDocument)
+      : null;
   },
 
   async getBySlug(slug: string) {
-    const result = await firebaseService.getMany<Types.Transfer>("transfers", [
-      where("slug", "==", slug),
-    ]);
-    return result[0] || null;
+    const transfers = await transferService.getAll(false);
+    return transfers.find((transfer) => transfer.slug === slug) || null;
   },
 
   async getRelated(excludeId: string, limit: number = 3) {
@@ -297,7 +316,7 @@ export const transferService = {
   },
 
   async getRecommended(ids: string[], excludeId: string, limit: number = 3) {
-    const recommendations = await Promise.all(ids.map((id) => firebaseService.get<Types.Transfer>("transfers", id)));
+    const recommendations = await Promise.all(ids.map((id) => transferService.getById(id)));
     return recommendations
       .filter((transfer): transfer is Types.Transfer => Boolean(transfer && transfer.id !== excludeId && transfer.active))
       .slice(0, limit);
@@ -306,115 +325,252 @@ export const transferService = {
   async create(
     data: Omit<Types.Transfer, "id" | "createdAt" | "updatedAt">
   ) {
-    return firebaseService.create<Types.Transfer>("transfers", data);
+    return firebaseService.create<Record<string, unknown>>("pacotes", mapCatalogInputToPackage(data, "transfer", true));
   },
 
   async update(id: string, data: Partial<Types.Transfer>) {
-    return firebaseService.update<Types.Transfer>("transfers", id, data);
+    return firebaseService.update<Record<string, unknown>>("pacotes", id, mapCatalogInputToPackage(data, "transfer"));
   },
 
   async delete(id: string) {
-    return firebaseService.delete("transfers", id);
+    return firebaseService.delete("pacotes", id);
   },
 };
 
 export const testimonialService = {
   async getAll() {
-    return firebaseService.getMany<Types.Testimonial>("testimonials", []);
+    const testimonials = await firebaseService.getMany<Record<string, unknown>>("avaliacoes");
+    return testimonials.map((testimonial) => mapTestimonialDocument(String(testimonial.id), testimonial));
   },
 
   async getById(id: string) {
-    return firebaseService.get<Types.Testimonial>("testimonials", id);
+    const testimonial = await firebaseService.get<Record<string, unknown>>("avaliacoes", id);
+    return testimonial ? mapTestimonialDocument(id, testimonial) : null;
   },
 
   async create(
     data: Omit<Types.Testimonial, "id" | "createdAt" | "updatedAt">
   ) {
-    return firebaseService.create<Types.Testimonial>("testimonials", data);
+    return firebaseService.create<Record<string, unknown>>("avaliacoes", mapTestimonialInputToDocument(data));
   },
 
   async update(id: string, data: Partial<Types.Testimonial>) {
-    return firebaseService.update<Types.Testimonial>("testimonials", id, data);
+    return firebaseService.update<Record<string, unknown>>("avaliacoes", id, mapTestimonialInputToDocument(data));
   },
 
   async delete(id: string) {
-    return firebaseService.delete("testimonials", id);
+    return firebaseService.delete("avaliacoes", id);
+  },
+};
+
+export const googleReviewsService = {
+  async get() {
+    const content = await firebaseService.get<Record<string, unknown>>("content", "googleReviews");
+    return content ? mapGoogleReviewsDocument(content) : null;
+  },
+};
+
+export const homeContentService = {
+  async getSections() {
+    const [services, differentials, imageCarousel, transferBeberibe] = await Promise.all([
+      firebaseService.get<Record<string, unknown>>("content", "servicesSection"),
+      firebaseService.get<Record<string, unknown>>("content", "differentialsSection"),
+      firebaseService.get<Record<string, unknown>>("content", "imageCarouselSection"),
+      firebaseService.get<Record<string, unknown>>("content", "transferBeberibe"),
+    ]);
+
+    return {
+      services: toPlainFirestoreValue(services),
+      differentials: toPlainFirestoreValue(differentials),
+      imageCarousel: toPlainFirestoreValue(imageCarousel),
+      transferBeberibe: toPlainFirestoreValue(transferBeberibe),
+    };
   },
 };
 
 export const blogService = {
   async getAll(onlyPublished = false) {
-    const constraints: QueryConstraint[] = [orderBy("createdAt", "desc")];
-    if (onlyPublished) constraints.push(where("published", "==", true));
-    return firebaseService.getMany<Types.BlogPost>("blog", constraints);
+    const posts = await firebaseService.getMany<Record<string, unknown>>("blogPosts");
+    return posts
+      .map((post) => mapBlogPostDocument(String(post.id), post))
+      .filter((post) => !onlyPublished || post.published)
+      .sort((first, second) =>
+        (second.views ?? 0) - (first.views ?? 0)
+        || second.publishedAt.getTime() - first.publishedAt.getTime()
+      );
   },
 
   async getById(id: string) {
-    return firebaseService.get<Types.BlogPost>("blog", id);
+    const post = await firebaseService.get<Record<string, unknown>>("blogPosts", id);
+    return post ? mapBlogPostDocument(id, post) : null;
   },
 
   async getBySlug(slug: string) {
-    const result = await firebaseService.getMany<Types.BlogPost>("blog", [
-      where("slug", "==", slug),
-    ]);
-    return result[0] || null;
+    const posts = await blogService.getAll(false);
+    return posts.find((post) => post.slug === slug) || null;
   },
 
   async create(data: Omit<Types.BlogPost, "id" | "createdAt" | "updatedAt">) {
-    return firebaseService.create<Types.BlogPost>("blog", data);
+    return firebaseService.create<Record<string, unknown>>("blogPosts", mapBlogPostInputToDocument(data));
   },
 
   async update(id: string, data: Partial<Types.BlogPost>) {
-    return firebaseService.update<Types.BlogPost>("blog", id, data);
+    return firebaseService.update<Record<string, unknown>>("blogPosts", id, mapBlogPostInputToDocument(data));
   },
 
   async delete(id: string) {
-    return firebaseService.delete("blog", id);
+    return firebaseService.delete("blogPosts", id);
   },
 };
 
 export const faqService = {
   async getAll() {
+    const homeFaq = await firebaseService.get<Record<string, unknown>>("content", "homeFAQ");
+    if (homeFaq) return mapHomeFaqDocument(homeFaq);
     return firebaseService.getMany<Types.FAQ>("faq", []);
   },
 
+  async getHomeContent() {
+    const homeFaq = await firebaseService.get<Record<string, unknown>>("content", "homeFAQ");
+    return {
+      faqs: homeFaq ? mapHomeFaqDocument(homeFaq) : await firebaseService.getMany<Types.FAQ>("faq", []),
+      title: typeof homeFaq?.title === "string" ? homeFaq.title : "",
+      subtitle: typeof homeFaq?.subtitle === "string" ? homeFaq.subtitle : "",
+    };
+  },
+
   async getById(id: string) {
+    const homeFaq = await firebaseService.get<Record<string, unknown>>("content", "homeFAQ");
+    if (homeFaq) {
+      return mapHomeFaqDocument(homeFaq).find((faq) => faq.id === id) || null;
+    }
     return firebaseService.get<Types.FAQ>("faq", id);
   },
 
   async create(data: Omit<Types.FAQ, "id" | "createdAt" | "updatedAt">) {
-    return firebaseService.create<Types.FAQ>("faq", data);
+    const homeFaq = await firebaseService.get<Record<string, unknown>>("content", "homeFAQ");
+    const entries = Array.isArray(homeFaq?.faq) ? homeFaq.faq : [];
+    const faq = {
+      pergunta: data.question,
+      resposta: data.answer,
+    };
+    const nextEntries = [...entries, faq];
+
+    if (homeFaq) {
+      await firebaseService.update<Record<string, unknown>>("content", "homeFAQ", { faq: nextEntries });
+    } else {
+      await firebaseService.setMultiple("content", [{ id: "homeFAQ", data: { faq: nextEntries } }]);
+    }
+
+    return `home-faq-${nextEntries.length - 1}`;
   },
 
   async update(id: string, data: Partial<Types.FAQ>) {
-    return firebaseService.update<Types.FAQ>("faq", id, data);
+    const homeFaq = await firebaseService.get<Record<string, unknown>>("content", "homeFAQ");
+    if (!homeFaq || !Array.isArray(homeFaq.faq)) {
+      return firebaseService.update<Types.FAQ>("faq", id, data);
+    }
+
+    const entries = homeFaq.faq;
+    const index = mapHomeFaqDocument(homeFaq).findIndex((faq) => faq.id === id);
+    if (index < 0) return firebaseService.update<Types.FAQ>("faq", id, data);
+
+    const current = Object.assign({}, entries[index]) as Record<string, unknown>;
+    const updated = {
+      ...current,
+      ...(data.question !== undefined ? { pergunta: data.question } : {}),
+      ...(data.answer !== undefined ? { resposta: data.answer } : {}),
+    };
+    entries[index] = updated;
+    await firebaseService.update<Record<string, unknown>>("content", "homeFAQ", { faq: entries });
   },
 
   async delete(id: string) {
-    return firebaseService.delete("faq", id);
+    const homeFaq = await firebaseService.get<Record<string, unknown>>("content", "homeFAQ");
+    if (!homeFaq || !Array.isArray(homeFaq.faq)) {
+      return firebaseService.delete("faq", id);
+    }
+
+    const entries = homeFaq.faq;
+    const index = mapHomeFaqDocument(homeFaq).findIndex((faq) => faq.id === id);
+    if (index < 0) return firebaseService.delete("faq", id);
+
+    entries.splice(index, 1);
+    await firebaseService.update<Record<string, unknown>>("content", "homeFAQ", { faq: entries });
   },
 };
 
 export const settingsService = {
   async get() {
-    const settings = await firebaseService.getMany<Types.SiteSettings>(
-      "settings"
-    );
-    return settings[0] || null;
+    const [allSettings, whatsapp, header, footer, seo] = await Promise.all([
+      firebaseService.getMany<Record<string, unknown>>("settings"),
+      firebaseService.get<Record<string, unknown>>("settings", "whatsapp"),
+      firebaseService.get<Record<string, unknown>>("content", "header"),
+      firebaseService.get<Record<string, unknown>>("content", "footer"),
+      firebaseService.get<Record<string, unknown>>("content", "homeSeo"),
+    ]);
+    const siteSettings = allSettings.find((item) => item.id !== "whatsapp") || null;
+    return mapSiteSettings(siteSettings, whatsapp, header, footer, seo);
   },
 
   async update(data: Partial<Types.SiteSettings>) {
-    const settings = await this.get();
-    if (settings) {
-      return firebaseService.update<Types.SiteSettings>(
-        "settings",
-        settings.id,
-        data
-      );
+    const allSettings = await firebaseService.getMany<Record<string, unknown>>("settings");
+    const siteSettings = allSettings.find((item) => item.id !== "whatsapp");
+    let result: string | void;
+
+    if (siteSettings) {
+      await firebaseService.update<Record<string, unknown>>("settings", String(siteSettings.id), data);
+      result = undefined;
     } else {
-      // Create settings if they don't exist
-      return firebaseService.create<Types.SiteSettings>("settings", data as Types.SiteSettings);
+      const { id: _id, ...settingsData } = data;
+      result = await firebaseService.create<Record<string, unknown>>("settings", settingsData);
     }
+
+    const headerPatch: Record<string, unknown> = {};
+    if (data.headerLogo !== undefined) headerPatch.logoUrl = data.headerLogo;
+    if (data.headerLogoAlt !== undefined) headerPatch.logoAlt = data.headerLogoAlt;
+    if (Object.keys(headerPatch).length > 0) {
+      const header = await firebaseService.get<Record<string, unknown>>("content", "header");
+      if (header) await firebaseService.update<Record<string, unknown>>("content", "header", headerPatch);
+      else await firebaseService.setMultiple("content", [{ id: "header", data: headerPatch }]);
+    }
+
+    const footerPatch: Record<string, unknown> = {};
+    if (data.companyName !== undefined) footerPatch.companyName = data.companyName;
+    if (data.footerText !== undefined) footerPatch.text = data.footerText;
+    if (data.contactInfo) {
+      const footer = await firebaseService.get<Record<string, unknown>>("content", "footer");
+      const currentContact = footer && typeof footer.contact === "object"
+        ? Object.assign({}, footer.contact)
+        : {};
+      const contactPatch: Record<string, unknown> = {};
+      for (const key of ["phone", "email", "address"] as const) {
+        if (data.contactInfo[key] !== undefined) contactPatch[key] = data.contactInfo[key];
+      }
+      footerPatch.contact = { ...currentContact, ...contactPatch };
+    }
+    if (data.socialLinks) {
+      footerPatch.social = Object.fromEntries(
+        data.socialLinks.map((link) => [link.platform, { link: link.url, icon: link.icon }]),
+      );
+    }
+    if (Object.keys(footerPatch).length > 0) {
+      const footer = await firebaseService.get<Record<string, unknown>>("content", "footer");
+      if (footer) await firebaseService.update<Record<string, unknown>>("content", "footer", footerPatch);
+      else await firebaseService.setMultiple("content", [{ id: "footer", data: footerPatch }]);
+    }
+
+    const whatsappNumber = data.whatsappConfig?.number ?? data.contactInfo?.whatsapp;
+    if (whatsappNumber !== undefined) {
+      const whatsapp = await firebaseService.get<Record<string, unknown>>("settings", "whatsapp");
+      if (whatsapp) {
+        await firebaseService.update<Record<string, unknown>>("settings", "whatsapp", { number: whatsappNumber });
+      } else {
+        await firebaseService.setMultiple("settings", [{ id: "whatsapp", data: { number: whatsappNumber } }]);
+      }
+    }
+
+    return result;
   },
 };
 

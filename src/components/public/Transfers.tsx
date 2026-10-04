@@ -10,9 +10,10 @@ import type { Transfer } from '@/types';
 
 interface TransfersProps {
   transfers: Transfer[];
+  whatsappNumber?: string;
 }
 
-export default function Transfers({ transfers }: TransfersProps) {
+export default function Transfers({ transfers, whatsappNumber }: TransfersProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3;
@@ -151,7 +152,7 @@ export default function Transfers({ transfers }: TransfersProps) {
                     Ver transfer
                   </Link>
                   <WhatsAppConversionLink
-                    href={`https://wa.me/5585997314093?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre o transfer: ${transfer.name}`)}`}
+                    href={`https://wa.me/${(whatsappNumber || "5585997314093").replace(/\D/g, "")}?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre o transfer: ${transfer.name}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap"

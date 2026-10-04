@@ -30,7 +30,7 @@ export default function TourConversionBar({ tourName, whatsappNumber = "55859973
   if (!isScrolled) return null;
 
   const whatsappMessage = encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tourName}`);
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${whatsappMessage}`;
 
   const handleWhatsAppClick = () => {
     metaPixelEvents.contact({

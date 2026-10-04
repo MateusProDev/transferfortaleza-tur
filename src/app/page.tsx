@@ -3,7 +3,8 @@ import { Metadata } from "next";
 import Header from "@/components/public/Header";
 import Hero from "@/components/public/Hero";
 import AnimatedCounter from "@/components/public/AnimatedCounter";
-import { bannerService, tourService, transferService, testimonialService, blogService, faqService, settingsService } from "@/lib/firestore";
+import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
+import { bannerService, tourService, transferService, testimonialService, googleReviewsService, homeContentService, blogService, faqService, settingsService, firebaseService } from "@/lib/firestore";
 import { getSiteUrl } from "@/lib/site-url";
 
 const Tours = dynamicImport(() => import("@/components/public/Tours"), {
@@ -17,6 +18,8 @@ const Transfers = dynamicImport(() => import("@/components/public/Transfers"), {
 const Testimonials = dynamicImport(() => import("@/components/public/Testimonials"), {
   loading: () => <div className="h-[320px] w-full" />,
 });
+
+const GoogleReviews = dynamicImport(() => import("@/components/public/GoogleReviews"));
 
 const Blog = dynamicImport(() => import("@/components/public/Blog"), {
   loading: () => <div className="h-[360px] w-full" />,
@@ -35,58 +38,86 @@ export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = getSiteUrl();
+  let homeSeo: Record<string, unknown> | null = null;
+
+  try {
+    homeSeo = await firebaseService.get<Record<string, unknown>>("content", "homeSeo");
+  } catch (error) {
+    console.error("Error fetching homepage SEO content:", error);
+  }
+
+  const title = typeof homeSeo?.title === "string" && homeSeo.title.trim()
+    ? homeSeo.title
+    : "Passeios e Transfers em Fortaleza e Região";
+  const description = typeof homeSeo?.description === "string" && homeSeo.description.trim()
+    ? homeSeo.description
+    : "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!";
+  const keywords = Array.isArray(homeSeo?.keywords)
+    ? homeSeo.keywords.filter((keyword): keyword is string => typeof keyword === "string")
+    : ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará"];
+  const canonical = typeof homeSeo?.canonical === "string" && homeSeo.canonical.trim()
+    ? homeSeo.canonical
+    : baseUrl;
+  const ogImage = typeof homeSeo?.ogImage === "string" && homeSeo.ogImage.trim()
+    ? homeSeo.ogImage
+    : `${baseUrl}/OG.png`;
 
   return {
-    title: "Passeios e Transfers em Fortaleza e Região",
-    description: "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!",
-    keywords: ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará", "passeio legal", "passeios praias", "transfer aeroporto fortaleza", "turismo nordeste", "excursões fortaleza", "viagens ceará"],
+    title,
+    description,
+    keywords,
     openGraph: {
       type: "website",
       locale: "pt_BR",
-      url: baseUrl,
-      title: "Passeio Legal - Tours e Transfers em Fortaleza",
-      description: "Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Passeio Legal.",
-      siteName: "Passeio Legal",
+      url: canonical,
+      title,
+      description,
+      siteName: title,
       images: [
         {
-          url: `${baseUrl}/OG.png`,
+          url: ogImage,
           width: 1200,
           height: 630,
-          alt: "Passeio Legal - Tours e Transfers",
+          alt: title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Passeio Legal - Tours e Transfers",
-      description: "Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza",
-      images: [`${baseUrl}/OG.png`],
+      title,
+      description,
+      images: [ogImage],
     },
     alternates: {
-      canonical: baseUrl,
+      canonical,
     },
   };
 }
 
 async function getPageData() {
   try {
-    const [banners, tours, transfers, testimonials, blogPosts, faqs, settings] = await Promise.all([
+    const [banners, featuredTours, featuredTransfers, testimonials, googleReviews, homeSections, blogPosts, faqContent, settings] = await Promise.all([
       bannerService.getAll(),
-      tourService.getAll(false),
-      transferService.getAll(true),
+      tourService.getFeatured(),
+      transferService.getFeatured(),
       testimonialService.getAll(),
+      googleReviewsService.get(),
+      homeContentService.getSections(),
       blogService.getAll(false),
-      faqService.getAll(),
+      faqService.getHomeContent(),
       settingsService.get(),
     ]);
 
     return {
       banners,
-      tours,
-      transfers,
-      testimonials,
+      tours: featuredTours.slice(0, 5),
+      transfers: featuredTransfers.slice(0, 5),
+      testimonials: testimonials.filter((testimonial) => testimonial.active),
+      googleReviews,
+      homeSections,
       blogPosts,
-      faqs,
+      faqs: faqContent.faqs,
+      faqContent,
       settings,
     };
   } catch (error) {
@@ -96,15 +127,18 @@ async function getPageData() {
       tours: [],
       transfers: [],
       testimonials: [],
+      googleReviews: null,
+      homeSections: { services: null, differentials: null, imageCarousel: null, transferBeberibe: null },
       blogPosts: [],
       faqs: [],
+      faqContent: { faqs: [], title: "", subtitle: "" },
       settings: null,
     };
   }
 }
 
 export default async function Home() {
-  const { banners, tours, transfers, testimonials, blogPosts, faqs, settings } = await getPageData();
+  const { banners, tours, transfers, testimonials, googleReviews, homeSections, blogPosts, faqs, faqContent, settings } = await getPageData();
   
   const toursEnabled = settings?.sections?.toursEnabled ?? true;
   const transfersEnabled = settings?.sections?.transfersEnabled ?? true;
@@ -121,9 +155,17 @@ export default async function Home() {
       
       <Hero banners={banners} />
 
-      {toursEnabled && <Tours tours={tours} />}
+      {toursEnabled && <Tours tours={tours} whatsappNumber={settings?.whatsappConfig?.number} />}
       
-      {transfersEnabled && <Transfers transfers={transfers} />}
+      {transfersEnabled && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} />}
+
+      <HomeConfiguredSections
+        services={homeSections.services}
+        differentials={homeSections.differentials}
+        imageCarousel={homeSections.imageCarousel}
+        transferBeberibe={homeSections.transferBeberibe}
+        settings={settings}
+      />
 
       <section id="about" className="border-t border-gray-200 bg-white py-12 sm:py-16">
         <div className="container mx-auto px-4">
@@ -150,8 +192,10 @@ export default async function Home() {
       <Blog posts={blogPosts} />
 
       <Testimonials testimonials={testimonials} />
+
+      <GoogleReviews content={googleReviews} />
       
-      <FAQ faqs={faqs} />
+      <FAQ faqs={faqs} title={faqContent.title || undefined} subtitle={faqContent.subtitle || undefined} />
       
       <Footer />
     </main>

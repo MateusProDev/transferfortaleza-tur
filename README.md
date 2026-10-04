@@ -99,13 +99,29 @@ NODE_ENV=development
 
 Create these collections in Firestore (empty collections are fine):
 - `banners`
-- `tours`
-- `transfers`
-- `testimonials`
-- `blog`
-- `faq`
+- `pacotes`
+- `avaliacoes`
+- `blogPosts`
+- `content`
 - `settings`
 - `activityLogs`
+
+The home page reads banner fields in Portuguese (`titulo`, `subtitulo`, `imagem`,
+`botaoTexto`, `botaoLink`, `ativo`, `ordem`) and maps them to the site's banner
+model. Tours and transfers are read from the shared `pacotes` collection:
+`categoria`/`categorias` identify the type, `destaque` controls home highlights,
+and package fields such as `titulo`, `descricao`, `descricaoCurta`, `imagens`,
+`imagensAlt`, `preco`, `comodidades`, `faq`, and `pacotesRecomendados` are mapped
+to the existing catalog and detail pages. Transfer-specific fields such as
+`veiculos`, `precoPorVeiculo`, and `locaisAtendidos` are used to identify and
+display transfer packages.
+
+Additional home content is read from `content/homeSeo`, `content/header`,
+`content/footer`, `content/servicesSection`, `content/differentialsSection`,
+`content/imageCarouselSection`, `content/transferBeberibe`,
+`content/homeFAQ`, and `content/googleReviews`; WhatsApp configuration is read
+from `settings/whatsapp`. Testimonials and blog posts are read from
+`avaliacoes` and `blogPosts`.
 
 ### 7. Create admin user
 

@@ -1,4 +1,5 @@
 import { adminDb } from '../src/lib/firebase-admin';
+import { isTransferPackage } from '../src/lib/firestore-content';
 
 // Função para gerar slugs amigáveis a partir de nomes
 function generateSlug(name: string): string {
@@ -21,15 +22,20 @@ async function updateTransferSlugs() {
   console.log('Starting transfer slug update...');
 
   try {
-    const transfersRef = adminDb.collection('transfers');
-    const transfersSnapshot = await transfersRef.get();
+    const packagesRef = adminDb.collection('pacotes');
+    const packagesSnapshot = await packagesRef.get();
     
     let updatedCount = 0;
     let skippedCount = 0;
 
-    for (const doc of transfersSnapshot.docs) {
+    for (const doc of packagesSnapshot.docs) {
       const transferData = doc.data();
-      const transferName = transferData.name;
+      if (!isTransferPackage(transferData)) {
+        skippedCount++;
+        continue;
+      }
+
+      const transferName = transferData.titulo || transferData.name;
       
       if (!transferName) {
         console.log(`Skipping transfer ${doc.id} - no name found`);
@@ -42,7 +48,7 @@ async function updateTransferSlugs() {
 
       // Apenas atualiza se o slug for diferente ou não existir
       if (!existingSlug || existingSlug !== newSlug) {
-        await transfersRef.doc(doc.id).update({
+        await packagesRef.doc(doc.id).update({
           slug: newSlug,
           updatedAt: new Date(),
         });

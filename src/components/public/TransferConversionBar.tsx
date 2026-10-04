@@ -7,9 +7,13 @@ import WhatsAppConversionLink from "./WhatsAppConversionLink";
 
 interface TransferConversionBarProps {
   transferName: string;
+  whatsappNumber?: string;
 }
 
-export default function TransferConversionBar({ transferName }: TransferConversionBarProps) {
+export default function TransferConversionBar({
+  transferName,
+  whatsappNumber = "5585997314093",
+}: TransferConversionBarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -21,7 +25,7 @@ export default function TransferConversionBar({ transferName }: TransferConversi
 
   if (!isScrolled) return null;
 
-  const href = `https://wa.me/5585997314093?text=${encodeURIComponent(`Olá! Gostaria de solicitar um orçamento para o transfer: ${transferName}`)}`;
+  const href = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá! Gostaria de solicitar um orçamento para o transfer: ${transferName}`)}`;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-lg">

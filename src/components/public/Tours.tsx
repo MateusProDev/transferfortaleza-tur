@@ -24,9 +24,10 @@ interface Tour {
 
 interface ToursProps {
   tours: Tour[];
+  whatsappNumber?: string;
 }
 
-export default function Tours({ tours }: ToursProps) {
+export default function Tours({ tours, whatsappNumber }: ToursProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3;
@@ -188,7 +189,7 @@ export default function Tours({ tours }: ToursProps) {
 
                   <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
                     <WhatsAppConversionLink
-                      href={`https://wa.me/5585997314093?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
+                      href={`https://wa.me/${(whatsappNumber || "5585997314093").replace(/\D/g, "")}?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex min-w-0 flex-1 items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium whitespace-nowrap text-xs sm:text-sm"
@@ -250,7 +251,7 @@ export default function Tours({ tours }: ToursProps) {
                 Explore outros roteiros para encontrar a experiência ideal para sua viagem
               </p>
             </div>
-            <OtherToursCarousel tours={otherTours} />
+            <OtherToursCarousel tours={otherTours} whatsappNumber={whatsappNumber} />
           </div>
         )}
       </div>

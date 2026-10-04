@@ -19,9 +19,10 @@ interface Tour {
 
 interface OtherToursCarouselProps {
   tours: Tour[];
+  whatsappNumber?: string;
 }
 
-export default function OtherToursCarousel({ tours }: OtherToursCarouselProps) {
+export default function OtherToursCarousel({ tours, whatsappNumber }: OtherToursCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3;
@@ -136,7 +137,7 @@ export default function OtherToursCarousel({ tours }: OtherToursCarouselProps) {
 
               <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
                 <WhatsAppConversionLink
-                  href={`https://wa.me/5585997314093?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
+                  href={`https://wa.me/${(whatsappNumber || "5585997314093").replace(/\D/g, "")}?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex min-w-0 flex-1 items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium whitespace-nowrap text-xs sm:text-sm"

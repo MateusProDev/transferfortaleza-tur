@@ -18,7 +18,7 @@ interface BlogProps {
 }
 
 export default function Blog({ posts }: BlogProps) {
-  const displayPosts = posts.filter(post => post.published).slice(0, 3);
+  const displayPosts = posts.filter(post => post.published).slice(0, 2);
 
   const formatDate = (date: any) => {
     if (!date) return '';

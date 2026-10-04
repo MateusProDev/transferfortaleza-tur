@@ -3,10 +3,14 @@ export interface Banner {
   id: string;
   title: string;
   subtitle: string;
+  description?: string;
+  location?: string;
   imageUrl: string;
   imageAlt: string;
   buttonText: string;
   buttonLink: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
   order: number;
   active: boolean;
   createdAt: Date;
@@ -54,6 +58,7 @@ export interface Transfer {
   slug?: string;
   recommendedTransferIds?: string[];
   featuredOnHome?: boolean;
+  order?: number;
   name: string;
   description: string;
   longDescription?: string;
@@ -79,9 +84,31 @@ export interface Testimonial {
   clientPhotoAlt: string;
   text: string;
   rating: number; // 1-5 stars
+  destination?: string;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface GoogleReview {
+  id: string;
+  name: string;
+  photo: string;
+  photoAlt: string;
+  rating: number;
+  text: string;
+  date: string;
+}
+
+export interface GoogleReviewsContent {
+  active: boolean;
+  title: string;
+  subtitle: string;
+  badge: string;
+  autoplay: boolean;
+  autoplayDelay: number;
+  googleUrl: string;
+  reviews: GoogleReview[];
 }
 
 // Blog/Articles Types
@@ -94,6 +121,13 @@ export interface BlogPost {
   imageUrl: string;
   imageAlt: string;
   author?: string;
+  views?: number;
+  excerpt?: string;
+  featuredImage?: string;
+  featuredImageAlt?: string;
+  category?: string;
+  tags?: string[];
+  seo?: Record<string, unknown>;
   published: boolean;
   publishedAt: Date;
   createdAt: Date;
@@ -160,6 +194,8 @@ export interface SiteSettings {
   secondaryColor: string;
   sections: SectionSettings;
   aboutSection?: AboutSectionSettings;
+  companyName?: string;
+  footerText?: string;
   updatedAt: Date;
 }
 

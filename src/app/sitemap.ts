@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { adminDb } from "@/lib/firebase-admin";
+import { blogService, tourService, transferService } from "@/lib/firestore";
 import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
@@ -49,53 +49,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dynamicPages: MetadataRoute.Sitemap = [];
 
   try {
-    if (adminDb) {
-      const blogSnapshot = await adminDb
-        .collection("blog")
-        .where("published", "==", true)
-        .get();
+    const [tours, transfers, blogPosts] = await Promise.all([
+      tourService.getAll(true),
+      transferService.getAll(true),
+      blogService.getAll(true),
+    ]);
 
-      blogSnapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        if (!data.slug) return;
-        dynamicPages.push({
-          url: `${baseUrl}/blog/${data.slug}`,
-          lastModified: data.updatedAt?.toDate?.() ?? new Date(),
-          changeFrequency: "weekly" as const,
-          priority: 0.7,
-        });
+    blogPosts.forEach((post) => {
+      if (!post.slug) return;
+      dynamicPages.push({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: post.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.7,
       });
+    });
 
-      const toursSnapshot = await adminDb
-        .collection("tours")
-        .where("active", "==", true)
-        .get();
-
-      toursSnapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        dynamicPages.push({
-          url: `${baseUrl}/passeios/${data.slug || doc.id}`,
-          lastModified: data.updatedAt?.toDate?.() ?? new Date(),
-          changeFrequency: "weekly" as const,
-          priority: 0.8,
-        });
+    tours.forEach((tour) => {
+      dynamicPages.push({
+        url: `${baseUrl}/passeios/${tour.slug || tour.id}`,
+        lastModified: tour.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.8,
       });
+    });
 
-      const transfersSnapshot = await adminDb
-        .collection("transfers")
-        .where("active", "==", true)
-        .get();
-
-      transfersSnapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        dynamicPages.push({
-          url: `${baseUrl}/transfer/${data.slug || doc.id}`,
-          lastModified: data.updatedAt?.toDate?.() ?? new Date(),
-          changeFrequency: "weekly" as const,
-          priority: 0.8,
-        });
+    transfers.forEach((transfer) => {
+      dynamicPages.push({
+        url: `${baseUrl}/transfer/${transfer.slug || transfer.id}`,
+        lastModified: transfer.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.8,
       });
-    }
+    });
+
   } catch (error) {
     console.error("Error fetching dynamic pages for sitemap:", error);
   }

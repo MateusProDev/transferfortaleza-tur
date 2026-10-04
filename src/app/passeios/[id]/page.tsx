@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { tourService } from "@/lib/firestore";
+import { tourService, settingsService } from "@/lib/firestore";
 import { Clock, Check, X, Users, AlertCircle, Sparkles, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -126,13 +126,16 @@ export default async function PasseioDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const relatedTours = await (tour.recommendedTourIds?.length
-    ? tourService.getRecommended(tour.recommendedTourIds, tour.id, 3)
-    : tourService.getRelated(tour.id, 3)
-  ).catch((error) => {
-    console.error("Error fetching related tours:", error);
-    return [];
-  });
+  const [relatedTours, settings] = await Promise.all([
+    (tour.recommendedTourIds?.length
+      ? tourService.getRecommended(tour.recommendedTourIds, tour.id, 3)
+      : tourService.getRelated(tour.id, 3)
+    ).catch((error) => {
+      console.error("Error fetching related tours:", error);
+      return [];
+    }),
+    settingsService.get(),
+  ]);
   const galleryImages = [
     {
       id: "main",
@@ -172,6 +175,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
       {/* CTA Sticky Bar - aparece após scroll */}
       <TourConversionBar 
         tourName={tour.name}
+        whatsappNumber={settings?.whatsappConfig?.number}
       />
 
       <div className="bg-white">

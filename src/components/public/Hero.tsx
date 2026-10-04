@@ -7,10 +7,14 @@ interface Banner {
   id: string;
   title: string;
   subtitle: string;
+  description?: string;
+  location?: string;
   imageUrl: string;
   imageAlt: string;
   buttonText: string;
   buttonLink: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
 }
 
 interface HeroProps {
@@ -79,17 +83,33 @@ export default function Hero({ banners }: HeroProps) {
             {heroTitle}
           </h1>
           <p className="text-xl md:text-2xl mb-8">
-            {currentBanner.subtitle || 'Reserve experiências únicas em Fortaleza e região.'}
+            {currentBanner.subtitle || currentBanner.description || 'Reserve experiências únicas em Fortaleza e região.'}
           </p>
-          <a
-            href={currentBanner.buttonLink}
-            target={/^https?:\/\//i.test(currentBanner.buttonLink) ? '_blank' : undefined}
-            rel={/^https?:\/\//i.test(currentBanner.buttonLink) ? 'noopener noreferrer' : undefined}
-            className="inline-block bg-primary-800 hover:bg-primary-900 text-white font-bold px-8 py-3 rounded-lg transition-colors"
-            aria-label={currentBanner.buttonText}
-          >
-            {currentBanner.buttonText}
-          </a>
+          {currentBanner.location && <p className="mb-4 text-sm text-white/80">{currentBanner.location}</p>}
+          <div className="flex flex-wrap justify-center gap-3">
+            {currentBanner.buttonText && currentBanner.buttonLink && (
+              <a
+                href={currentBanner.buttonLink}
+                target={/^https?:\/\//i.test(currentBanner.buttonLink) ? '_blank' : undefined}
+                rel={/^https?:\/\//i.test(currentBanner.buttonLink) ? 'noopener noreferrer' : undefined}
+                className="inline-block rounded-lg bg-primary-800 px-8 py-3 font-bold text-white transition-colors hover:bg-primary-900"
+                aria-label={currentBanner.buttonText}
+              >
+                {currentBanner.buttonText}
+              </a>
+            )}
+            {currentBanner.secondaryButtonText && currentBanner.secondaryButtonLink && (
+              <a
+                href={currentBanner.secondaryButtonLink}
+                target={/^https?:\/\//i.test(currentBanner.secondaryButtonLink) ? '_blank' : undefined}
+                rel={/^https?:\/\//i.test(currentBanner.secondaryButtonLink) ? 'noopener noreferrer' : undefined}
+                className="inline-block rounded-lg border border-white px-8 py-3 font-bold text-white transition-colors hover:bg-white/10"
+                aria-label={currentBanner.secondaryButtonText}
+              >
+                {currentBanner.secondaryButtonText}
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
