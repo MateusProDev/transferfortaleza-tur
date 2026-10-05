@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    --color-primary: #21A657;
-    --color-primary-light: #2BC46A;
-    --color-primary-dark: #1A8546;
+    --color-primary: #15803d;
+    --color-primary-light: #16a34a;
+    --color-primary-dark: #14532d;
     --color-secondary: #EE7C35;
     --color-secondary-light: #F59255;
     --color-secondary-dark: #D96B2A;
@@ -23,13 +23,13 @@
     --color-text-primary: #1A1A2E;
     --color-text-secondary: #4A5568;
     --color-text-muted: #64748B;
-    --gradient-primary: linear-gradient(135deg, #21A657 0%, #2BC46A 100%);
+    --gradient-primary: linear-gradient(135deg, #166534 0%, #15803d 100%);
     --gradient-sunset: linear-gradient(135deg, #EE7C35 0%, #F8C144 100%);
-    --gradient-tropical: linear-gradient(135deg, #21A657 0%, #78C8E5 50%, #F8C144 100%);
+    --gradient-tropical: linear-gradient(135deg, #166534 0%, #78C8E5 50%, #F8C144 100%);
 
     --background: 36 100% 97.1%;
     --foreground: 240 27.8% 14.1%;
-    --primary: 144.4 66.8% 39%;
+    --primary: 138.5 71% 29.2%;
     --primary-foreground: 0 0% 100%;
     --secondary: 23 84.5% 57.1%;
     --secondary-foreground: 0 0% 100%;
@@ -45,14 +45,14 @@
     --card-foreground: 240 27.8% 14.1%;
     --border: 210 20% 90%;
     --input: 210 20% 90%;
-    --ring: 144.4 66.8% 39%;
+    --ring: 138.5 71% 29.2%;
     --radius: 0.5rem;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --primary: 144.7 64% 46.9%;
+    --primary: 142 69% 35%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 22.9 88.9% 64.7%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -68,7 +68,7 @@
     --card-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 144.7 64% 46.9%;
+    --ring: 142 69% 35%;
   }
 }
 
