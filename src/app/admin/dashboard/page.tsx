@@ -130,7 +130,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="mb-2 text-3xl font-bold">Painel</h1>
-        <p className="text-muted-foreground">Bem-vindo ao painel administrativo da Passeio Legal</p>
+        <p className="text-muted-foreground">Bem-vindo ao painel administrativo da Transfer Fortaleza Tur</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     tour.name.toLowerCase(),
     "passeios fortaleza",
     "turismo ceará",
-    "passeio legal",
+    "transfer fortaleza tur",
     "passeio fortaleza",
     "excursão fortaleza",
   ].join(", ");
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${baseUrl}/passeios/${params.id}`,
       title: tour.name,
       description,
-      siteName: "Passeio Legal",
+      siteName: "Transfer Fortaleza Tur",
       images: tour.mainImageUrl ? [
         {
           url: tour.mainImageUrl,

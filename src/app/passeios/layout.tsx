@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: `${baseUrl}/passeios`,
-    title: "Passeios em Fortaleza e Ceará | Passeio Legal",
+    title: "Passeios em Fortaleza e Ceará | Transfer Fortaleza Tur",
     description: "Roteiros turísticos para conhecer as melhores praias e destinos do Ceará.",
   },
 };

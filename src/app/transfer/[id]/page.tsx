@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const description = transfer.description || `Solicite um orçamento para ${transfer.name} com a Passeio Legal.`;
+  const description = transfer.description || `Solicite um orçamento para ${transfer.name} com a Transfer Fortaleza Tur.`;
 
   return {
     title: transfer.name,
@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${baseUrl}/transfer/${params.id}`,
       title: transfer.name,
       description,
-      siteName: "Passeio Legal",
+      siteName: "Transfer Fortaleza Tur",
       images: transfer.imageUrl ? [
         {
           url: transfer.imageUrl,

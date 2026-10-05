@@ -8,6 +8,7 @@ import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import OtherToursCarousel from './OtherToursCarousel';
 import { ProductJsonLd } from '@/components/seo/JsonLd';
+import { BRAND_URL } from '@/lib/brand';
 
 interface Tour {
   id: string;
@@ -131,7 +132,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                     description={tour.description}
                     image={tour.mainImageUrl}
                     price={tour.price}
-                    url={`${process.env.NEXT_PUBLIC_APP_URL || 'https://passeiolegal.com'}/passeios/${tour.slug || tour.id}`}
+                    url={`${BRAND_URL}/passeios/${tour.slug || tour.id}`}
                   />
                 )}
                 <div className="relative group">

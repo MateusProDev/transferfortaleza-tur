@@ -1,4 +1,4 @@
-# Instruções de Setup - Passeio Legal
+# Instruções de Setup - Transfer Fortaleza Tur
 
 ## 📋 Pré-requisitos
 
@@ -34,8 +34,8 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
 # Application
-NEXT_PUBLIC_APP_NAME=Passeio Legal
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_NAME=Transfer Fortaleza Tur
+NEXT_PUBLIC_APP_URL=https://transferfortalezatur.com.br
 NODE_ENV=development
 
 # Firebase Admin SDK (opcional - pode usar o arquivo JSON)

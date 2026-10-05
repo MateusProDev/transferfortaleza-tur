@@ -1,4 +1,4 @@
-# Passeio Legal - Next.js Tourism Website with Admin Panel
+# Transfer Fortaleza Tur - Next.js Tourism Website with Admin Panel
 
 A complete Next.js 14+ application with admin panel, featuring tours and transfers management, built with TypeScript, Tailwind CSS, Firebase, and Cloudinary.
 
@@ -47,7 +47,7 @@ A complete Next.js 14+ application with admin panel, featuring tours and transfe
 ### 1. Clone or download the project
 
 ```bash
-cd passeiolegal
+cd transferfortaleza-tur
 ```
 
 ### 2. Install dependencies
@@ -83,8 +83,8 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
 # Application
-NEXT_PUBLIC_APP_NAME=Passeio Legal
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_NAME=Transfer Fortaleza Tur
+NEXT_PUBLIC_APP_URL=https://transferfortalezatur.com.br
 NODE_ENV=development
 ```
 

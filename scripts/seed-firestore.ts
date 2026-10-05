@@ -119,7 +119,7 @@ const sampleBlogPosts = [
     content: '<p>Confira nossa lista completa dos destinos mais incríveis...</p>',
     imageUrl: 'https://res.cloudinary.com/demo/image/upload/v1/blog1',
     imageAlt: 'Praia paradisíaca',
-    author: 'Equipe Passeio Legal',
+    author: 'Equipe Transfer Fortaleza Tur',
     published: true,
     publishedAt: new Date('2024-01-15'),
   },
@@ -130,7 +130,7 @@ const sampleBlogPosts = [
     content: '<p>Segurança é fundamental em qualquer viagem...</p>',
     imageUrl: 'https://res.cloudinary.com/demo/image/upload/v1/blog2',
     imageAlt: 'Viajante com mochila',
-    author: 'Equipe Passeio Legal',
+    author: 'Equipe Transfer Fortaleza Tur',
     published: true,
     publishedAt: new Date('2024-01-10'),
   },
@@ -159,7 +159,7 @@ const sampleFAQs = [
 
 const sampleSettings = {
   headerLogo: 'https://res.cloudinary.com/demo/image/upload/v1/logo',
-  headerLogoAlt: 'Logo Passeio Legal',
+  headerLogoAlt: 'Logo Transfer Fortaleza Tur',
   menuLinks: [
     { id: '1', label: 'Início', url: '/', order: 1, active: true },
     { id: '2', label: 'Passeios', url: '#tours', order: 2, active: true },
@@ -168,14 +168,14 @@ const sampleSettings = {
     { id: '5', label: 'Contato', url: '#contact', order: 5, active: true },
   ],
   footerLogo: 'https://res.cloudinary.com/demo/image/upload/v1/logo',
-  footerLogoAlt: 'Logo Passeio Legal',
+  footerLogoAlt: 'Logo Transfer Fortaleza Tur',
   socialLinks: [
     { id: '1', platform: 'facebook', url: 'https://facebook.com/passeiolegal' },
     { id: '2', platform: 'instagram', url: 'https://instagram.com/passeiolegal' },
     { id: '3', platform: 'whatsapp', url: 'https://wa.me/5511999999999' },
   ],
   contactInfo: {
-    email: 'contato@passeiolegal.com',
+    email: 'contato@example.com',
     phone: '+55 11 99999-9999',
     whatsapp: '+55 11 99999-9999',
     address: 'Rua Principal, 123',
@@ -184,8 +184,8 @@ const sampleSettings = {
     zipCode: '01234-567',
   },
   seoSettings: {
-    siteTitle: 'Passeio Legal - Tours e Transfers',
-    siteDescription: 'Descubra os melhores passeios e transfers com a Passeio Legal',
+    siteTitle: 'Transfer Fortaleza Tur - Passeios e Transfers',
+    siteDescription: 'Descubra os melhores passeios e transfers com a Transfer Fortaleza Tur',
     keywords: ['tours', 'transfers', 'travel', 'passeios', 'turismo'],
     ogImage: 'https://res.cloudinary.com/demo/image/upload/v1/og-image',
   },

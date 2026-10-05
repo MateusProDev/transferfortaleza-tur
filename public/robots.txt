@@ -10,4 +10,4 @@ Disallow: /test-page
 Disallow: /teste-gclid
 
 # Sitemap
-Sitemap: https://www.passeiolegal.com/sitemap.xml
+Sitemap: https://transferfortalezatur.com.br/sitemap.xml

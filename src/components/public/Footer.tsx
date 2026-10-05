@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import WhatsAppConversionLink, { isWhatsAppUrl } from './WhatsAppConversionLink';
 import { fetchSettingsCached } from '@/lib/settings-cache';
+import { replaceLegacyBrand } from '@/lib/brand';
 
 interface SocialLink {
   icon: any;
@@ -71,7 +72,7 @@ export default function Footer() {
                 <div className="relative h-10 w-10">
                   <Image
                     src={settings.headerLogo}
-                    alt={settings.headerLogoAlt || 'Passeio Legal'}
+                    alt={replaceLegacyBrand(settings.headerLogoAlt || 'Transfer Fortaleza Tur')}
                     fill
                     className="object-contain"
                   />
@@ -81,10 +82,12 @@ export default function Footer() {
                   <span className="text-xl font-bold text-white">PL</span>
                 </div>
               )}
-              <span className="text-xl font-bold">{settings?.companyName || 'Passeio Legal'}</span>
+              <span className="text-xl font-bold">
+                {replaceLegacyBrand(settings?.companyName || 'Transfer Fortaleza Tur')}
+              </span>
             </Link>
             <p className="text-gray-400 text-sm">
-              {settings?.footerText || 'Descubra os melhores passeios e transfers com conforto, segurança e experiências únicas de turismo.'}
+              {replaceLegacyBrand(settings?.footerText || 'Descubra os melhores passeios e transfers com conforto, segurança e experiências únicas de turismo.')}
             </p>
           </div>
 
@@ -218,7 +221,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-8 pt-8 pb-4 text-center text-gray-400 text-sm">
-          <p>&copy; {currentYear} Passeio Legal. Todos os direitos reservados.</p>
+          <p>&copy; {currentYear} Transfer Fortaleza Tur. Todos os direitos reservados.</p>
           <p className="mt-1">CNPJ: 64.042.188/0001-13</p>
           <a
             href="https://turvia.com.br"

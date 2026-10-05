@@ -5,6 +5,7 @@ import Hero from "@/components/public/Hero";
 import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
 import { bannerService, tourService, transferService, testimonialService, googleReviewsService, homeContentService, blogService, faqService, settingsService, firebaseService } from "@/lib/firestore";
 import { getSiteUrl } from "@/lib/site-url";
+import { replaceLegacyBrand } from "@/lib/brand";
 
 const Tours = dynamicImport(() => import("@/components/public/Tours"), {
   loading: () => <div className="h-[420px] w-full" />,
@@ -46,16 +47,18 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   const title = typeof homeSeo?.title === "string" && homeSeo.title.trim()
-    ? homeSeo.title
+    ? replaceLegacyBrand(homeSeo.title)
     : "Passeios e Transfers em Fortaleza e Região";
   const description = typeof homeSeo?.description === "string" && homeSeo.description.trim()
-    ? homeSeo.description
+    ? replaceLegacyBrand(homeSeo.description)
     : "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!";
   const keywords = Array.isArray(homeSeo?.keywords)
-    ? homeSeo.keywords.filter((keyword): keyword is string => typeof keyword === "string")
+    ? homeSeo.keywords
+        .filter((keyword): keyword is string => typeof keyword === "string")
+        .map(replaceLegacyBrand)
     : ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará"];
   const canonical = typeof homeSeo?.canonical === "string" && homeSeo.canonical.trim()
-    ? homeSeo.canonical
+    ? replaceLegacyBrand(homeSeo.canonical)
     : baseUrl;
   const ogImage = typeof homeSeo?.ogImage === "string" && homeSeo.ogImage.trim()
     ? homeSeo.ogImage

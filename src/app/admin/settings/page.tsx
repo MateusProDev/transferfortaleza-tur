@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import ImageUpload from "@/components/ui/ImageUpload";
 
 const defaultAboutSection = {
-  title: "Sobre a Passeio Legal",
+  title: "Sobre a Transfer Fortaleza Tur",
   description: "Há mais de 10 anos no mercado de turismo, oferecendo experiências únicas e memoráveis para nossos clientes. Nossa missão é proporcionar momentos inesquecíveis com segurança, conforto e profissionalismo.",
   stats: [
     { value: 10, label: "Anos de Experiência" },
@@ -102,7 +102,7 @@ export default function SettingsAdmin() {
           <div>
             <label className="text-sm font-medium">Texto Alternativo da Logo</label>
             <Input
-              placeholder="Passeio Legal"
+              placeholder="Transfer Fortaleza Tur"
               value={settings?.headerLogoAlt || ""}
               onChange={(e) =>
                 setSettings({
@@ -124,7 +124,7 @@ export default function SettingsAdmin() {
           <div>
             <label className="text-sm font-medium">Título do Site</label>
             <Input
-              placeholder="Passeio Legal"
+              placeholder="Transfer Fortaleza Tur"
               value={settings?.seoSettings?.siteTitle || ""}
               onChange={(e) =>
                 setSettings({
@@ -265,14 +265,14 @@ export default function SettingsAdmin() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Sobre a Passeio Legal</CardTitle>
+          <CardTitle>Sobre a Transfer Fortaleza Tur</CardTitle>
           <CardDescription>Edite o texto e os números exibidos na seção sobre a empresa</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <label className="text-sm font-medium">Título</label>
             <Input
-              placeholder="Sobre a Passeio Legal"
+              placeholder="Sobre a Transfer Fortaleza Tur"
               value={settings?.aboutSection?.title || defaultAboutSection.title}
               onChange={(e) =>
                 setSettings({

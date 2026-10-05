@@ -1,6 +1,6 @@
 # Developer Quick Reference
 
-A quick reference guide for common tasks in the Passeio Legal project.
+A quick reference guide for common tasks in the Transfer Fortaleza Tur project.
 
 ## 🔗 File Locations
 
@@ -261,7 +261,7 @@ formatDatetime(date); // "17/08/2026 10:30"
 import { slugify, generateSlug } from "@/lib/utils";
 
 const slug = slugify("My Tour Title"); // "my-tour-title"
-const slug2 = generateSlug("Passeio Legal"); // "passeio-legal"
+const slug2 = generateSlug("Transfer Fortaleza Tur"); // "transfer-fortaleza-tur"
 ```
 
 ### Protected Admin Route

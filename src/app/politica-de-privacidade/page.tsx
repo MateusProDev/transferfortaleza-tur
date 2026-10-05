@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Política de Privacidade',
-  description: 'Saiba como a Passeio Legal coleta e utiliza dados de navegação e atendimento.',
+  description: 'Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.',
 };
 
 export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-16 text-slate-800">
       <article className="mx-auto max-w-3xl rounded-xl bg-white p-6 shadow-sm sm:p-10">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#0b5d3a]">Passeio Legal</p>
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#0b5d3a]">Transfer Fortaleza Tur</p>
         <h1 className="mb-4 text-3xl font-bold text-slate-900">Política de Privacidade</h1>
         <p className="mb-8 text-sm text-slate-500">Última atualização: 15 de setembro de 2026</p>
 
@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
             <p>
               Os dados podem ser processados pelos serviços necessários para funcionamento do site, registro dos leads,
               atendimento e medição de campanhas, incluindo Google Ads e serviços de infraestrutura utilizados pela
-              Passeio Legal. Não vendemos esses dados.
+              Transfer Fortaleza Tur. Não vendemos esses dados.
             </p>
           </section>
 
@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="mb-2 text-xl font-semibold text-slate-900">5. Contato</h2>
             <p>
               Para dúvidas ou solicitações relacionadas a privacidade e dados pessoais, entre em contato pelos canais
-              disponíveis na página de contato da Passeio Legal.
+              disponíveis na página de contato da Transfer Fortaleza Tur.
             </p>
           </section>
         </div>

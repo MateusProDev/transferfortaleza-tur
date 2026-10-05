@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(dataURI, {
-      folder: "passeiolegal/tours",
+      folder: "transferfortalezatur/tours",
       transformation: [
         { quality: "auto", fetch_format: "auto" },
         { width: 1200, crop: "limit" },

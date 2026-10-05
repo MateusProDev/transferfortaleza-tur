@@ -47,7 +47,7 @@ if (typeof window === 'undefined') {
       if (!admin.apps.length) {
         admin.initializeApp({
           credential: admin.credential.cert(serviceAccountKey),
-          projectId: serviceAccountKey.projectId || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'passeiolegal',
+          projectId: serviceAccountKey.projectId || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'maiatur',
         });
       }
     } else {

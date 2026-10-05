@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Info, Map, Menu, Newspaper, Phone, X, type LucideIcon } from 'lucide-react';
 import { settingsService } from '@/lib/firestore';
+import { replaceLegacyBrand } from '@/lib/brand';
 
 interface MenuItem {
   label: string;
@@ -20,13 +21,13 @@ const menuItems: MenuItem[] = [
 export default async function Header() {
   const settings = await settingsService.get();
   const logoUrl = settings?.headerLogo;
-  const logoAlt = settings?.headerLogoAlt || 'Passeio Legal';
+  const logoAlt = replaceLegacyBrand(settings?.headerLogoAlt || 'Transfer Fortaleza Tur');
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-primary-800/70 bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 shadow-md">
       <nav className="container mx-auto px-3 py-3 sm:px-4 sm:py-2" role="navigation" aria-label="Navegação principal">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center" aria-label="Passeio Legal - Página inicial">
+          <Link href="/" className="flex items-center" aria-label="Transfer Fortaleza Tur - Página inicial">
             {logoUrl ? (
               <div className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-white/0 transition-transform duration-200 hover:scale-105 sm:h-[64px] sm:w-[64px] lg:h-[80px] lg:w-[80px]">
                 <Image

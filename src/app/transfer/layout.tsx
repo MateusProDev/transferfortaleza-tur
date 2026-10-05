@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: `${baseUrl}/transfer`,
-    title: "Transfer em Fortaleza e Ceará | Passeio Legal",
+    title: "Transfer em Fortaleza e Ceará | Transfer Fortaleza Tur",
     description: "Transfer para aeroporto, hotéis e destinos turísticos com conforto e segurança.",
   },
 };

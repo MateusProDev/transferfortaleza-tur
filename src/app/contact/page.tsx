@@ -78,7 +78,7 @@ export default function ContactPage() {
     try {
       /* Conversa imediata no WhatsApp, com o formulário já preenchido. */
       const message = [
-        "Olá! Vim pelo site da Passeio Legal e gostaria de falar com vocês.",
+        "Olá! Vim pelo site da Transfer Fortaleza Tur e gostaria de falar com vocês.",
         "",
         `*Nome:* ${formData.name}`,
         `*E-mail:* ${formData.email}`,
@@ -169,7 +169,7 @@ export default function ContactPage() {
                     <a
                       href={buildWhatsAppUrl(
                         whatsappNumber,
-                        "Olá! Vim pelo site da Passeio Legal e gostaria de mais informações."
+                        "Olá! Vim pelo site da Transfer Fortaleza Tur e gostaria de mais informações."
                       )}
                       target="_blank"
                       rel="noopener noreferrer"

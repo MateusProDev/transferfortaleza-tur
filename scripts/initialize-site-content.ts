@@ -15,10 +15,10 @@ function generateSlug(name: string): string {
 // Banners para a página inicial
 const banners = [
   {
-    title: 'Passeio Legal',
+    title: 'Transfer Fortaleza Tur',
     subtitle: 'Os Melhores Passeios em Fortaleza',
     imageUrl: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
-    imageAlt: 'Passeios em Fortaleza - Passeio Legal',
+    imageAlt: 'Passeios em Fortaleza - Transfer Fortaleza Tur',
     buttonText: 'Ver Passeios',
     buttonLink: '#tours',
     order: 1,
@@ -39,7 +39,7 @@ const banners = [
 // Configurações do site
 const siteSettings = {
   headerLogo: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
-  headerLogoAlt: 'Logo Passeio Legal',
+  headerLogoAlt: 'Logo Transfer Fortaleza Tur',
   menuLinks: [
     { id: '1', label: 'Home', url: '/', order: 1, active: true },
     { id: '2', label: 'Passeios', url: '/tours', order: 2, active: true },
@@ -47,7 +47,7 @@ const siteSettings = {
     { id: '4', label: 'Contato', url: '/contact', order: 4, active: true },
   ],
   footerLogo: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
-  footerLogoAlt: 'Logo Passeio Legal',
+  footerLogoAlt: 'Logo Transfer Fortaleza Tur',
   socialLinks: [
     { id: '1', platform: 'instagram' as const, url: 'https://instagram.com/passeiolegalfortaleza' },
     { id: '2', platform: 'whatsapp' as const, url: 'https://wa.me/5585997314093' },
@@ -62,9 +62,9 @@ const siteSettings = {
     zipCode: '61700-000',
   },
   seoSettings: {
-    siteTitle: 'Passeio Legal - Tours e Transfers em Fortaleza',
+    siteTitle: 'Transfer Fortaleza Tur - Passeios e Transfers em Fortaleza',
     siteDescription: 'A sua satisfação é o nosso compromisso. Os melhores passeios em Fortaleza e região.',
-    keywords: ['passeios fortaleza', 'tours fortaleza', 'transfer fortaleza', 'turismo ceará', 'passeio legal', 'passeios praias', 'transfer aeroporto fortaleza', 'turismo nordeste', 'excursões fortaleza', 'viagens ceará'],
+    keywords: ['passeios fortaleza', 'tours fortaleza', 'transfer fortaleza', 'turismo ceará', 'transfer fortaleza tur', 'passeios praias', 'transfer aeroporto fortaleza', 'turismo nordeste', 'excursões fortaleza', 'viagens ceará'],
     ogImage: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
   },
   whatsappConfig: {
@@ -117,13 +117,13 @@ const faqs = [
 // Blog posts
 const blogPosts = [
   {
-    title: 'Top 3 Passeio Legal - Os Imperdíveis',
-    slug: 'top-3-passeio-legal-os-imperdiveis',
+    title: 'Top 3 Transfer Fortaleza Tur - Os Imperdíveis',
+    slug: 'top-3-transfer-fortaleza-tur-os-imperdiveis',
     summary: 'Descubra os 3 passeios mais imperdíveis de Fortaleza e região que você não pode perder!',
     content: '<p>Confira nossa seleção dos 3 passeios mais imperdíveis de Fortaleza e região...</p><p>1. Jericoacoara - A praia mais bela do Ceará</p><p>2. Canoa Quebrada - Mar verde e dunas fascinantes</p><p>3. Beach Park - O maior parque aquático da América Latina</p>',
     imageUrl: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
     imageAlt: 'Top 3 Passeios Imperdíveis',
-    author: 'Equipe Passeio Legal',
+    author: 'Equipe Transfer Fortaleza Tur',
     published: true,
     publishedAt: new Date('2024-01-20'),
   },
@@ -134,7 +134,7 @@ const blogPosts = [
     content: '<p>Oferecemos parcerias com os melhores hotéis e pousadas da região...</p><p>Entre em contato para saber mais sobre nossas promoções exclusivas de hospedagem.</p>',
     imageUrl: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
     imageAlt: 'Promoções de Hospedagem',
-    author: 'Equipe Passeio Legal',
+    author: 'Equipe Transfer Fortaleza Tur',
     published: true,
     publishedAt: new Date('2024-01-18'),
   },
@@ -145,7 +145,7 @@ const blogPosts = [
     content: '<p>Para sua maior comodidade aceitamos todos os cartões de crédito...</p><p>Você pode parcelar nossos passeios em até 12x. Fale conosco e verifique as condições.</p>',
     imageUrl: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
     imageAlt: 'Parcelamento no Cartão',
-    author: 'Equipe Passeio Legal',
+    author: 'Equipe Transfer Fortaleza Tur',
     published: true,
     publishedAt: new Date('2024-01-15'),
   },

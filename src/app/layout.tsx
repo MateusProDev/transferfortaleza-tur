@@ -14,14 +14,14 @@ const googleTagId = process.env.NEXT_PUBLIC_GA_ID || googleAdsTagId;
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Passeio Legal - Tours e Transfers",
-    template: "%s | Passeio Legal",
+    default: "Transfer Fortaleza Tur - Passeios e Transfers",
+    template: "%s | Transfer Fortaleza Tur",
   },
   description: "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!",
-  keywords: ["tours", "transfers", "travel", "passeios", "turismo", "viagens", "excursões", "passeio legal", "turismo brasil"],
-  authors: [{ name: "Passeio Legal" }],
-  creator: "Passeio Legal",
-  publisher: "Passeio Legal",
+  keywords: ["tours", "transfers", "travel", "passeios", "turismo", "viagens", "excursões", "transfer fortaleza tur", "turismo brasil"],
+  authors: [{ name: "Transfer Fortaleza Tur" }],
+  creator: "Transfer Fortaleza Tur",
+  publisher: "Transfer Fortaleza Tur",
   alternates: {
     canonical: baseUrl,
   },
@@ -40,24 +40,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: baseUrl,
-    title: "Passeio Legal - Tours e Transfers",
+    title: "Transfer Fortaleza Tur - Passeios e Transfers",
     description: "Descubra os melhores passeios e transfers",
-    siteName: "Passeio Legal",
+    siteName: "Transfer Fortaleza Tur",
     images: [
       {
         url: `${baseUrl}/OG.png`,
         width: 1200,
         height: 630,
-        alt: "Passeio Legal - Tours e Transfers",
+        alt: "Transfer Fortaleza Tur - Passeios e Transfers",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Passeio Legal",
+    title: "Transfer Fortaleza Tur",
     description: "Descubra os melhores passeios e transfers",
     images: [`${baseUrl}/OG.png`],
-    creator: "@passeiolegal",
+    creator: "@transferfortalezatur",
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
@@ -126,9 +126,9 @@ export default function RootLayout({
         )}
 
         <LocalBusinessJsonLd
-          name="Passeio Legal"
+          name="Transfer Fortaleza Tur"
           url={baseUrl}
-          description="Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Passeio Legal. Experiências únicas de turismo com conforto, segurança e profissionalismo."
+          description="Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Transfer Fortaleza Tur. Experiências únicas de turismo com conforto, segurança e profissionalismo."
           address={{
             street: process.env.NEXT_PUBLIC_BUSINESS_STREET || "Avenida Oceano Atlântico",
             number: process.env.NEXT_PUBLIC_BUSINESS_NUMBER || "683-685",
@@ -141,9 +141,9 @@ export default function RootLayout({
           email={process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "passeiolegalfortaleza@gmail.com"}
         />
         <WebSiteJsonLd
-          name="Passeio Legal"
+          name="Transfer Fortaleza Tur"
           url={baseUrl}
-          description="Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Passeio Legal"
+          description="Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Transfer Fortaleza Tur"
         />
         <Providers>
           {children}

@@ -5,13 +5,13 @@ const baseUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: "Blog de Turismo em Fortaleza e Ceará",
-  description: "Dicas de turismo, praias, passeios e destinos no Ceará para planejar sua próxima viagem com a Passeio Legal.",
+  description: "Dicas de turismo, praias, passeios e destinos no Ceará para planejar sua próxima viagem com a Transfer Fortaleza Tur.",
   alternates: { canonical: `${baseUrl}/blog` },
   openGraph: {
     type: "website",
     locale: "pt_BR",
     url: `${baseUrl}/blog`,
-    title: "Blog de Turismo | Passeio Legal",
+    title: "Blog de Turismo | Transfer Fortaleza Tur",
     description: "Dicas para conhecer Fortaleza, o Ceará e os melhores destinos turísticos.",
   },
 };

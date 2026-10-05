@@ -77,7 +77,7 @@ export default function Contact() {
     try {
       /* Conversa imediata no WhatsApp, já com tudo o que foi preenchido. */
       const message = [
-        "Olá! Vim pelo site da Passeio Legal e gostaria de falar com vocês.",
+        "Olá! Vim pelo site da Transfer Fortaleza Tur e gostaria de falar com vocês.",
         "",
         `*Nome:* ${formData.name}`,
         `*E-mail:* ${formData.email}`,
@@ -301,7 +301,7 @@ export default function Contact() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Passeio Legal - Localização"
+                title="Transfer Fortaleza Tur - Localização"
               />
             </div>
           </div>

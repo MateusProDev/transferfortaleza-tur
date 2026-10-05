@@ -414,12 +414,12 @@ GET /api/settings
     {
       "id": "social-1",
       "platform": "instagram",
-      "url": "https://instagram.com/passeiolegal",
+      "url": "https://instagram.com/transferfortalezatur",
       "icon": "instagram"
     }
   ],
   "contactInfo": {
-    "email": "contact@passeiolegal.com",
+    "email": "contato@exemplo.com",
     "phone": "+55 11 99999-9999",
     "whatsapp": "+55 11 99999-9999",
     "address": "Street Name, Number",
@@ -430,11 +430,11 @@ GET /api/settings
     "longitude": -46.6333
   },
   "seoSettings": {
-    "siteTitle": "Passeio Legal",
+    "siteTitle": "Transfer Fortaleza Tur",
     "siteDescription": "Tour and transfer services",
     "keywords": ["tours", "transfers"],
     "ogImage": "https://res.cloudinary.com/...",
-    "twitterHandle": "@passeiolegal"
+    "twitterHandle": "@transferfortalezatur"
   },
   "whatsappConfig": {
     "number": "+55 11 99999-9999",
@@ -468,7 +468,7 @@ POST /api/cloudinary/delete
 Content-Type: application/json
 
 {
-  "publicId": "passeio-legal/image-name"
+  "publicId": "transferfortalezatur/image-name"
 }
 ```
 

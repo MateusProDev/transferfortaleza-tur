@@ -5,15 +5,16 @@ import AnimatedCounter from "@/components/public/AnimatedCounter";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { settingsService } from "@/lib/firestore";
 import { getSiteUrl } from "@/lib/site-url";
+import { replaceLegacyBrand } from "@/lib/brand";
 
 const baseUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: "Sobre Nós",
-  description: "Conheça a Passeio Legal - Há mais de 10 anos oferecendo experiências únicas de turismo com conforto, segurança e profissionalismo.",
+  description: "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo com conforto, segurança e profissionalismo.",
   openGraph: {
-    title: "Sobre Nós - Passeio Legal",
-    description: "Conheça a Passeio Legal - Há mais de 10 anos oferecendo experiências únicas de turismo",
+    title: "Sobre Nós - Transfer Fortaleza Tur",
+    description: "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo",
     url: `${baseUrl}/about`,
   },
 };
@@ -42,7 +43,7 @@ export default async function AboutPage() {
       {/* Header */}
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{aboutSection?.title || "Sobre a Passeio Legal"}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{replaceLegacyBrand(aboutSection?.title || "Sobre a Transfer Fortaleza Tur")}</h1>
           <p className="text-xl max-w-2xl">
             Conheça nossa história e compromisso com proporcionar experiências inesquecíveis
           </p>
@@ -58,7 +59,7 @@ export default async function AboutPage() {
                 Nossa História
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                {aboutSection?.description || "Há mais de 10 anos no mercado de turismo, a Passeio Legal nasceu com a missão de proporcionar momentos inesquecíveis para nossos clientes. O que começou como um pequeno sonho se transformou em uma empresa referência em passeios e transfers, sempre focada na qualidade, segurança e satisfação de quem nos escolhe."}
+                {replaceLegacyBrand(aboutSection?.description || "A Transfer Fortaleza Tur nasceu com a missão de proporcionar momentos inesquecíveis para nossos clientes. Somos uma empresa referência em passeios e transfers, sempre focada na qualidade, segurança e satisfação de quem nos escolhe.")}
               </p>
             </div>
 
@@ -105,7 +106,7 @@ export default async function AboutPage() {
 
             <div className="text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Por Que Escolher a Passeio Legal?
+                Por Que Escolher a Transfer Fortaleza Tur?
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 <div className="flex items-start gap-4">

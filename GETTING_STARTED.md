@@ -1,12 +1,12 @@
 # Getting Started Guide
 
-Welcome to your **Passeio Legal** Next.js tourism website project! This guide will help you get up and running quickly.
+Welcome to your **Transfer Fortaleza Tur** Next.js tourism website project! This guide will help you get up and running quickly.
 
 ## 🚀 Quick Start (5 minutes)
 
 ### Step 1: Install Dependencies
 ```bash
-cd /home/mateus/passeiolegal
+cd /home/mateus/transferfortaleza-tur
 npm install
 ```
 
@@ -77,7 +77,7 @@ Open in browser:
 ## 📁 Project Structure
 
 ```
-passeiolegal/
+transferfortaleza-tur/
 ├── src/
 │   ├── app/                 # Next.js app directory
 │   │   ├── api/            # API routes (serverless functions)
@@ -285,8 +285,7 @@ Good luck! 🎉
 
 ---
 
-**Project**: Passeio Legal Tourism Website
+**Project**: Transfer Fortaleza Tur Tourism Website
 **Status**: Foundation Complete, Ready for Development
 **Next**: Build Admin Forms and Public Pages
 **Time to Deploy**: ~2-4 weeks with dedicated work
-

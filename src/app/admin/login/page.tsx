@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           Acesso restrito
         </p>
-        <h1 className="mt-3 text-2xl font-bold text-slate-900">Admin Passeio Legal</h1>
+        <h1 className="mt-3 text-2xl font-bold text-slate-900">Admin Transfer Fortaleza Tur</h1>
 
         <button
           type="button"

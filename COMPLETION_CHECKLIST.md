@@ -1,6 +1,6 @@
 # Project Completion Checklist
 
-Use this checklist to track your progress as you build out the complete Passeio Legal tourism website.
+Use this checklist to track your progress as you build out the complete Transfer Fortaleza Tur tourism website.
 
 ## Phase 1: Setup & Foundation ✅ (COMPLETE)
 

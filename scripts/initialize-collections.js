@@ -9,7 +9,7 @@ const { getFirestore, collection, doc, setDoc, getDocs, query, where } = require
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "SUA_API_KEY",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "SEU_PROJETO.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "passeiolegal",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "maiatur",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "SEU_PROJETO.appspot.com",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "SEU_SENDER_ID",
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "SEU_APP_ID",

@@ -5,14 +5,14 @@ const baseUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: "Contato e Reservas",
-  description: "Entre em contato com a Passeio Legal para reservar passeios e transfers em Fortaleza e região pelo WhatsApp.",
+  description: "Entre em contato com a Transfer Fortaleza Tur para reservar passeios e transfers em Fortaleza e região pelo WhatsApp.",
   alternates: { canonical: `${baseUrl}/contact` },
   openGraph: {
     type: "website",
     locale: "pt_BR",
     url: `${baseUrl}/contact`,
-    title: "Contato e Reservas | Passeio Legal",
-    description: "Fale com a Passeio Legal e reserve seu passeio ou transfer em Fortaleza.",
+    title: "Contato e Reservas | Transfer Fortaleza Tur",
+    description: "Fale com a Transfer Fortaleza Tur e reserve seu passeio ou transfer em Fortaleza.",
   },
 };
 

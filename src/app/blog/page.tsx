@@ -101,7 +101,7 @@ export default function BlogPage() {
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center">
-                        <span className="text-white text-2xl font-bold">Passeio Legal</span>
+                        <span className="text-white text-2xl font-bold">Transfer Fortaleza Tur</span>
                       </div>
                     )}
                   </div>

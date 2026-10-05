@@ -26,9 +26,9 @@ export async function uploadImageToCloudinary(
   formData.append("file", file);
   formData.append("upload_preset", cloudinaryConfig.uploadPreset);
   if (folder) {
-    formData.append("folder", `passeio-legal/${folder}`);
+    formData.append("folder", `transferfortalezatur/${folder}`);
   } else {
-    formData.append("folder", "passeio-legal");
+    formData.append("folder", "transferfortalezatur");
   }
 
   try {

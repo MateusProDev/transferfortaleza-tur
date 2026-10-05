@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     return {
       title: post.title || 'Post',
-      description: post.summary || `Leia o artigo completo no blog da Passeio Legal. Dicas de turismo em Fortaleza e região.`,
+      description: post.summary || `Leia o artigo completo no blog da Transfer Fortaleza Tur. Dicas de turismo em Fortaleza e região.`,
       openGraph: {
         type: "article",
         locale: "pt_BR",
@@ -142,7 +142,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             url={`${baseUrl}/blog/${params.slug}`}
             publishedTime={publishedDate}
             modifiedTime={modifiedDate}
-            author="Passeio Legal"
+            author="Transfer Fortaleza Tur"
           />
         )}
 
