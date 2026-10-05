@@ -103,7 +103,7 @@ async function getPageData() {
       testimonialService.getAll(),
       googleReviewsService.get(),
       homeContentService.getSections(),
-      blogService.getAll(false),
+      blogService.getAll(true),
       faqService.getHomeContent(),
       settingsService.get(),
     ]);

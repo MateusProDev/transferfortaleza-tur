@@ -63,6 +63,11 @@ web configuration values for the project you want to use locally. `.env.local`
 is excluded from Git and Vercel CLI uploads; configure production variables
 separately in the Vercel project settings.
 
+For local Firebase Admin access, first create a new service account key and
+save the JSON file as `firebase-adminsdk.json` in the project root. This file
+is excluded from Git and Vercel CLI uploads. Never commit or share service
+account private keys; revoke any key that has been exposed.
+
 ```bash
 # Firebase Configuration
 NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key

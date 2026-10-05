@@ -10,7 +10,8 @@
     "start": "next start",
     "init-site-content": "tsx scripts/initialize-site-content.ts",
     "update-tour-slugs": "tsx scripts/update-tour-slugs.ts",
-    "update-transfer-slugs": "tsx scripts/update-transfer-slugs.ts"
+    "update-transfer-slugs": "tsx scripts/update-transfer-slugs.ts",
+    "firebase:deploy-indexes": "npx --yes firebase-tools deploy --only firestore:indexes --project maiatur"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",

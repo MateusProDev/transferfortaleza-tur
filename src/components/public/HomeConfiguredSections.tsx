@@ -124,7 +124,19 @@ export default function HomeConfiguredSections({
   const whatsappNumber = text(settings?.whatsappConfig?.number, settings?.contactInfo?.whatsapp);
   const serviceItems = items(services.services);
   const differentialItems = items(differentials.differentials);
-  const gallery = Array.isArray(imageCarousel.images) ? imageCarousel.images : [];
+  const gallery = (Array.isArray(imageCarousel.images) ? imageCarousel.images : [])
+    .map((value, index) => {
+      const image = asRecord(value);
+      return {
+        id: text(image.id) || `gallery-${index}`,
+        url: imageUrl(value),
+        alt: text(image.alt) || `Galeria de passeios ${index + 1}`,
+      };
+    })
+    .filter((image) => image.url);
+  const galleryRows = Array.from({ length: 3 }, (_, rowIndex) =>
+    gallery.filter((_, imageIndex) => imageIndex % 3 === rowIndex)
+  );
   const collage = asRecord(differentials.collageImages);
   const collageImages = Object.entries(collage)
     .sort(([first], [second]) => first.localeCompare(second))
@@ -214,20 +226,66 @@ export default function HomeConfiguredSections({
       )}
 
       {isActive(imageCarousel) && gallery.length > 0 && (
-        <section className="bg-white py-12" aria-label="Galeria de passeios">
-          <div className="container mx-auto px-4">
-            <div className="flex gap-4 overflow-x-auto pb-3">
-              {gallery.map((value, index) => {
-                const image = asRecord(value);
-                const url = imageUrl(value);
-                if (!url) return null;
-                return (
-                  <div className="relative h-56 min-w-[75vw] overflow-hidden rounded-xl sm:min-w-[40vw] lg:min-w-[28vw]" key={text(image.id) || `gallery-${index}`}>
-                    <Image src={url} alt={text(image.alt) || `Galeria de passeios ${index + 1}`} fill unoptimized sizes="(min-width: 1024px) 28vw, 75vw" className="object-cover" />
+        <section className="overflow-hidden bg-[var(--color-home-orange-bg)] py-12 sm:py-16" aria-label="Galeria de passeios">
+          <div className="mb-8 px-4 text-center">
+            {text(imageCarousel.badge) && (
+              <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-primary-700">
+                {text(imageCarousel.badge)}
+              </p>
+            )}
+            <h2 className="text-3xl font-bold text-[var(--color-text-primary)] md:text-4xl">
+              {text(imageCarousel.title) || "Experiências em imagens"}
+            </h2>
+            {text(imageCarousel.subtitle) && (
+              <p className="mx-auto mt-3 max-w-2xl text-[var(--color-text-secondary)]">
+                {text(imageCarousel.subtitle)}
+              </p>
+            )}
+          </div>
+          <div className="space-y-4">
+            {galleryRows.map((row, rowIndex) => {
+              const sourceImages = row.length > 0 ? row : gallery;
+              const rowImages = Array.from(
+                { length: Math.max(1, Math.ceil(8 / sourceImages.length)) },
+                () => sourceImages
+              ).flat();
+              const direction = rowIndex === 1 ? "left" : "right";
+              const rowLabel = `Linha ${rowIndex + 1} da galeria`;
+
+              return (
+                <div
+                  className="home-gallery-marquee"
+                  aria-label={rowLabel}
+                  key={`gallery-row-${rowIndex}`}
+                >
+                  <div className={`home-gallery-track home-gallery-track-${direction}`}>
+                    {[0, 1].map((copy) => (
+                      <div
+                        className="home-gallery-group"
+                        aria-hidden={copy === 1 ? true : undefined}
+                        key={`gallery-row-${rowIndex}-copy-${copy}`}
+                      >
+                        {rowImages.map((image, imageIndex) => (
+                          <div
+                            className="home-gallery-card"
+                            key={`${image.id}-${imageIndex}`}
+                          >
+                            <Image
+                              src={image.url}
+                              alt={copy === 0 ? image.alt : ""}
+                              fill
+                              unoptimized
+                              sizes="(min-width: 1024px) 320px, 72vw"
+                              className="object-cover"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ))}
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}

@@ -30,6 +30,7 @@ yarn-error.log*
 !.env.template
 
 # Google / Firebase / OAuth secrets
+firebase-adminsdk.json
 **/*client_secret*.json
 **/*google*.json
 **/*firebase-adminsdk*.json

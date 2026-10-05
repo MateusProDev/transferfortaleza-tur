@@ -35,8 +35,7 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const allPosts = await blogService.getAll(false);
-        const publishedPosts = allPosts.filter(post => post.published);
+        const publishedPosts = await blogService.getAll(true);
         setPosts(publishedPosts);
       } catch (error) {
         console.error('Error fetching blog posts:', error);

@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   query,
+  where,
   orderBy,
   addDoc,
   updateDoc,
@@ -101,7 +102,7 @@ export const firebaseService = {
         ...doc.data(),
       })) as T[];
     } catch (error) {
-      console.error("Error getting documents:", error);
+      console.error(`Error getting documents from "${collectionName}":`, error);
       throw error;
     }
   },
@@ -390,7 +391,14 @@ export const homeContentService = {
 
 export const blogService = {
   async getAll(onlyPublished = false) {
-    const posts = await firebaseService.getMany<Record<string, unknown>>("blogPosts");
+    const constraints: QueryConstraint[] = onlyPublished
+      ? [
+          where("published", "==", true),
+          orderBy("views", "desc"),
+          orderBy("publishedAt", "desc"),
+        ]
+      : [];
+    const posts = await firebaseService.getMany<Record<string, unknown>>("blogPosts", constraints);
     return posts
       .map((post) => mapBlogPostDocument(String(post.id), post))
       .filter((post) => !onlyPublished || post.published)

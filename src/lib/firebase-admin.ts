@@ -1,5 +1,5 @@
 import admin from 'firebase-admin';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import path from 'path';
 
 const getServiceAccountFromEnv = () => {
@@ -19,13 +19,22 @@ const getServiceAccountFromEnv = () => {
 };
 
 const getServiceAccountFromFile = () => {
-  try {
-    const filePath = path.join(process.cwd(), 'passeiolegal-firebase-adminsdk-fbsvc-6edf8c6e66.json');
-    const fileContent = readFileSync(filePath, 'utf8');
-    return JSON.parse(fileContent);
-  } catch {
-    return null;
-  }
+  const configuredPath = process.env.FIREBASE_ADMIN_SDK_PATH;
+  const filePath = configuredPath
+    ? path.resolve(process.cwd(), configuredPath)
+    : path.join(process.cwd(), 'firebase-adminsdk.json');
+  const legacyFilePath = path.join(
+    process.cwd(),
+    'passeiolegal-firebase-adminsdk-fbsvc-6edf8c6e66.json',
+  );
+  const serviceAccountPath = configuredPath
+    ? filePath
+    : existsSync(filePath)
+      ? filePath
+      : legacyFilePath;
+
+  if (!existsSync(serviceAccountPath)) return null;
+  return JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
 };
 
 if (typeof window === 'undefined') {
