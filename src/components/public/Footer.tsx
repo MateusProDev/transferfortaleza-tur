@@ -53,23 +53,22 @@ export default function Footer() {
   }
 
   const quickLinks = [
-    { label: 'Início', href: '/' },
-    ...(settings?.sections?.toursEnabled !== false ? [{ label: 'Passeios', href: '/passeios' }] : []),
-    ...(settings?.sections?.transfersEnabled !== false ? [{ label: 'Transfer', href: '/transfer' }] : []),
+    { label: 'Pacotes', href: '/passeios' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Sobre', href: '/about' },
+    { label: 'Transfers', href: '/transfer' },
+    { label: 'Política', href: '/politica-de-privacidade' },
     { label: 'Contato', href: '/contact' },
   ];
 
   return (
     <footer className="bg-gray-900 text-white" role="contentinfo">
       <div className="container mx-auto px-4 pt-12 pb-[calc(3rem+env(safe-area-inset-bottom))]">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* About Section */}
           <div>
-            <div className="flex items-center space-x-2 mb-4">
+            <Link href="/" className="mb-4 flex items-center space-x-2">
               {settings?.headerLogo ? (
-                <div className="relative w-10 h-10">
+                <div className="relative h-10 w-10">
                   <Image
                     src={settings.headerLogo}
                     alt={settings.headerLogoAlt || 'Passeio Legal'}
@@ -78,12 +77,12 @@ export default function Footer() {
                   />
                 </div>
               ) : (
-                <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">PL</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600">
+                  <span className="text-xl font-bold text-white">PL</span>
                 </div>
               )}
               <span className="text-xl font-bold">{settings?.companyName || 'Passeio Legal'}</span>
-            </div>
+            </Link>
             <p className="text-gray-400 text-sm">
               {settings?.footerText || 'Descubra os melhores passeios e transfers com conforto, segurança e experiências únicas de turismo.'}
             </p>
@@ -103,6 +102,33 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          {/* External trust links */}
+          <div>
+            <h3 className="mb-4 text-lg font-semibold">Avaliações e segurança</h3>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="https://www.tripadvisor.com.br/UserReviewEdit-g23379655-d34005292-Transfer_Fortaleza_Tur-Porto_Das_Dunas_Aquiraz_State_of_Ceara.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-400 transition-colors hover:text-white"
+                >
+                  Avalie no TripAdvisor
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://transparencyreport.google.com/safe-browsing/search?url=transferfortalezatur.com.br&hl=pt_BR"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-400 transition-colors hover:text-white"
+                >
+                  Verificação Google Safe Browsing
+                </a>
+              </li>
             </ul>
           </div>
 
