@@ -1,7 +1,10 @@
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Info, Map, Menu, Newspaper, Phone, X, type LucideIcon } from 'lucide-react';
-import { getCachedSiteSettings } from '@/lib/public-data-cache';
+import { fetchSettingsCached } from '@/lib/settings-cache';
 import { replaceLegacyBrand } from '@/lib/brand';
 
 interface MenuItem {
@@ -18,10 +21,27 @@ const menuItems: MenuItem[] = [
   { label: 'Contato', href: '/contact', icon: Phone },
 ];
 
-export default async function Header() {
-  const settings = await getCachedSiteSettings();
-  const logoUrl = settings?.headerLogo;
-  const logoAlt = replaceLegacyBrand(settings?.headerLogoAlt || 'Transfer Fortaleza Tur');
+export default function Header() {
+  const [logoUrl, setLogoUrl] = useState<string>();
+  const [logoAlt, setLogoAlt] = useState('Transfer Fortaleza Tur');
+
+  useEffect(() => {
+    let active = true;
+
+    fetchSettingsCached()
+      .then((settings) => {
+        if (!active || !settings) return;
+        setLogoUrl(settings.headerLogo);
+        setLogoAlt(replaceLegacyBrand(settings.headerLogoAlt || 'Transfer Fortaleza Tur'));
+      })
+      .catch((error) => {
+        console.error('Error fetching header settings:', error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-primary-800/70 bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 shadow-md">

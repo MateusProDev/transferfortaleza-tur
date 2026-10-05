@@ -4,7 +4,6 @@ import "./globals.css";
 import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site-url";
-import CookieBanner from "@/components/CookieBanner";
 
 const baseUrl = getSiteUrl();
 const shouldLoadAnalytics = process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true";
@@ -148,7 +147,6 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
-        <CookieBanner />
       </body>
     </html>
   );
