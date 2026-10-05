@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { initializeFirebaseCollections, checkFirebaseInitialization, ensureInitialized } from "@/lib/firebase-init";
-
-// Auto-initialize Firebase collections on first API call
-ensureInitialized();
+import { initializeFirebaseCollections, checkFirebaseInitialization } from "@/lib/firebase-init";
 
 // POST /api/init - Initialize Firebase collections
 export async function POST(request: NextRequest) {
@@ -40,7 +37,12 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/init - Check initialization status
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const secret = request.headers.get("x-init-secret");
+  if (!process.env.INIT_SECRET || secret !== process.env.INIT_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const status = await checkFirebaseInitialization();
     return NextResponse.json(status, { status: 200 });

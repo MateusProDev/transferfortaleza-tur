@@ -113,11 +113,3 @@ export async function checkFirebaseInitialization() {
     return { initialized: false, collections: {} };
   }
 }
-
-// Auto-initialize on first import (lazy initialization)
-export function ensureInitialized() {
-  if (adminDb && !initializationPromise) {
-    // Initialize in background without blocking
-    initializeFirebaseCollections().catch(console.error);
-  }
-}
