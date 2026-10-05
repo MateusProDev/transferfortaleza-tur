@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getAdminAuth, getAdminFirestore } from '@/lib/firebase-admin';
 import { updateLeadStatus } from '@/lib/sheets/sync';
 import { uploadConversion } from '@/lib/ads/conversion';
+import { LEADS_ENABLED, leadsDisabledResponse } from '@/lib/leads-feature';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,6 +16,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { code: string } }
 ) {
+  if (!LEADS_ENABLED) return leadsDisabledResponse();
+
   try {
     const authHeader = request.headers.get('authorization') || '';
     const token = authHeader.replace('Bearer ', '').trim();

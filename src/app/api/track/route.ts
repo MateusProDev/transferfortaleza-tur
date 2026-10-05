@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 import { appendLead, updateLeadStatus } from '@/lib/sheets/sync';
+import { LEADS_ENABLED, leadsDisabledResponse } from '@/lib/leads-feature';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,8 @@ const TrackSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  if (!LEADS_ENABLED) return leadsDisabledResponse();
+
   try {
     const body = await request.json();
     const parsed = TrackSchema.safeParse(body);

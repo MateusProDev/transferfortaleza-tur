@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Facebook, Instagram, MessageCircle, Mail, Phone, MapPin } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink, { isWhatsAppUrl } from './WhatsAppConversionLink';
 import { fetchSettingsCached } from '@/lib/settings-cache';
 
@@ -12,7 +11,6 @@ interface SocialLink {
   icon: any;
   href: string;
   label: string;
-  onClick?: () => void;
 }
 
 export default function Footer() {
@@ -32,13 +30,6 @@ export default function Footer() {
     fetchSettings();
   }, []);
 
-  const handleWhatsAppClick = () => {
-    metaPixelEvents.contact({
-      content_name: 'Footer WhatsApp',
-      content_category: 'Contact'
-    });
-  };
-
   const socialLinks: SocialLink[] = (settings?.socialLinks || [])
     .filter((social: { url?: string }) => Boolean(social.url))
     .map((social: { platform: string; url: string }) => ({
@@ -51,7 +42,6 @@ export default function Footer() {
         ? `https://wa.me/${social.url.replace(/\D/g, '')}`
         : social.url,
       label: social.platform[0].toUpperCase() + social.platform.slice(1),
-      onClick: social.platform === 'whatsapp' ? handleWhatsAppClick : undefined,
     }));
 
   if (!socialLinks.some((social) => social.label === 'WhatsApp') && settings?.contactInfo?.whatsapp) {
@@ -59,7 +49,6 @@ export default function Footer() {
       icon: MessageCircle,
       href: `https://wa.me/${settings.contactInfo.whatsapp.replace(/\D/g, '')}`,
       label: 'WhatsApp',
-      onClick: handleWhatsAppClick,
     });
   }
 
@@ -161,8 +150,6 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors"
                     aria-label={social.label}
-                    onClick={social.onClick}
-                    trackConversion={false}
                   >
                     <social.icon size={20} />
                   </WhatsAppConversionLink>
@@ -174,7 +161,6 @@ export default function Footer() {
                     aria-label={social.label}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={social.onClick}
                   >
                     <social.icon size={20} />
                   </a>

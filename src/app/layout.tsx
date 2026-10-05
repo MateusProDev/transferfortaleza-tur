@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Providers } from "./providers";
 import "./globals.css";
 import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site-url";
-import TrackingProvider from "@/components/TrackingProvider";
 import CookieBanner from "@/components/CookieBanner";
 
 const baseUrl = getSiteUrl();
@@ -147,9 +145,6 @@ export default function RootLayout({
           url={baseUrl}
           description="Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Passeio Legal"
         />
-        <Suspense fallback={null}>
-          <TrackingProvider />
-        </Suspense>
         <Providers>
           {children}
         </Providers>

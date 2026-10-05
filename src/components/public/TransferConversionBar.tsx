@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
-import { metaPixelEvents } from "@/utils/metaPixel";
 import WhatsAppConversionLink from "./WhatsAppConversionLink";
 
 interface TransferConversionBarProps {
@@ -35,7 +34,6 @@ export default function TransferConversionBar({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => metaPixelEvents.contact({ content_name: transferName, content_category: "Transfer" })}
           className="flex shrink-0 items-center gap-2 rounded-lg bg-[#0b5d3a] px-4 py-2 font-medium text-white transition-colors hover:bg-[#0a4b31]"
         >
           <MessageCircle size={18} />

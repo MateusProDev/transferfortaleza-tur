@@ -14,7 +14,6 @@ import {
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getSiteUrl } from "@/lib/site-url";
 import { fetchSettingsCached } from "@/lib/settings-cache";
-import { parseLeadTrackingFromStorage } from "@/lib/tracking/capture";
 
 interface ContactSettings {
   contactInfo?: {
@@ -77,35 +76,6 @@ export default function ContactPage() {
     setError("");
 
     try {
-      const tracking = parseLeadTrackingFromStorage();
-
-      const observacao = [
-        `Nome: ${formData.name}`,
-        `E-mail: ${formData.email}`,
-        formData.phone ? `Telefone: ${formData.phone}` : null,
-        `Mensagem: ${formData.message}`,
-      ]
-        .filter(Boolean)
-        .join(" | ");
-
-      /* Registra o lead via /api/track, que já trata enviou_mensagem. */
-      if (tracking?.code) {
-        await fetch("/api/track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          keepalive: true,
-          body: JSON.stringify({
-            event: "enviou_mensagem",
-            code: tracking.code,
-            gclid: tracking.gclid || null,
-            utms: tracking.utms || {},
-            landingPage: window.location.pathname,
-            userAgent: navigator.userAgent,
-            observacao,
-          }),
-        }).catch(() => undefined);
-      }
-
       /* Conversa imediata no WhatsApp, com o formulário já preenchido. */
       const message = [
         "Olá! Vim pelo site da Passeio Legal e gostaria de falar com vocês.",

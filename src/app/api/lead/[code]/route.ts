@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getAdminFirestore } from '@/lib/firebase-admin';
+import { LEADS_ENABLED, leadsDisabledResponse } from '@/lib/leads-feature';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -8,6 +9,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { code: string } }
 ) {
+  if (!LEADS_ENABLED) return leadsDisabledResponse();
+
   const token = request.headers.get('x-admin-token');
   const expectedToken = process.env.ADMIN_LEAD_TOKEN;
 

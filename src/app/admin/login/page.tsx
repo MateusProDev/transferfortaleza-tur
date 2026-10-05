@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
       try {
         const token = await user.getIdToken(true);
         localStorage.setItem('admin_id_token', token);
-        router.replace('/admin/leads');
+        router.replace('/admin/dashboard');
       } catch (error) {
         console.error('[admin/login] failed to refresh id token:', error);
         localStorage.removeItem('admin_id_token');
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
 
       const token = await user.getIdToken(true);
       localStorage.setItem('admin_id_token', token);
-      router.replace('/admin/leads');
+      router.replace('/admin/dashboard');
     } catch (error) {
       console.error('[admin/login] error:', error);
       alert('Erro ao entrar com Google.');

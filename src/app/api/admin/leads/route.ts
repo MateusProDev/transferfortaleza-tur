@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getAdminAuth, getAdminFirestore } from '@/lib/firebase-admin';
+import { LEADS_ENABLED, leadsDisabledResponse } from '@/lib/leads-feature';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,6 +11,8 @@ const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
   .filter(Boolean);
 
 export async function GET(request: NextRequest) {
+  if (!LEADS_ENABLED) return leadsDisabledResponse();
+
   try {
     const authHeader = request.headers.get('authorization') || '';
     const token = authHeader.replace('Bearer ', '').trim();

@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, MessageCircle, Check } from "lucide-react";
-import { metaPixelEvents } from "@/utils/metaPixel";
 import { fetchSettingsCached } from "@/lib/settings-cache";
-import { parseLeadTrackingFromStorage } from "@/lib/tracking/capture";
-
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
 
 interface ContactSettings {
   contactInfo?: {
@@ -76,43 +68,7 @@ export default function Contact() {
     setIsSubmitting(true);
     setError("");
 
-    metaPixelEvents.lead({
-      content_name: "Contact Form",
-      content_category: "Contact",
-    });
-
     try {
-      /* O lead é registrado no Firestore via /api/track, que já trata
-         o evento enviou_mensagem. Se o tracking não existir, o contato
-         segue pelo WhatsApp de qualquer forma. */
-      const tracking = parseLeadTrackingFromStorage();
-
-      const observacao = [
-        `Nome: ${formData.name}`,
-        `E-mail: ${formData.email}`,
-        formData.phone ? `Telefone: ${formData.phone}` : null,
-        `Mensagem: ${formData.message}`,
-      ]
-        .filter(Boolean)
-        .join(" | ");
-
-      if (tracking?.code) {
-        await fetch("/api/track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          keepalive: true,
-          body: JSON.stringify({
-            event: "enviou_mensagem",
-            code: tracking.code,
-            gclid: tracking.gclid || null,
-            utms: tracking.utms || {},
-            landingPage: window.location.pathname,
-            userAgent: navigator.userAgent,
-            observacao,
-          }),
-        }).catch(() => undefined);
-      }
-
       /* Conversa imediata no WhatsApp, já com tudo o que foi preenchido. */
       const message = [
         "Olá! Vim pelo site da Passeio Legal e gostaria de falar com vocês.",
