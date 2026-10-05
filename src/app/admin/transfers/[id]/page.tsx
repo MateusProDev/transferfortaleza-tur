@@ -9,6 +9,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 import ImageGalleryUpload from "@/components/ui/ImageGalleryUpload";
 import { GalleryImage, TourFAQ } from "@/types";
 import { useTransfers } from "@/hooks/useApi";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 export default function EditTransfer() {
   const router = useRouter();
@@ -148,11 +149,10 @@ export default function EditTransfer() {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Descrição completa</label>
-              <textarea
+              <RichTextEditor
+                label="Descrição completa do transfer"
                 value={formData.longDescription}
-                onChange={(e) => setFormData({ ...formData, longDescription: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-                rows={6}
+                onChange={(longDescription) => setFormData({ ...formData, longDescription })}
               />
             </div>
             <div>

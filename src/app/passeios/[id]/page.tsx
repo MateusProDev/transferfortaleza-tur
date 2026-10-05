@@ -16,6 +16,7 @@ import TourTracking from "@/components/public/TourTracking";
 import DetailGallery from "@/components/public/DetailGallery";
 import * as Types from "@/types";
 import { getSiteUrl } from "@/lib/site-url";
+import MarkdownDescription from "@/components/public/MarkdownDescription";
 
 interface PageProps {
   params: { id: string };
@@ -253,9 +254,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
                       Ler descrição completa
                       <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
                     </summary>
-                    <p className="mt-4 text-gray-600 leading-relaxed whitespace-pre-line">
-                      {tour.longDescription}
-                    </p>
+                    <MarkdownDescription content={tour.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
                   </details>
                 </div>
               )}

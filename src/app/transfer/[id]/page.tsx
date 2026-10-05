@@ -15,6 +15,7 @@ import TransferConversionBar from "@/components/public/TransferConversionBar";
 import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
 import RecommendedTransfers from "@/components/public/RecommendedTransfers";
+import MarkdownDescription from "@/components/public/MarkdownDescription";
 
 interface PageProps {
   params: { id: string };
@@ -193,9 +194,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
                     Ver detalhes completos
                     <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
                   </summary>
-                  <p className="mt-4 text-gray-600 leading-relaxed whitespace-pre-line">
-                    {transfer.longDescription}
-                  </p>
+                  <MarkdownDescription content={transfer.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
                 </details>
               )}
 

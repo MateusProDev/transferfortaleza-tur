@@ -11,6 +11,7 @@ import { GalleryImage } from "@/types";
 import { useTours } from "@/hooks/useApi";
 import { DEFAULT_TOUR_FAQS } from "@/components/public/TourFAQ";
 import type { TourFAQ } from "@/types";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 export default function EditTour() {
   const router = useRouter();
@@ -152,11 +153,10 @@ export default function EditTour() {
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Descrição Longa</label>
-              <textarea
+              <RichTextEditor
+                label="Descrição longa do passeio"
                 value={formData.longDescription}
-                onChange={(e) => setFormData({ ...formData, longDescription: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-                rows={6}
+                onChange={(longDescription) => setFormData({ ...formData, longDescription })}
               />
             </div>
             <div>

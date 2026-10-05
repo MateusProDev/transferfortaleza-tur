@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
-import { blogService } from '@/lib/firestore';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
@@ -19,12 +18,29 @@ interface BlogPost {
   imageUrl: string;
   imageAlt: string;
   published: boolean;
-  createdAt: any;
-  updatedAt: any;
+  createdAt: string | Date | null;
+  updatedAt: string | Date | null;
+}
+
+function isBlogPost(value: unknown): value is BlogPost {
+  if (typeof value !== 'object' || value === null) return false;
+
+  return (
+    'id' in value && typeof value.id === 'string' &&
+    'title' in value && typeof value.title === 'string' &&
+    'slug' in value && typeof value.slug === 'string' &&
+    'summary' in value && typeof value.summary === 'string' &&
+    'content' in value && typeof value.content === 'string' &&
+    'imageUrl' in value && typeof value.imageUrl === 'string' &&
+    'imageAlt' in value && typeof value.imageAlt === 'string' &&
+    'published' in value && typeof value.published === 'boolean'
+  );
 }
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   
   const baseUrl = getSiteUrl();
   const breadcrumbItems = [
@@ -35,19 +51,31 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const publishedPosts = await blogService.getAll(true);
+        const response = await fetch('/api/blog?published=true');
+        if (!response.ok) {
+          throw new Error(`Falha ao carregar os artigos: ${response.status}`);
+        }
+
+        const publishedPosts: unknown = await response.json();
+        if (!Array.isArray(publishedPosts) || !publishedPosts.every(isBlogPost)) {
+          throw new Error('A resposta de artigos está em formato inválido.');
+        }
+
         setPosts(publishedPosts);
       } catch (error) {
         console.error('Error fetching blog posts:', error);
+        setLoadError(true);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPosts();
   }, []);
 
-  const formatDate = (date: any) => {
+  const formatDate = (date: string | Date | null) => {
     if (!date) return '';
-    const d = date.toDate ? date.toDate() : new Date(date);
+    const d = date instanceof Date ? date : new Date(date);
     return d.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: 'long',
@@ -78,7 +106,13 @@ export default function BlogPage() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        {posts.length === 0 ? (
+        {loading ? (
+          <p className="py-12 text-center text-gray-600" role="status">Carregando artigos...</p>
+        ) : loadError ? (
+          <p className="py-12 text-center text-gray-600" role="alert">
+            Não foi possível carregar os artigos agora. Tente novamente mais tarde.
+          </p>
+        ) : posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">Nenhum post publicado ainda.</p>
           </div>
