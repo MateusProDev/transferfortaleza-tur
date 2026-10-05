@@ -45,8 +45,8 @@ export default function Hero({ banners }: HeroProps) {
 
   if (!safeBanner) {
     return (
-      <section className="relative h-[600px] bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center">
-        <div className="text-center text-white px-4">
+      <section className="relative flex h-[600px] items-center justify-start bg-gradient-to-r from-primary-600 to-secondary-600 sm:justify-center">
+        <div className="px-4 text-left text-white sm:text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">Passeios e Transfers em Fortaleza e Região</h1>
           <p className="text-xl md:text-2xl mb-8">Reserve experiências únicas com conforto, segurança e atendimento personalizado.</p>
         </div>
@@ -77,8 +77,8 @@ export default function Hero({ banners }: HeroProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/35 to-black/45" />
       </div>
 
-      <div className="relative h-full flex items-center justify-center text-white px-4">
-        <div className="text-center max-w-4xl">
+      <div className="relative flex h-full items-center justify-start px-4 text-white sm:justify-center sm:px-8 lg:px-16">
+        <div className="max-w-4xl text-left sm:text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             {heroTitle}
           </h1>
@@ -86,7 +86,7 @@ export default function Hero({ banners }: HeroProps) {
             {currentBanner.subtitle || currentBanner.description || 'Reserve experiências únicas em Fortaleza e região.'}
           </p>
           {currentBanner.location && <p className="mb-4 text-sm text-white/80">{currentBanner.location}</p>}
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-start gap-3 sm:justify-center">
             {currentBanner.buttonText && currentBanner.buttonLink && (
               <a
                 href={currentBanner.buttonLink}

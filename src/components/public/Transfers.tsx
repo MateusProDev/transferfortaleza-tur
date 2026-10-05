@@ -65,11 +65,11 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
     <>
     <section id="transfers" className="py-14 bg-gray-100">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="mb-12 text-left sm:text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Serviços de Transfer
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="max-w-2xl text-gray-600 sm:mx-auto">
             Conforto e segurança em seus deslocamentos com nossa frota moderna
           </p>
         </div>

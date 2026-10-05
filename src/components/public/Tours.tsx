@@ -91,7 +91,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
   return (
     <section id="tours" className="py-14 bg-gray-100">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="mb-12 text-left sm:text-center">
           <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-primary-700">
             <MapPin size={18} aria-hidden="true" />
             Destinos em Destaque
@@ -99,8 +99,17 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Transfers e Passeios mais procurados
           </h2>
-          <p className="text-gray-600 max-w-3xl mx-auto">
+          <p className="max-w-3xl text-gray-600 sm:mx-auto">
             Transfers e Passeios saindo de Fortaleza exclusivos e organizados por categoria para transformar sua viagem em uma experiência única.
+          </p>
+        </div>
+
+        <div className="mb-8 text-left sm:text-center">
+          <h3 className="mb-3 text-2xl font-bold text-gray-900 md:text-3xl">
+            Nossos Passeios
+          </h3>
+          <p className="max-w-2xl text-gray-600 sm:mx-auto">
+            Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados
           </p>
         </div>
 
