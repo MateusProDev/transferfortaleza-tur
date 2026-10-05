@@ -4,6 +4,12 @@ import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, MessageCircle, Check } from "lucide-react";
 import { fetchSettingsCached } from "@/lib/settings-cache";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 interface ContactSettings {
   contactInfo?: {
     phone?: string;
