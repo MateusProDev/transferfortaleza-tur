@@ -3,7 +3,7 @@ import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import AnimatedCounter from "@/components/public/AnimatedCounter";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
-import { settingsService } from "@/lib/firestore";
+import { getCachedSiteSettings } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 import { replaceLegacyBrand } from "@/lib/brand";
 
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function AboutPage() {
-  const settings = await settingsService.get();
+  const settings = await getCachedSiteSettings();
   const aboutSection = settings?.aboutSection;
   const aboutStats = aboutSection?.stats || [
     { value: 10, label: "Anos de Experiência" },

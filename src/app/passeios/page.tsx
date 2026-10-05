@@ -1,4 +1,4 @@
-import { tourService, settingsService } from '@/lib/firestore';
+import { getCachedSiteSettings, getCachedTours } from '@/lib/public-data-cache';
 import PasseiosClient from './PasseiosClient';
 import type { Tour } from '@/types';
 
@@ -7,8 +7,8 @@ export const revalidate = 300;
 async function getPageData(): Promise<{ tours: Tour[]; sectionDisabled: boolean; loadError: boolean }> {
   try {
     const [tours, settings] = await Promise.all([
-      tourService.getAll(false),
-      settingsService.get(),
+      getCachedTours(false),
+      getCachedSiteSettings(),
     ]);
 
     return {

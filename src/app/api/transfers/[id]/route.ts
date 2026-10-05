@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { transferService } from "@/lib/firestore";
+import { invalidatePublicDataCache } from "@/lib/public-data-cache";
 
 // GET /api/transfers/[id] - Get single transfer
 export async function GET(
@@ -32,6 +33,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await transferService.update(params.id, body);
+    invalidatePublicDataCache("transfers");
     return NextResponse.json({ message: "Transfer updated successfully" });
   } catch (error) {
     console.error("Error updating transfer:", error);
@@ -49,6 +51,7 @@ export async function DELETE(
 ) {
   try {
     await transferService.delete(params.id);
+    invalidatePublicDataCache("transfers");
     return NextResponse.json({ message: "Transfer deleted successfully" });
   } catch (error) {
     console.error("Error deleting transfer:", error);

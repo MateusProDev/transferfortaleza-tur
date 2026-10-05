@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Info, Map, Menu, Newspaper, Phone, X, type LucideIcon } from 'lucide-react';
-import { settingsService } from '@/lib/firestore';
+import { getCachedSiteSettings } from '@/lib/public-data-cache';
 import { replaceLegacyBrand } from '@/lib/brand';
 
 interface MenuItem {
@@ -19,7 +19,7 @@ const menuItems: MenuItem[] = [
 ];
 
 export default async function Header() {
-  const settings = await settingsService.get();
+  const settings = await getCachedSiteSettings();
   const logoUrl = settings?.headerLogo;
   const logoAlt = replaceLegacyBrand(settings?.headerLogoAlt || 'Transfer Fortaleza Tur');
 

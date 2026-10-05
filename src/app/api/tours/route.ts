@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tourService } from "@/lib/firestore";
+import { getCachedTours, invalidatePublicDataCache } from "@/lib/public-data-cache";
 
 // GET /api/tours - Get all tours
 export async function GET(request: NextRequest) {
   try {
     const onlyActive =
       request.nextUrl.searchParams.get("active") === "true";
-    const tours = await tourService.getAll(onlyActive);
+    const tours = await getCachedTours(onlyActive);
     return NextResponse.json(tours);
   } catch (error) {
     console.error("Error fetching tours:", error);
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await tourService.create(body);
+    invalidatePublicDataCache("tours");
     return NextResponse.json(
       { id, message: "Tour created successfully" },
       { status: 201 }

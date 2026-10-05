@@ -510,14 +510,14 @@ export const faqService = {
 
 export const settingsService = {
   async get() {
-    const [allSettings, whatsapp, header, footer, seo] = await Promise.all([
+    const [allSettings, header, footer, seo] = await Promise.all([
       firebaseService.getMany<Record<string, unknown>>("settings"),
-      firebaseService.get<Record<string, unknown>>("settings", "whatsapp"),
       firebaseService.get<Record<string, unknown>>("content", "header"),
       firebaseService.get<Record<string, unknown>>("content", "footer"),
       firebaseService.get<Record<string, unknown>>("content", "homeSeo"),
     ]);
     const siteSettings = allSettings.find((item) => item.id !== "whatsapp") || null;
+    const whatsapp = allSettings.find((item) => item.id === "whatsapp") || null;
     return mapSiteSettings(siteSettings, whatsapp, header, footer, seo);
   },
 

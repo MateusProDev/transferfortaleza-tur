@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { transferService } from "@/lib/firestore";
+import { getCachedTransfers, invalidatePublicDataCache } from "@/lib/public-data-cache";
 
 // GET /api/transfers - Get all transfers
 export async function GET(request: NextRequest) {
   try {
     const onlyActive =
       request.nextUrl.searchParams.get("active") === "true";
-    const transfers = await transferService.getAll(onlyActive);
+    const transfers = await getCachedTransfers(onlyActive);
     return NextResponse.json(transfers);
   } catch (error) {
     console.error("Error fetching transfers:", error);
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await transferService.create(body);
+    invalidatePublicDataCache("transfers");
     return NextResponse.json(
       { id, message: "Transfer created successfully" },
       { status: 201 }

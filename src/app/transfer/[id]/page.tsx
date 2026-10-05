@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { faqService, settingsService, transferService } from "@/lib/firestore";
+import { faqService, transferService } from "@/lib/firestore";
+import { getCachedSiteSettings } from "@/lib/public-data-cache";
 import { Car, Check, ChevronDown, Users, X } from "lucide-react";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -111,7 +112,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
   ].filter((image) => image.url);
   const [faqs, settings] = await Promise.all([
     faqService.getAll(),
-    settingsService.get(),
+    getCachedSiteSettings(),
   ]);
   const transferFaqs = Array.isArray(transfer.faqs)
     ? transfer.faqs.filter((faq) => faq.question?.trim() && faq.answer?.trim())

@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { tourService, settingsService } from "@/lib/firestore";
+import { tourService } from "@/lib/firestore";
+import { getCachedSiteSettings } from "@/lib/public-data-cache";
 import { Clock, Check, X, Users, AlertCircle, Sparkles, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -134,7 +135,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
       console.error("Error fetching related tours:", error);
       return [];
     }),
-    settingsService.get(),
+    getCachedSiteSettings(),
   ]);
   const galleryImages = [
     {

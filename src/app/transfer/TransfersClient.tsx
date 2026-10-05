@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { Car, Search, Users } from 'lucide-react';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import { getSiteUrl } from '@/lib/site-url';
+import Header from '@/components/public/Header';
+import Footer from '@/components/public/Footer';
 
 interface Transfer {
   id: string;
@@ -19,11 +21,15 @@ interface Transfer {
   slug?: string;
 }
 
-export default function TransfersClient() {
-  const [transfers, setTransfers] = useState<Transfer[]>([]);
-  const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>([]);
+interface TransfersClientProps {
+  transfers: Transfer[];
+  sectionDisabled: boolean;
+  loadError: boolean;
+}
+
+export default function TransfersClient({ transfers, sectionDisabled, loadError }: TransfersClientProps) {
+  const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>(transfers);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sectionDisabled, setSectionDisabled] = useState(false);
   const baseUrl = getSiteUrl();
   const breadcrumbItems = [
     { name: 'Início', url: baseUrl },
@@ -31,31 +37,8 @@ export default function TransfersClient() {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [transfersResponse, settingsResponse] = await Promise.all([
-          fetch('/api/transfers?active=true', { cache: 'no-store' }),
-          fetch('/api/settings', { cache: 'no-store' }),
-        ]);
-        if (!transfersResponse.ok || !settingsResponse.ok) {
-          throw new Error('Falha ao carregar os transfers.');
-        }
-
-        const [allTransfers, settingsData] = await Promise.all([
-          transfersResponse.json(),
-          settingsResponse.json(),
-        ]);
-
-        setTransfers(Array.isArray(allTransfers) ? allTransfers : []);
-        setFilteredTransfers(Array.isArray(allTransfers) ? allTransfers : []);
-        setSectionDisabled(settingsData?.sections?.transfersEnabled === false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+    setFilteredTransfers(transfers);
+  }, [transfers]);
 
   useEffect(() => {
     const normalizedSearch = searchTerm.toLowerCase();
@@ -69,6 +52,7 @@ export default function TransfersClient() {
   if (sectionDisabled) {
     return (
       <main className="min-h-screen bg-gray-50 pt-24">
+        <Header />
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Seção Indisponível</h1>
@@ -78,12 +62,14 @@ export default function TransfersClient() {
             </Link>
           </div>
         </div>
+        <Footer />
       </main>
     );
   }
 
   return (
     <main className="min-h-screen bg-gray-50 pt-24">
+      <Header />
       <BreadcrumbJsonLd items={breadcrumbItems} />
       <div className="bg-secondary-600 text-white py-16">
         <div className="container mx-auto px-4">
@@ -109,7 +95,11 @@ export default function TransfersClient() {
           </div>
         </div>
 
-        {filteredTransfers.length === 0 ? (
+        {loadError ? (
+          <div className="py-12 text-center text-gray-600" role="alert">
+            Não foi possível carregar os transfers agora. Tente novamente mais tarde.
+          </div>
+        ) : filteredTransfers.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">Nenhum transfer encontrado com os filtros selecionados.</p>
             <button onClick={() => setSearchTerm('')} className="mt-4 text-secondary-600 hover:text-secondary-700 font-medium">
@@ -151,6 +141,7 @@ export default function TransfersClient() {
           </div>
         )}
       </div>
+      <Footer />
     </main>
   );
 }

@@ -3,7 +3,8 @@ import { Metadata } from "next";
 import Header from "@/components/public/Header";
 import Hero from "@/components/public/Hero";
 import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
-import { bannerService, tourService, transferService, testimonialService, googleReviewsService, homeContentService, blogService, faqService, settingsService, firebaseService } from "@/lib/firestore";
+import { bannerService, tourService, transferService, testimonialService, googleReviewsService, homeContentService, blogService, faqService, firebaseService } from "@/lib/firestore";
+import { getCachedSiteSettings } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 import { replaceLegacyBrand } from "@/lib/brand";
 
@@ -107,7 +108,7 @@ async function getPageData() {
       homeContentService.getSections(),
       blogService.getAll(true),
       faqService.getHomeContent(),
-      settingsService.get(),
+      getCachedSiteSettings(),
     ]);
 
     return {

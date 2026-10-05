@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { transferService } from "@/lib/firestore";
+import { getCachedTransfers } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 
 const baseUrl = getSiteUrl();
@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let imageUrl = `${baseUrl}/OG.png`;
 
   try {
-    const transfers = await transferService.getAll(true);
+    const transfers = await getCachedTransfers(true);
     imageUrl = transfers.find((transfer) => transfer.imageUrl)?.imageUrl || imageUrl;
   } catch (error) {
     console.error("Error fetching transfer image for metadata:", error);
