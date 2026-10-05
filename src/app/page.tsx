@@ -2,7 +2,6 @@ import dynamicImport from "next/dynamic";
 import { Metadata } from "next";
 import Header from "@/components/public/Header";
 import Hero from "@/components/public/Hero";
-import AnimatedCounter from "@/components/public/AnimatedCounter";
 import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
 import { bannerService, tourService, transferService, testimonialService, googleReviewsService, homeContentService, blogService, faqService, settingsService, firebaseService } from "@/lib/firestore";
 import { getSiteUrl } from "@/lib/site-url";
@@ -142,12 +141,6 @@ export default async function Home() {
   
   const toursEnabled = settings?.sections?.toursEnabled ?? true;
   const transfersEnabled = settings?.sections?.transfersEnabled ?? true;
-  const aboutSection = settings?.aboutSection;
-  const aboutStats = aboutSection?.stats || [
-    { value: 4, label: "Anos de Experiência" },
-    { value: 2000, label: "Clientes Satisfeitos" },
-    { value: 20, label: "Destinos" },
-  ];
 
   return (
     <main className="min-h-screen pt-20 sm:pt-24">
@@ -167,28 +160,6 @@ export default async function Home() {
         settings={settings}
       />
 
-      <section id="about" className="border-t border-gray-200 bg-white py-12 sm:py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10 sm:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {aboutSection?.title || "Sobre a Passeio Legal"}
-            </h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-              {aboutSection?.description || "Há mais de 10 anos no mercado de turismo, oferecendo experiências únicas e memoráveis para nossos clientes. Nossa missão é proporcionar momentos inesquecíveis com segurança, conforto e profissionalismo."}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {aboutStats.map((stat) => (
-              <div className="text-center" key={stat.label}>
-                <AnimatedCounter target={stat.value} suffix="+" />
-                <div className="text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      
       <Blog posts={blogPosts} />
 
       <Testimonials testimonials={testimonials} />

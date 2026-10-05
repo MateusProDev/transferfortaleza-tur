@@ -199,13 +199,12 @@ export default function HomeConfiguredSections({
             <div>
               {text(differentials.badge) && <p className="mb-2 font-semibold uppercase text-primary-700">{text(differentials.badge)}</p>}
               <h2 className="mb-3 text-3xl font-bold text-gray-900 md:text-4xl">
-                {text(differentials.title) || "Por que escolher nossos serviços"}
+                {text(differentials.title) || "Diferenciais da Transfer Fortaleza Tur"}
               </h2>
               {text(differentials.description) && <p className="mb-7 text-gray-600">{text(differentials.description)}</p>}
               <div className="grid gap-5 sm:grid-cols-2">
                 {differentialItems.map((item, index) => (
                   <article key={text(item.id) || `differential-${index}`} className="rounded-lg bg-white p-5 shadow-sm">
-                    {text(item.icon) && <span className="mb-3 block text-2xl text-primary-700">{text(item.icon)}</span>}
                     <h3 className="mb-2 font-semibold text-gray-900">{text(item.title)}</h3>
                     {text(item.description) && <p className="text-sm text-gray-600">{text(item.description)}</p>}
                   </article>

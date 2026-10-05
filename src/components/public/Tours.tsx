@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Users, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
+import { Clock, Users, ChevronLeft, ChevronRight, MapPin, MessageCircle } from 'lucide-react';
 import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import OtherToursCarousel from './OtherToursCarousel';
@@ -92,11 +92,15 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
     <section id="tours" className="py-14 bg-gray-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
+          <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-primary-700">
+            <MapPin size={18} aria-hidden="true" />
+            Destinos em Destaque
+          </p>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Nossos Passeios
+            Transfers e Passeios mais procurados
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados
+          <p className="text-gray-600 max-w-3xl mx-auto">
+            Transfers e Passeios saindo de Fortaleza exclusivos e organizados por categoria para transformar sua viagem em uma experiência única.
           </p>
         </div>
 
