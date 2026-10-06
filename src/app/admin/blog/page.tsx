@@ -85,9 +85,9 @@ export default function BlogAdmin() {
           </Card>
         ) : (
           blogs.map((post: any) => (
-            <Card key={post.id}>
+            <Card key={post.id} className="min-w-0">
               <CardContent className="pt-6">
-                <div className="flex flex-col gap-4 sm:flex-row">
+                <div className="flex min-w-0 flex-col gap-4 sm:flex-row">
                   {post.imageUrl && (
                     <div className="relative aspect-video w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-square sm:w-32">
                       <Image
@@ -99,31 +99,28 @@ export default function BlogAdmin() {
                       />
                     </div>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="mb-1 break-words text-lg font-semibold sm:truncate">{post.title}</h3>
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{post.summary}</p>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                          <span>{formatDate(post.createdAt)}</span>
-                          <span className={`px-2 py-1 rounded-full ${post.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                            {post.published ? 'Publicado' : 'Rascunho'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-2 sm:flex-shrink-0">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/admin/blog/${post.id}`}>Editar</Link>
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          disabled={deletingId === post.id}
-                          onClick={() => handleDelete(post.id)}
-                        >
-                          {deletingId === post.id ? "Excluindo..." : "Excluir"}
-                        </Button>
-                      </div>
+                  <div className="w-full min-w-0 flex-1">
+                    <h3 className="mb-1 break-words text-lg font-semibold">{post.title}</h3>
+                    <p className="mb-2 line-clamp-2 break-words text-sm text-muted-foreground">{post.summary}</p>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <span>{formatDate(post.createdAt)}</span>
+                      <span className={`rounded-full px-2 py-1 ${post.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                        {post.published ? 'Publicado' : 'Rascunho'}
+                      </span>
+                    </div>
+                    <div className="mt-4 grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
+                      <Button className="w-full sm:w-auto" variant="outline" size="sm" asChild>
+                        <Link href={`/admin/blog/${post.id}`}>Editar</Link>
+                      </Button>
+                      <Button
+                        className="w-full sm:w-auto"
+                        variant="destructive"
+                        size="sm"
+                        disabled={deletingId === post.id}
+                        onClick={() => handleDelete(post.id)}
+                      >
+                        {deletingId === post.id ? "Excluindo..." : "Excluir"}
+                      </Button>
                     </div>
                   </div>
                 </div>

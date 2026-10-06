@@ -126,7 +126,7 @@ export function useFAQs() {
 
 // Hook for fetching testimonials
 export function useTestimonials() {
-  return useQuery<any[]>("/api/testimonials");
+  return useQuery<any[]>("/api/admin/testimonials");
 }
 
 // Hook for creating/updating items

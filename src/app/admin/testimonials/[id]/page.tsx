@@ -12,6 +12,7 @@ export default function EditTestimonial() {
   const params = useParams();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const [formData, setFormData] = useState({
     clientName: "",
     clientPhoto: "",
@@ -24,9 +25,10 @@ export default function EditTestimonial() {
   useEffect(() => {
     const fetchTestimonial = async () => {
       try {
-        const response = await fetch(`/api/testimonials/${params.id}`);
-        if (!response.ok) throw new Error("Failed to fetch testimonial");
-        const data = await response.json();
+        const response = await fetch(`/api/admin/testimonials/${params.id}`, { cache: "no-store" });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Não foi possível carregar o depoimento.");
+        const data = result;
         setFormData({
           clientName: data.clientName || "",
           clientPhoto: data.clientPhoto || "",
@@ -37,7 +39,7 @@ export default function EditTestimonial() {
         });
       } catch (error) {
         console.error("Error fetching testimonial:", error);
-        toast.error("Erro ao carregar depoimento");
+        setLoadError(error instanceof Error ? error.message : "Erro ao carregar depoimento");
       } finally {
         setLoading(false);
       }
@@ -51,19 +53,20 @@ export default function EditTestimonial() {
     setSaving(true);
 
     try {
-      const response = await fetch(`/api/testimonials/${params.id}`, {
+      const response = await fetch(`/api/admin/testimonials/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to update testimonial");
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Não foi possível atualizar o depoimento.");
 
       toast.success("Depoimento atualizado com sucesso");
       router.push("/admin/testimonials");
     } catch (error) {
       console.error("Error updating testimonial:", error);
-      toast.error("Erro ao atualizar depoimento");
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar depoimento");
     } finally {
       setSaving(false);
     }
@@ -73,6 +76,20 @@ export default function EditTestimonial() {
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="mx-auto w-full max-w-4xl space-y-4">
+        <div>
+          <h1 className="text-2xl font-bold sm:text-3xl">Editar depoimento</h1>
+          <p role="alert" className="mt-2 text-destructive">{loadError}</p>
+        </div>
+        <Button variant="outline" onClick={() => router.push("/admin/testimonials")}>
+          Voltar para depoimentos
+        </Button>
       </div>
     );
   }

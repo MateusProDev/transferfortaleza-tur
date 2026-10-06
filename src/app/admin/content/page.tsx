@@ -19,7 +19,6 @@ interface ContentResponse {
 }
 
 const documentNames: Record<string, string> = {
-  about: "Sobre",
   carousel: "Carrossel",
   categories: "Categorias",
   differentialsSection: "Diferenciais",
@@ -100,6 +99,7 @@ export default function SiteContentAdminPage() {
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [totalDocuments, setTotalDocuments] = useState(0);
 
   const loadDocuments = useCallback(async () => {
     setLoading(true);
@@ -128,7 +128,8 @@ export default function SiteContentAdminPage() {
         throw new Error("A resposta da API não contém a lista de documentos esperada.");
       }
 
-      const records = result.documents;
+      const records = result.documents.filter((document) => document.id !== "about");
+      setTotalDocuments(result.totalDocuments ?? result.documents.length);
       setDocuments(records);
       setProjectId(result.projectId || null);
       setSelectedId((currentId) =>
@@ -314,7 +315,8 @@ export default function SiteContentAdminPage() {
         <p className="mt-2 text-sm text-gray-600">
           Edite os textos, links, imagens e listas dos blocos de conteúdo do site.
           Para banners, passeios, transfers, artigos, depoimentos e perguntas frequentes, use as áreas próprias do menu.
-          Informações de contato, navegação e identidade ficam em Configurações do site.
+          Informações de contato, navegação, identidade e o conteúdo da página Sobre ficam em Configurações do site.
+          O SEO da página inicial é editado na seção “SEO da página inicial” desta tela.
         </p>
       </div>
 
@@ -336,12 +338,25 @@ export default function SiteContentAdminPage() {
         </div>
       ) : documents.length === 0 ? (
         <div className="space-y-2 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <p className="font-semibold">A conexão com o Firebase funcionou, mas a coleção `content` retornou zero documentos.</p>
-          <p>
-            {projectId ? `Projeto conectado: ${projectId}. ` : ""}
-            Se você esperava ver conteúdo existente, confirme se as credenciais Firebase do Vercel apontam
-            para o mesmo projeto usado pelo site e se os documentos estão na coleção `content`.
-          </p>
+          {totalDocuments === 0 ? (
+            <>
+              <p className="font-semibold">A conexão com o Firebase funcionou, mas a coleção `content` retornou zero documentos.</p>
+              <p>
+                {projectId ? `Projeto conectado: ${projectId}. ` : ""}
+                Se você esperava ver conteúdo existente, confirme se as credenciais Firebase do Vercel apontam
+                para o mesmo projeto usado pelo site e se os documentos estão na coleção `content`.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-semibold">Não há outras seções de conteúdo para editar aqui.</p>
+              <p>
+                O documento legado “Sobre” não é usado pela página pública e foi ocultado para evitar duplicidade.
+                O conteúdo ativo de /sobre fica em Configurações do site &gt; Sobre a empresa. Nenhum dado foi removido do Firebase.
+                {projectId ? ` Projeto conectado: ${projectId}.` : ""}
+              </p>
+            </>
+          )}
           <button
             type="button"
             onClick={() => void loadDocuments()}

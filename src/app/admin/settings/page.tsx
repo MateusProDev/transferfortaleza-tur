@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { defaultContactCopy } from "@/lib/site-copy";
@@ -178,18 +179,48 @@ export default function SettingsAdmin() {
       <div>
         <h1 className="text-2xl font-bold sm:text-3xl">Configurações do site</h1>
         <p className="text-muted-foreground">
-          Gerencie identidade, SEO, navegação, contato e informações institucionais.
+          Edite as informações gerais em uma única tela. Use os atalhos para ir direto à área desejada
+          e salve as alterações no final da página.
         </p>
       </div>
 
-      <Card>
+      <nav aria-label="Atalhos das configurações" className="flex flex-wrap gap-2">
+        {[
+          ["#marca", "Marca e logos"],
+          ["#navegacao", "Menu do site"],
+          ["#contato", "Contato"],
+          ["#rodape", "Rodapé"],
+          ["#redes-sociais", "Redes sociais"],
+          ["#textos-contato", "Textos da página Contato"],
+          ["#inicio", "Página inicial"],
+          ["#sobre-empresa", "Sobre a empresa"],
+        ].map(([href, label]) => (
+          <a
+            key={href}
+            href={href}
+            className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            {label}
+          </a>
+        ))}
+        <Link
+          href="/admin/content"
+          className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          SEO da página inicial: Textos e seções
+        </Link>
+      </nav>
+
+      <Card id="marca" className="scroll-mt-6">
         <CardHeader>
-          <CardTitle>Logo</CardTitle>
-          <CardDescription>Configure a logo do site</CardDescription>
+          <CardTitle>Marca e logos</CardTitle>
+          <CardDescription>
+            Escolha a imagem usada no cabeçalho e no rodapé. O texto alternativo descreve a imagem para leitores de tela.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Logo do Cabeçalho</label>
+            <label className="mb-2 block text-sm font-medium">Logo do cabeçalho</label>
             <ImageUpload
               currentImage={settings?.headerLogo}
               label=""
@@ -203,16 +234,19 @@ export default function SettingsAdmin() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium mb-2 block">Logo do Rodapé</label>
+            <label className="mb-2 block text-sm font-medium">Logo do rodapé</label>
             <ImageUpload
               currentImage={settings?.footerLogo}
               label=""
               compact
               onImageUpload={(url) => setSettings({ ...settings, footerLogo: url })}
             />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Se não houver uma logo própria para o rodapé, será usada a logo do cabeçalho.
+            </p>
           </div>
           <div>
-            <label className="text-sm font-medium">Texto Alternativo da Logo</label>
+            <label className="text-sm font-medium">Texto alternativo da logo do cabeçalho</label>
             <Input
               placeholder="Transfer Fortaleza Tur"
               value={settings?.headerLogoAlt || ""}
@@ -224,134 +258,70 @@ export default function SettingsAdmin() {
               }
             />
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações Gerais</CardTitle>
-          <CardDescription>Configure as informações básicas do seu site</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Título do Site</label>
+            <label className="text-sm font-medium">Texto alternativo da logo do rodapé</label>
             <Input
               placeholder="Transfer Fortaleza Tur"
-              value={settings?.seoSettings?.siteTitle || ""}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  seoSettings: {
-                    ...settings?.seoSettings,
-                    siteTitle: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Descrição</label>
-            <Input
-              placeholder="Descrição do site"
-              value={settings?.seoSettings?.siteDescription || ""}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  seoSettings: {
-                    ...settings?.seoSettings,
-                    siteDescription: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Texto de apresentação da página</label>
-            <textarea
-              className="w-full min-h-20 rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={settings?.aboutSection?.pageIntro || ""}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  aboutSection: { ...settings.aboutSection, pageIntro: e.target.value },
-                })
-              }
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Título da história</label>
-            <Input
-              value={settings?.aboutSection?.historyTitle || ""}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  aboutSection: { ...settings.aboutSection, historyTitle: e.target.value },
-                })
-              }
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Imagem para compartilhamento (Open Graph)</label>
-            <ImageUpload
-              currentImage={settings?.seoSettings?.ogImage}
-              label=""
-              banner
-              onImageUpload={(url) =>
-                setSettings({
-                  ...settings,
-                  seoSettings: { ...settings?.seoSettings, ogImage: url },
-                })
-              }
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Palavras-chave (separadas por vírgula)</label>
-            <Input
-              value={settings?.seoSettings?.keywords?.join(", ") || ""}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  seoSettings: {
-                    ...settings?.seoSettings,
-                    keywords: e.target.value.split(",").map((keyword: string) => keyword.trim()).filter(Boolean),
-                  },
-                })
-              }
+              value={settings?.footerLogoAlt || ""}
+              onChange={(e) => setSettings({ ...settings, footerLogoAlt: e.target.value })}
             />
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-primary/20 bg-primary/5">
         <CardHeader>
-          <CardTitle>Navegação</CardTitle>
-          <CardDescription>Edite os links do cabeçalho e do rodapé sem alterar os endereços das páginas.</CardDescription>
+          <CardTitle>Onde editar o SEO da página inicial?</CardTitle>
+          <CardDescription>
+            O título, a descrição, as palavras-chave e a imagem de compartilhamento da página inicial ficam em
+            “Textos e seções” &gt; “SEO da página inicial”. Essa é a fonte usada pelo site; não há uma cópia desses campos aqui.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button variant="outline" asChild>
+            <Link href="/admin/content">Abrir Textos e seções</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card id="navegacao" className="scroll-mt-6">
+        <CardHeader>
+          <CardTitle>Menu do site</CardTitle>
+          <CardDescription>
+            Edite separadamente os links do cabeçalho e os atalhos do rodapé. Isso não altera as páginas nem seus endereços.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-3">
-            <h3 className="font-medium">Menu do cabeçalho</h3>
+            <h3 className="font-medium">Links do cabeçalho</h3>
+            <p className="text-sm text-muted-foreground">Aparecem na navegação principal do site.</p>
             {(settings?.menuLinks || defaultMenuLinks).map((link: any, index: number) => (
-              <div key={link.id || index} className="grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_1fr_auto_auto]">
-                <Input
-                  aria-label={`Texto do link ${index + 1}`}
-                  placeholder="Texto"
-                  value={link.label || ""}
-                  onChange={(e) => {
-                    const links = [...settings.menuLinks];
-                    links[index] = { ...link, label: e.target.value };
-                    setSettings({ ...settings, menuLinks: links });
-                  }}
-                />
-                <Input
-                  aria-label={`URL do link ${index + 1}`}
-                  placeholder="/passeios"
-                  value={link.url || ""}
-                  onChange={(e) => {
-                    const links = [...settings.menuLinks];
-                    links[index] = { ...link, url: e.target.value };
-                    setSettings({ ...settings, menuLinks: links });
-                  }}
-                />
+              <fieldset key={link.id || index} className="grid min-w-0 gap-3 rounded-md border p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
+                <legend className="px-1 text-xs font-medium text-muted-foreground">Link {index + 1}</legend>
+                <label className="min-w-0 space-y-1 text-sm">
+                  <span className="block font-medium">Texto exibido</span>
+                  <Input
+                    placeholder="Ex.: Passeios"
+                    value={link.label || ""}
+                    onChange={(e) => {
+                      const links = [...settings.menuLinks];
+                      links[index] = { ...link, label: e.target.value };
+                      setSettings({ ...settings, menuLinks: links });
+                    }}
+                  />
+                </label>
+                <label className="min-w-0 space-y-1 text-sm">
+                  <span className="block font-medium">Endereço da página</span>
+                  <Input
+                    placeholder="Ex.: /passeios"
+                    value={link.url || ""}
+                    onChange={(e) => {
+                      const links = [...settings.menuLinks];
+                      links[index] = { ...link, url: e.target.value };
+                      setSettings({ ...settings, menuLinks: links });
+                    }}
+                  />
+                </label>
                 <label className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
@@ -362,7 +332,7 @@ export default function SettingsAdmin() {
                       setSettings({ ...settings, menuLinks: links });
                     }}
                   />
-                  Ativo
+                  Exibir
                 </label>
                 <Button
                   type="button"
@@ -372,9 +342,9 @@ export default function SettingsAdmin() {
                     menuLinks: settings.menuLinks.filter((_: unknown, itemIndex: number) => itemIndex !== index),
                   })}
                 >
-                  Remover
+                  Remover link
                 </Button>
-              </div>
+              </fieldset>
             ))}
             <Button
               type="button"
@@ -391,29 +361,35 @@ export default function SettingsAdmin() {
           </div>
 
           <div className="space-y-3 border-t pt-5">
-            <h3 className="font-medium">Links rápidos do rodapé</h3>
+            <h3 className="font-medium">Atalhos do rodapé</h3>
+            <p className="text-sm text-muted-foreground">Aparecem na área de links no final das páginas.</p>
             {(settings?.footerLinks || defaultFooterLinks).map((link: any, index: number) => (
-              <div key={link.id || index} className="grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_1fr_auto_auto]">
-                <Input
-                  aria-label={`Texto do link de rodapé ${index + 1}`}
-                  placeholder="Texto"
-                  value={link.label || ""}
-                  onChange={(e) => {
-                    const links = [...settings.footerLinks];
-                    links[index] = { ...link, label: e.target.value };
-                    setSettings({ ...settings, footerLinks: links });
-                  }}
-                />
-                <Input
-                  aria-label={`URL do link de rodapé ${index + 1}`}
-                  placeholder="/contato"
-                  value={link.url || ""}
-                  onChange={(e) => {
-                    const links = [...settings.footerLinks];
-                    links[index] = { ...link, url: e.target.value };
-                    setSettings({ ...settings, footerLinks: links });
-                  }}
-                />
+              <fieldset key={link.id || index} className="grid min-w-0 gap-3 rounded-md border p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
+                <legend className="px-1 text-xs font-medium text-muted-foreground">Atalho {index + 1}</legend>
+                <label className="min-w-0 space-y-1 text-sm">
+                  <span className="block font-medium">Texto exibido</span>
+                  <Input
+                    placeholder="Ex.: Contato"
+                    value={link.label || ""}
+                    onChange={(e) => {
+                      const links = [...settings.footerLinks];
+                      links[index] = { ...link, label: e.target.value };
+                      setSettings({ ...settings, footerLinks: links });
+                    }}
+                  />
+                </label>
+                <label className="min-w-0 space-y-1 text-sm">
+                  <span className="block font-medium">Endereço da página</span>
+                  <Input
+                    placeholder="Ex.: /contato"
+                    value={link.url || ""}
+                    onChange={(e) => {
+                      const links = [...settings.footerLinks];
+                      links[index] = { ...link, url: e.target.value };
+                      setSettings({ ...settings, footerLinks: links });
+                    }}
+                  />
+                </label>
                 <label className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
@@ -424,7 +400,7 @@ export default function SettingsAdmin() {
                       setSettings({ ...settings, footerLinks: links });
                     }}
                   />
-                  Ativo
+                  Exibir
                 </label>
                 <Button
                   type="button"
@@ -434,9 +410,9 @@ export default function SettingsAdmin() {
                     footerLinks: settings.footerLinks.filter((_: unknown, itemIndex: number) => itemIndex !== index),
                   })}
                 >
-                  Remover
+                  Remover atalho
                 </Button>
-              </div>
+              </fieldset>
             ))}
             <Button
               type="button"
@@ -454,10 +430,12 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="contato" className="scroll-mt-6">
         <CardHeader>
-          <CardTitle>Contato</CardTitle>
-          <CardDescription>Informações de contato do seu negócio</CardDescription>
+          <CardTitle>Contato do negócio</CardTitle>
+          <CardDescription>
+            Dados exibidos nas informações de contato do rodapé e da página Contato. Os textos e rótulos dessa página ficam na seção “Textos da página Contato”.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -480,7 +458,7 @@ export default function SettingsAdmin() {
           <div>
             <label className="text-sm font-medium">Telefone</label>
             <Input
-              placeholder="(11) 99999-9999"
+              placeholder="(85) 99999-9999"
               value={settings?.contactInfo?.phone || ""}
               onChange={(e) =>
                 setSettings({
@@ -494,9 +472,12 @@ export default function SettingsAdmin() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium">WhatsApp</label>
+            <label className="text-sm font-medium">WhatsApp para contato</label>
+            <p className="mb-2 text-xs text-muted-foreground">
+              Número exibido nas informações de contato. O botão/ícone do rodapé usa este número se não houver um link de WhatsApp próprio.
+            </p>
             <Input
-              placeholder="(11) 99999-9999"
+              placeholder="(85) 99999-9999"
               value={settings?.contactInfo?.whatsapp || ""}
               onChange={(e) =>
                 setSettings({
@@ -524,21 +505,26 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="rodape" className="scroll-mt-6">
         <CardHeader>
-          <CardTitle>Identidade do rodapé</CardTitle>
-          <CardDescription>Edite o nome e o texto institucional exibidos no rodapé.</CardDescription>
+          <CardTitle>Textos e selos do rodapé</CardTitle>
+          <CardDescription>
+            Personalize a identificação, os textos legais, créditos e imagens exibidos no final das páginas.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Nome da empresa</label>
+            <label className="text-sm font-medium">Nome da empresa no rodapé</label>
+            <p className="mb-2 text-xs text-muted-foreground">
+              Aparece junto aos direitos autorais; não altera a logo nem o título de SEO.
+            </p>
             <Input
               value={settings?.companyName || ""}
               onChange={(e) => setSettings({ ...settings, companyName: e.target.value })}
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Descrição do rodapé</label>
+            <label className="text-sm font-medium">Texto de apresentação do rodapé</label>
             <textarea
               className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={settings?.footerText || ""}
@@ -602,38 +588,53 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="redes-sociais" className="scroll-mt-6">
         <CardHeader>
           <CardTitle>Redes sociais</CardTitle>
-          <CardDescription>Configure os destinos dos ícones sociais exibidos no rodapé.</CardDescription>
+          <CardDescription>
+            Cadastre os links dos ícones sociais do rodapé. Se não houver um link de WhatsApp aqui, o ícone usa o número de “Contato do negócio”.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {(settings?.socialLinks || []).map((link: any, index: number) => (
-            <div key={link.id || index} className="grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_2fr_auto]">
-              <select
-                aria-label={`Rede social ${index + 1}`}
-                value={link.platform || "instagram"}
-                onChange={(event) => {
-                  const socialLinks = [...settings.socialLinks];
-                  socialLinks[index] = { ...link, platform: event.target.value };
-                  setSettings({ ...settings, socialLinks });
-                }}
-                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                {["facebook", "instagram", "whatsapp", "youtube", "twitter"].map((platform) => (
-                  <option key={platform} value={platform}>{platform}</option>
-                ))}
-              </select>
-              <Input
-                aria-label={`URL da rede social ${index + 1}`}
-                placeholder="https://..."
-                value={link.url || ""}
-                onChange={(event) => {
-                  const socialLinks = [...settings.socialLinks];
-                  socialLinks[index] = { ...link, url: event.target.value };
-                  setSettings({ ...settings, socialLinks });
-                }}
-              />
+            <fieldset key={link.id || index} className="grid min-w-0 gap-3 rounded-md border p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_auto]">
+              <legend className="px-1 text-xs font-medium text-muted-foreground">Rede social {index + 1}</legend>
+              <label className="space-y-1 text-sm">
+                <span className="block font-medium">Plataforma</span>
+                <select
+                  aria-label={`Rede social ${index + 1}`}
+                  value={link.platform || "instagram"}
+                  onChange={(event) => {
+                    const socialLinks = [...settings.socialLinks];
+                    socialLinks[index] = { ...link, platform: event.target.value };
+                    setSettings({ ...settings, socialLinks });
+                  }}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  {[
+                    ["facebook", "Facebook"],
+                    ["instagram", "Instagram"],
+                    ["whatsapp", "WhatsApp"],
+                    ["youtube", "YouTube"],
+                    ["twitter", "X (Twitter)"],
+                  ].map(([platform, label]) => (
+                    <option key={platform} value={platform}>{label}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="min-w-0 space-y-1 text-sm">
+                <span className="block font-medium">Link ou endereço</span>
+                <Input
+                  aria-label={`URL da rede social ${index + 1}`}
+                  placeholder="https://..."
+                  value={link.url || ""}
+                  onChange={(event) => {
+                    const socialLinks = [...settings.socialLinks];
+                    socialLinks[index] = { ...link, url: event.target.value };
+                    setSettings({ ...settings, socialLinks });
+                  }}
+                />
+              </label>
               <Button
                 type="button"
                 variant="outline"
@@ -642,9 +643,9 @@ export default function SettingsAdmin() {
                   socialLinks: settings.socialLinks.filter((_: unknown, itemIndex: number) => itemIndex !== index),
                 })}
               >
-                Remover
+                Remover rede
               </Button>
-            </div>
+            </fieldset>
           ))}
           <Button
             type="button"
@@ -663,11 +664,11 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="textos-contato" className="scroll-mt-6">
         <CardHeader>
           <CardTitle>Textos da página de contato</CardTitle>
           <CardDescription>
-            Títulos, horários, rótulos do formulário, mensagens e textos dos botões da página /contato.
+            Edite o que está escrito na página /contato: títulos, horários, rótulos, mensagens e botões. Os dados reais (telefone, e-mail, WhatsApp e endereço) ficam em “Contato do negócio”.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -711,18 +712,19 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="inicio" className="scroll-mt-6">
         <CardHeader>
-          <CardTitle>Seções do Site</CardTitle>
-          <CardDescription>Ative ou desative seções do site</CardDescription>
+          <CardTitle>Seções da página inicial</CardTitle>
+          <CardDescription>Escolha se os blocos de passeios e transfers aparecem na página inicial.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <label className="text-sm font-medium">Passeios</label>
+              <label htmlFor="home-tours-enabled" className="text-sm font-medium">Passeios</label>
               <p className="text-xs text-muted-foreground">Mostrar seção de passeios no site</p>
             </div>
             <input
+              id="home-tours-enabled"
               type="checkbox"
               checked={settings?.sections?.toursEnabled ?? true}
               onChange={(e) =>
@@ -737,12 +739,13 @@ export default function SettingsAdmin() {
               className="w-4 h-4 text-primary-600 rounded focus:ring-primary-600"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <label className="text-sm font-medium">Transfer</label>
+              <label htmlFor="home-transfers-enabled" className="text-sm font-medium">Transfers</label>
               <p className="text-xs text-muted-foreground">Mostrar seção de transfer no site</p>
             </div>
             <input
+              id="home-transfers-enabled"
               type="checkbox"
               checked={settings?.sections?.transfersEnabled ?? true}
               onChange={(e) =>
@@ -760,14 +763,16 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="sobre-empresa" className="scroll-mt-6">
         <CardHeader>
-          <CardTitle>Sobre a Transfer Fortaleza Tur</CardTitle>
-          <CardDescription>Edite o texto e os números exibidos na seção sobre a empresa</CardDescription>
+          <CardTitle>Conteúdo da página “Sobre a empresa”</CardTitle>
+          <CardDescription>
+            Todos os campos deste bloco alimentam a página /sobre. Eles não são os metadados de SEO nem os textos do rodapé.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Título</label>
+            <label className="text-sm font-medium">Título principal da página</label>
             <Input
               placeholder="Sobre a Transfer Fortaleza Tur"
               value={settings?.aboutSection?.title || defaultAboutSection.title}
@@ -780,7 +785,32 @@ export default function SettingsAdmin() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Descrição</label>
+            <label className="text-sm font-medium">Texto de apresentação</label>
+            <textarea
+              className="w-full min-h-20 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={settings?.aboutSection?.pageIntro || ""}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, pageIntro: e.target.value },
+                })
+              }
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Título da seção de história</label>
+            <Input
+              value={settings?.aboutSection?.historyTitle || ""}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, historyTitle: e.target.value },
+                })
+              }
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">História da empresa</label>
             <textarea
               className="w-full min-h-28 rounded-md border border-input bg-background px-3 py-2 text-sm"
               placeholder="Conte a história da empresa"
@@ -793,39 +823,45 @@ export default function SettingsAdmin() {
               }
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {[0, 1, 2].map((index) => {
               const stat = settings?.aboutSection?.stats?.[index] || defaultAboutSection.stats[index];
               return (
                 <div key={index} className="space-y-2">
-                  <label className="text-sm font-medium">Estatística {index + 1}</label>
-                  <Input
-                    type="number"
-                    min="0"
-                    placeholder="10"
-                    value={stat.value}
-                    onChange={(e) => {
-                      const stats = [...(settings?.aboutSection?.stats || defaultAboutSection.stats)];
-                      stats[index] = { ...stats[index], value: Number(e.target.value) };
-                      setSettings({ ...settings, aboutSection: { ...settings?.aboutSection, stats } });
-                    }}
-                  />
-                  <Input
-                    placeholder="Anos de Experiência"
-                    value={stat.label}
-                    onChange={(e) => {
-                      const stats = [...(settings?.aboutSection?.stats || defaultAboutSection.stats)];
-                      stats[index] = { ...stats[index], label: e.target.value };
-                      setSettings({ ...settings, aboutSection: { ...settings?.aboutSection, stats } });
-                    }}
-                  />
+                  <p className="text-sm font-medium">Indicador {index + 1}</p>
+                  <label className="block space-y-1 text-sm">
+                    <span>Número</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Ex.: 10"
+                      value={stat.value}
+                      onChange={(e) => {
+                        const stats = [...(settings?.aboutSection?.stats || defaultAboutSection.stats)];
+                        stats[index] = { ...stats[index], value: Number(e.target.value) };
+                        setSettings({ ...settings, aboutSection: { ...settings?.aboutSection, stats } });
+                      }}
+                    />
+                  </label>
+                  <label className="block space-y-1 text-sm">
+                    <span>Legenda exibida abaixo do número</span>
+                    <Input
+                      placeholder="Ex.: Anos de experiência"
+                      value={stat.label}
+                      onChange={(e) => {
+                        const stats = [...(settings?.aboutSection?.stats || defaultAboutSection.stats)];
+                        stats[index] = { ...stats[index], label: e.target.value };
+                        setSettings({ ...settings, aboutSection: { ...settings?.aboutSection, stats } });
+                      }}
+                    />
+                  </label>
                 </div>
               );
             })}
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Título e texto da missão</label>
+              <label className="text-sm font-medium">Título da missão</label>
               <Input
                 value={settings?.aboutSection?.missionTitle || ""}
                 onChange={(e) => setSettings({
@@ -833,6 +869,7 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings.aboutSection, missionTitle: e.target.value },
                 })}
               />
+              <label className="block text-sm font-medium">Texto da missão</label>
               <textarea
                 className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={settings?.aboutSection?.missionText || ""}
@@ -843,7 +880,7 @@ export default function SettingsAdmin() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Título e texto da visão</label>
+              <label className="text-sm font-medium">Título da visão</label>
               <Input
                 value={settings?.aboutSection?.visionTitle || ""}
                 onChange={(e) => setSettings({
@@ -851,6 +888,7 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings.aboutSection, visionTitle: e.target.value },
                 })}
               />
+              <label className="block text-sm font-medium">Texto da visão</label>
               <textarea
                 className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={settings?.aboutSection?.visionText || ""}
@@ -906,7 +944,8 @@ export default function SettingsAdmin() {
           <div className="grid gap-4 md:grid-cols-2">
             {(settings?.aboutSection?.benefits || defaultAboutSection.benefits).map((benefit: any, index: number) => (
               <div key={index} className="space-y-2 rounded-md border p-3">
-                <label className="text-sm font-medium">Diferencial {index + 1}</label>
+                <p className="text-sm font-medium">Diferencial {index + 1}</p>
+                <label className="block text-sm font-medium">Título</label>
                 <Input
                   value={benefit.title}
                   onChange={(e) => {
@@ -915,6 +954,7 @@ export default function SettingsAdmin() {
                     setSettings({ ...settings, aboutSection: { ...settings.aboutSection, benefits } });
                   }}
                 />
+                <label className="block text-sm font-medium">Descrição</label>
                 <textarea
                   className="w-full min-h-20 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={benefit.description}

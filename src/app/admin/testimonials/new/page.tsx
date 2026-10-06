@@ -24,18 +24,20 @@ export default function NewTestimonial() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/testimonials", {
+      const response = await fetch("/api/admin/testimonials", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to create testimonial");
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Não foi possível criar o depoimento.");
 
-      toast.success("Testimonial created successfully");
+      toast.success("Depoimento criado com sucesso");
       router.push("/admin/testimonials");
     } catch (error) {
-      toast.error("Failed to create testimonial");
+      console.error("Error creating testimonial:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao criar depoimento");
     } finally {
       setLoading(false);
     }

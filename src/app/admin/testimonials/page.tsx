@@ -8,20 +8,21 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 
 export default function TestimonialsAdmin() {
-  const { data: testimonials, loading, refetch } = useTestimonials();
+  const { data: testimonials, loading, error, refetch } = useTestimonials();
 
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este depoimento?")) return;
 
     try {
-      const response = await fetch(`/api/testimonials/${id}`, {
+      const response = await fetch(`/api/admin/testimonials/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Delete failed");
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Não foi possível excluir o depoimento.");
       toast.success("Depoimento excluído com sucesso");
-      refetch();
+      await refetch();
     } catch (error) {
-      toast.error("Erro ao excluir depoimento");
+      toast.error(error instanceof Error ? error.message : "Erro ao excluir depoimento");
     }
   };
 
@@ -48,21 +49,34 @@ export default function TestimonialsAdmin() {
       </div>
 
       <div className="grid gap-4">
-        {!testimonials || testimonials.length === 0 ? (
+        {error ? (
+          <Card>
+            <CardContent className="space-y-3 pt-6">
+              <p role="alert" className="text-center text-destructive">
+                Não foi possível carregar os depoimentos: {error.message}
+              </p>
+              <div className="text-center">
+                <Button variant="outline" onClick={() => void refetch()}>
+                  Tentar novamente
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : !testimonials || testimonials.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-muted-foreground">
-                Nenhum depoimento encontrado. Crie o primeiro depoimento!
+                Nenhum depoimento cadastrado. Use “Novo Depoimento” para adicionar o primeiro.
               </p>
             </CardContent>
           </Card>
         ) : (
           testimonials.map((testimonial: any) => (
-            <Card key={testimonial.id}>
+            <Card key={testimonial.id} className="min-w-0">
               <CardContent className="pt-6">
-                <div className="flex gap-3 sm:gap-4">
+                <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:gap-4">
                   {testimonial.clientPhoto && (
-                    <div className="relative w-16 h-16 flex-shrink-0">
+                    <div className="relative h-16 w-16 flex-shrink-0 self-start overflow-hidden rounded-full">
                       <Image
                         src={testimonial.clientPhoto}
                         alt={testimonial.clientPhotoAlt || testimonial.clientName}
@@ -72,36 +86,48 @@ export default function TestimonialsAdmin() {
                       />
                     </div>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold mb-1">{testimonial.clientName}</h3>
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{testimonial.text}</p>
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <span
-                              key={i}
-                              className={`text-sm ${
-                                i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'
-                              }`}
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-2 sm:flex-shrink-0">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/admin/testimonials/${testimonial.id}`}>Editar</Link>
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDelete(testimonial.id)}
+                  <div className="w-full min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <h3 className="break-words text-lg font-semibold">{testimonial.clientName || "Sem nome"}</h3>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        testimonial.active
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-700"
+                      }`}>
+                        {testimonial.active ? "Ativo no site" : "Inativo — disponível apenas no painel"}
+                      </span>
+                    </div>
+                    <p className="mb-2 mt-1 line-clamp-3 break-words text-sm text-muted-foreground">
+                      {testimonial.text || "Sem texto cadastrado"}
+                    </p>
+                    <div
+                      className="flex items-center gap-1"
+                      aria-label={`Avaliação: ${testimonial.rating} de 5 estrelas`}
+                    >
+                      {[...Array(5)].map((_, i) => (
+                        <span
+                          key={i}
+                          aria-hidden="true"
+                          className={`text-sm ${
+                            i < testimonial.rating ? "text-yellow-400" : "text-gray-300"
+                          }`}
                         >
-                          Excluir
-                        </Button>
-                      </div>
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-4 grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
+                      <Button className="w-full sm:w-auto" variant="outline" size="sm" asChild>
+                        <Link href={`/admin/testimonials/${testimonial.id}`}>Editar</Link>
+                      </Button>
+                      <Button
+                        className="w-full sm:w-auto"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(testimonial.id)}
+                      >
+                        Excluir
+                      </Button>
                     </div>
                   </div>
                 </div>
