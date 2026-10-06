@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
+const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY || process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET || process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+
 // Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY || process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET || process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
+  cloud_name: cloudName,
+  api_key: apiKey,
+  api_secret: apiSecret,
 });
 
 export async function POST(request: NextRequest) {
@@ -51,11 +55,11 @@ export async function POST(request: NextRequest) {
     const dataURI = `data:${file.type};base64,${base64}`;
 
     // Check Cloudinary configuration
-    if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY) {
+    if (!cloudName || !apiKey || !apiSecret) {
       console.error("Missing Cloudinary configuration:", {
-        cloud_name: !!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-        api_key: !!process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-        api_secret: !!process.env.CLOUDINARY_API_SECRET || !!process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
+        cloud_name: !!cloudName,
+        api_key: !!apiKey,
+        api_secret: !!apiSecret,
       });
       return NextResponse.json(
         { error: "Cloudinary configuration missing" },
