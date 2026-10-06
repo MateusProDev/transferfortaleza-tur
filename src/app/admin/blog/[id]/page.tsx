@@ -20,6 +20,11 @@ export default function EditBlogPost() {
     imageUrl: "",
     imageAlt: "",
     author: "",
+    category: "",
+    tags: "",
+    seoTitle: "",
+    seoDescription: "",
+    seoKeywords: "",
     published: false,
   });
 
@@ -27,8 +32,8 @@ export default function EditBlogPost() {
     const fetchBlogPost = async () => {
       try {
         const response = await fetch(`/api/blog/${params.id}`);
-        if (!response.ok) throw new Error("Failed to fetch blog post");
-        const data = await response.json();
+        const data = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(data?.error || `Falha ao carregar artigo (HTTP ${response.status}).`);
         setFormData({
           title: data.title || "",
           slug: data.slug || "",
@@ -37,11 +42,16 @@ export default function EditBlogPost() {
           imageUrl: data.imageUrl || "",
           imageAlt: data.imageAlt || "",
           author: data.author || "",
+          category: data.category || "",
+          tags: Array.isArray(data.tags) ? data.tags.join(", ") : "",
+          seoTitle: data.seo?.title || "",
+          seoDescription: data.seo?.description || "",
+          seoKeywords: Array.isArray(data.seo?.keywords) ? data.seo.keywords.join(", ") : "",
           published: data.published ?? false,
         });
       } catch (error) {
         console.error("Error fetching blog post:", error);
-        toast.error("Erro ao carregar artigo");
+        toast.error(error instanceof Error ? error.message : "Erro ao carregar artigo");
       } finally {
         setLoading(false);
       }
@@ -49,24 +59,6 @@ export default function EditBlogPost() {
 
     fetchBlogPost();
   }, [params.id]);
-
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  };
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTitle = e.target.value;
-    setFormData({
-      ...formData,
-      title: newTitle,
-      slug: generateSlug(newTitle),
-    });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,16 +68,25 @@ export default function EditBlogPost() {
       const response = await fetch(`/api/blog/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+          seo: {
+            title: formData.seoTitle,
+            description: formData.seoDescription,
+            keywords: formData.seoKeywords.split(",").map((keyword) => keyword.trim()).filter(Boolean),
+          },
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to update blog post");
+      const result = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(result?.error || `Falha ao atualizar artigo (HTTP ${response.status}).`);
 
       toast.success("Artigo atualizado com sucesso");
       router.push("/admin/blog");
     } catch (error) {
       console.error("Error updating blog post:", error);
-      toast.error("Erro ao atualizar artigo");
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar artigo");
     } finally {
       setSaving(false);
     }
@@ -121,7 +122,7 @@ export default function EditBlogPost() {
                 type="text"
                 required
                 value={formData.title}
-                onChange={handleTitleChange}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
                 placeholder="Título do artigo"
               />
@@ -158,6 +159,26 @@ export default function EditBlogPost() {
                 onChange={(e) => setFormData({ ...formData, author: e.target.value })}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
                 placeholder="Nome do autor"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Categoria</label>
+              <input
+                type="text"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
+                placeholder="Ex.: Dicas de viagem"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Tags (separadas por vírgula)</label>
+              <input
+                type="text"
+                value={formData.tags}
+                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
+                placeholder="Fortaleza, praias, turismo"
               />
             </div>
           </CardContent>
@@ -205,6 +226,9 @@ export default function EditBlogPost() {
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600 min-h-[300px]"
                 placeholder="Escreva o conteúdo do artigo aqui..."
               />
+              <p className="text-xs text-muted-foreground">
+                Pode usar Markdown para títulos, subtítulos, listas e links.
+              </p>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -218,6 +242,42 @@ export default function EditBlogPost() {
               <label htmlFor="published" className="text-sm font-medium">
                 Artigo publicado
               </label>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>SEO do artigo</CardTitle>
+            <CardDescription>Metadados para os mecanismos de busca. Se deixar vazio, o site usa o título e o resumo do artigo.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Título SEO</label>
+              <input
+                type="text"
+                value={formData.seoTitle}
+                onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Descrição SEO</label>
+              <textarea
+                value={formData.seoDescription}
+                onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg"
+                rows={3}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Palavras-chave (separadas por vírgula)</label>
+              <input
+                type="text"
+                value={formData.seoKeywords}
+                onChange={(e) => setFormData({ ...formData, seoKeywords: e.target.value })}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
             </div>
           </CardContent>
         </Card>

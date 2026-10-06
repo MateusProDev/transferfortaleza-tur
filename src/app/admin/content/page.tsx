@@ -107,15 +107,19 @@ export default function SiteContentAdminPage() {
     try {
       const response = await fetch("/api/admin/content", { cache: "no-store" });
       const result = await response.json().catch(() => null) as
-        | (Partial<ContentResponse> & { error?: string })
+        | (Partial<ContentResponse> & { error?: string; code?: string })
         | null;
       if (!response.ok) {
         const message = result?.error || `A API respondeu com HTTP ${response.status}.`;
-        throw new Error(response.status === 503
-          ? `${message} Confira as variáveis ADMIN_EMAILS e FIREBASE_ADMIN_SDK no Vercel e verifique se as credenciais apontam para o mesmo projeto Firebase do site.`
-          : response.status === 401 || response.status === 403
-            ? `${message} Saia do painel e entre novamente com uma conta autorizada.`
-            : message);
+        const code = typeof result?.code === "string" ? ` Código Firebase: ${result.code}.` : "";
+        const configurationHint = response.status === 503
+          && /credenciais|configurad[oa]|autenticaç/i.test(message)
+          ? " Confirme ADMIN_EMAILS e as credenciais Firebase Admin nas variáveis de ambiente do Vercel e verifique se apontam para o projeto Firebase do site."
+          : "";
+        const authenticationHint = response.status === 401 || response.status === 403
+          ? " Saia do painel e entre novamente com uma conta autorizada."
+          : "";
+        throw new Error(`${message}${code}${configurationHint}${authenticationHint}`);
       }
       if (!Array.isArray(result?.documents)) {
         throw new Error("A resposta da API não contém a lista de documentos esperada.");

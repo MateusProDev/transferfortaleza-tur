@@ -46,15 +46,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       };
     }
 
+    const seoTitle = typeof post.seo?.title === "string" && post.seo.title.trim()
+      ? post.seo.title
+      : post.title || "Post";
+    const seoDescription = typeof post.seo?.description === "string" && post.seo.description.trim()
+      ? post.seo.description
+      : post.summary || `Leia o artigo completo no blog da Transfer Fortaleza Tur. Dicas de turismo em Fortaleza e região.`;
+
     return {
-      title: post.title || 'Post',
-      description: post.summary || `Leia o artigo completo no blog da Transfer Fortaleza Tur. Dicas de turismo em Fortaleza e região.`,
+      title: seoTitle,
+      description: seoDescription,
       openGraph: {
         type: "article",
         locale: "pt_BR",
         url: `${baseUrl}/blog/${params.slug}`,
-        title: post.title,
-        description: post.summary,
+        title: seoTitle,
+        description: seoDescription,
         images: post.imageUrl ? [
           {
             url: post.imageUrl,
@@ -66,8 +73,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
       twitter: {
         card: "summary_large_image",
-        title: post.title,
-        description: post.summary,
+        title: seoTitle,
+        description: seoDescription,
         images: post.imageUrl ? [post.imageUrl] : [],
       },
       alternates: {

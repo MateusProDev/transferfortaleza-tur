@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
@@ -8,26 +9,35 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 
 export default function BlogAdmin() {
-  const { data: blogs, loading, refetch } = useBlogs(false);
+  const { data: blogs, loading, error, refetch } = useBlogs(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este artigo?")) return;
 
+    setDeletingId(id);
     try {
       const response = await fetch(`/api/blog/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Delete failed");
+      const result = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(result?.error || `Falha ao excluir artigo (HTTP ${response.status}).`);
+      }
       toast.success("Artigo excluído com sucesso");
-      refetch();
+      await refetch();
     } catch (error) {
-      toast.error("Erro ao excluir artigo");
+      console.error("Error deleting blog post:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao excluir artigo");
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  const formatDate = (date: any) => {
+  const formatDate = (date: string | Date | null | undefined) => {
     if (!date) return '';
-    const d = date.toDate ? date.toDate() : new Date(date);
+    const d = new Date(date);
+    if (Number.isNaN(d.getTime())) return "";
     return d.toLocaleDateString('pt-BR');
   };
 
@@ -54,7 +64,18 @@ export default function BlogAdmin() {
       </div>
 
       <div className="grid gap-4">
-        {!blogs || blogs.length === 0 ? (
+        {error ? (
+          <Card>
+            <CardContent className="space-y-3 pt-6">
+              <p role="alert" className="text-center text-red-700">
+                Não foi possível carregar os artigos: {error.message}
+              </p>
+              <div className="text-center">
+                <Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : !blogs || blogs.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-muted-foreground">
@@ -97,9 +118,10 @@ export default function BlogAdmin() {
                         <Button
                           variant="destructive"
                           size="sm"
+                          disabled={deletingId === post.id}
                           onClick={() => handleDelete(post.id)}
                         >
-                          Excluir
+                          {deletingId === post.id ? "Excluindo..." : "Excluir"}
                         </Button>
                       </div>
                     </div>

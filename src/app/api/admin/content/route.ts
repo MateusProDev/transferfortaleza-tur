@@ -6,18 +6,81 @@ import { invalidatePublicDataCache } from "@/lib/public-data-cache";
 
 type ContentDocument = Record<string, unknown>;
 
-function serializeValue(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(serializeValue);
+function serializeValue(value: unknown, ancestors = new WeakSet<object>()): unknown {
+  if (value instanceof Date) return value.toISOString();
+  if (Array.isArray(value)) {
+    if (ancestors.has(value)) return "[Circular]";
+    ancestors.add(value);
+    const result = value.map((item) => serializeValue(item, ancestors));
+    ancestors.delete(value);
+    return result;
+  }
   if (value && typeof value === "object") {
     const timestamp = value as { toDate?: () => Date };
     if (typeof timestamp.toDate === "function") return timestamp.toDate().toISOString();
 
-    return Object.fromEntries(
-      Object.entries(value).map(([key, item]) => [key, serializeValue(item)]),
+    const reference = value as { path?: unknown; get?: unknown };
+    if (typeof reference.path === "string" && typeof reference.get === "function") {
+      return { path: reference.path };
+    }
+
+    const point = value as { latitude?: unknown; longitude?: unknown };
+    if (typeof point.latitude === "number" && typeof point.longitude === "number") {
+      return { latitude: point.latitude, longitude: point.longitude };
+    }
+
+    if (value instanceof Uint8Array) return Buffer.from(value).toString("base64");
+    if (ancestors.has(value)) return "[Circular]";
+    ancestors.add(value);
+    const result = Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, serializeValue(item, ancestors)]),
     );
+    ancestors.delete(value);
+    return result;
   }
 
   return value;
+}
+
+function getFirebaseErrorDetails(error: unknown): { code: string; message: string } {
+  if (!error || typeof error !== "object") {
+    return { code: "unknown", message: String(error) };
+  }
+
+  const details = error as { code?: unknown; message?: unknown };
+  return {
+    code: typeof details.code === "string" || typeof details.code === "number"
+      ? String(details.code)
+      : "unknown",
+    message: typeof details.message === "string" ? details.message : "Unknown Firebase error",
+  };
+}
+
+function contentReadError(error: unknown): NextResponse {
+  const details = getFirebaseErrorDetails(error);
+  console.error("Error loading editable site content from Firestore:", details, error);
+
+  const firebaseCode = details.code.replace(/^firestore\//, "").replace(/^auth\//, "");
+  const errorMessages: Record<string, string> = {
+    "7": "A conta de serviço do Firebase não tem permissão para ler o Firestore. No Google Cloud IAM, conceda a função Cloud Datastore User à conta de serviço configurada no Vercel.",
+    "16": "A autenticação do Firebase Admin falhou. Confira se a chave de serviço configurada no Vercel está correta, ativa e pertence ao projeto Firebase do site.",
+    "14": "O Firestore está temporariamente indisponível. Tente novamente em alguns minutos.",
+    "permission-denied": "A conta de serviço do Firebase não tem permissão para ler o Firestore. No Google Cloud IAM, conceda a função Cloud Datastore User à conta de serviço configurada no Vercel.",
+    "unauthenticated": "A autenticação do Firebase Admin falhou. Confira se a chave de serviço configurada no Vercel está correta, ativa e pertence ao projeto Firebase do site.",
+    "unavailable": "O Firestore está temporariamente indisponível. Tente novamente em alguns minutos.",
+  };
+  const message = errorMessages[firebaseCode] || "A consulta ao Firestore falhou. Consulte os logs da função no Vercel usando o código abaixo.";
+
+  return NextResponse.json(
+    {
+      error: message,
+      code: firebaseCode,
+    },
+    { status: firebaseCode === "7" || firebaseCode === "16"
+      || firebaseCode === "permission-denied" || firebaseCode === "unauthenticated"
+      ? 503
+      : 500 },
+  );
 }
 
 export async function GET(request: NextRequest) {
@@ -59,8 +122,7 @@ export async function GET(request: NextRequest) {
       projectId: adminProjectId || configuredProjectId || null,
     });
   } catch (error) {
-    console.error("Error loading editable site content:", error);
-    return NextResponse.json({ error: "Não foi possível carregar o conteúdo do site." }, { status: 500 });
+    return contentReadError(error);
   }
 }
 

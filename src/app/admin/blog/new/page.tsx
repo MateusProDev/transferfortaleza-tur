@@ -10,6 +10,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 export default function NewBlogPost() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [slugEdited, setSlugEdited] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -17,6 +18,12 @@ export default function NewBlogPost() {
     content: "",
     imageUrl: "",
     imageAlt: "",
+    author: "",
+    category: "",
+    tags: "",
+    seoTitle: "",
+    seoDescription: "",
+    seoKeywords: "",
     published: true,
   });
 
@@ -36,7 +43,7 @@ export default function NewBlogPost() {
     setFormData({
       ...formData,
       title,
-      slug: generateSlug(title),
+      slug: slugEdited ? formData.slug : generateSlug(title),
     });
   };
 
@@ -48,15 +55,25 @@ export default function NewBlogPost() {
       const response = await fetch("/api/blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+          seo: {
+            title: formData.seoTitle,
+            description: formData.seoDescription,
+            keywords: formData.seoKeywords.split(",").map((keyword) => keyword.trim()).filter(Boolean),
+          },
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to create blog post");
+      const result = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(result?.error || `Falha ao criar artigo (HTTP ${response.status}).`);
 
-      toast.success("Blog post created successfully");
+      toast.success("Artigo criado com sucesso");
       router.push("/admin/blog");
     } catch (error) {
-      toast.error("Failed to create blog post");
+      console.error("Error creating blog post:", error);
+      toast.error(error instanceof Error ? error.message : "Falha ao criar artigo");
     } finally {
       setLoading(false);
     }
@@ -65,8 +82,8 @@ export default function NewBlogPost() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Novo Blog Post</h1>
-        <p className="text-muted-foreground">Criar um novo post de blog</p>
+        <h1 className="text-3xl font-bold">Novo artigo do blog</h1>
+        <p className="text-muted-foreground">Cadastre o conteúdo, a imagem e os dados de SEO do artigo.</p>
       </div>
 
       <Card>
@@ -91,7 +108,10 @@ export default function NewBlogPost() {
               <input
                 type="text"
                 value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                onChange={(e) => {
+                  setSlugEdited(true);
+                  setFormData({ ...formData, slug: e.target.value });
+                }}
                 required
                 className="w-full px-3 py-2 border rounded"
                 placeholder="ex: minha-nova-publicacao"
@@ -109,6 +129,36 @@ export default function NewBlogPost() {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium mb-2">Autor</label>
+              <input
+                type="text"
+                value={formData.author}
+                onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="Nome do autor"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Categoria</label>
+              <input
+                type="text"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="Ex.: Dicas de viagem"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Tags (separadas por vírgula)</label>
+              <input
+                type="text"
+                value={formData.tags}
+                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="Fortaleza, praias, turismo"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium mb-2">Conteúdo</label>
               <textarea
                 value={formData.content}
@@ -117,6 +167,9 @@ export default function NewBlogPost() {
                 className="w-full px-3 py-2 border rounded"
                 rows={10}
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Pode usar Markdown para títulos, subtítulos, listas e links.
+              </p>
             </div>
             <ImageUpload
               label="Imagem do Post"
@@ -140,6 +193,36 @@ export default function NewBlogPost() {
                 className="w-4 h-4"
               />
               <label className="text-sm font-medium">Publicado</label>
+            </div>
+            <div className="space-y-3 border-t pt-4">
+              <h2 className="text-lg font-semibold">SEO do artigo</h2>
+              <div>
+                <label className="block text-sm font-medium mb-2">Título SEO</label>
+                <input
+                  type="text"
+                  value={formData.seoTitle}
+                  onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                  className="w-full px-3 py-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Descrição SEO</label>
+                <textarea
+                  value={formData.seoDescription}
+                  onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                  className="w-full px-3 py-2 border rounded"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Palavras-chave (separadas por vírgula)</label>
+                <input
+                  type="text"
+                  value={formData.seoKeywords}
+                  onChange={(e) => setFormData({ ...formData, seoKeywords: e.target.value })}
+                  className="w-full px-3 py-2 border rounded"
+                />
+              </div>
             </div>
             <div className="flex gap-2">
               <Button type="submit" disabled={loading}>
