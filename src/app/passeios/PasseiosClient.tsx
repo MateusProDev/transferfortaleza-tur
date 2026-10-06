@@ -64,17 +64,17 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError }: Pa
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-24">
+    <main className="min-h-screen bg-[#0F3A4A] pt-24">
       <Header />
       <BreadcrumbJsonLd items={breadcrumbItems} />
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Nossos Passeios</h1>
+          <h1 className="font-display text-4xl md:text-5xl mb-4">Nossos Passeios</h1>
           <p className="text-xl max-w-2xl">Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados</p>
         </div>
       </div>
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-gray-50 rounded-xl shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -107,12 +107,12 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError }: Pa
 
         {loadError ? (
           <div className="text-center py-12" role="alert">
-            <p className="text-gray-600 text-lg">Não foi possível carregar os passeios.</p>
+            <p className="text-white/80 text-lg">Não foi possível carregar os passeios.</p>
             <Link href="/passeios" className="inline-block mt-4 text-primary-600 hover:text-primary-700 font-medium">Tentar novamente</Link>
           </div>
         ) : filteredTours.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">Nenhum passeio encontrado com os filtros selecionados.</p>
+            <p className="text-white/80 text-lg">Nenhum passeio encontrado com os filtros selecionados.</p>
             <button onClick={() => { setSearchTerm(''); setDurationFilter('all'); setShowFeaturedOnly(false); }} className="mt-4 text-primary-600 hover:text-primary-700 font-medium">Limpar filtros</button>
           </div>
         ) : (

@@ -68,18 +68,18 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-24">
+    <main className="min-h-screen bg-[#0F3A4A] pt-24">
       <Header />
       <BreadcrumbJsonLd items={breadcrumbItems} />
       <div className="bg-secondary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Serviços de Transfer</h1>
+          <h1 className="font-display text-4xl md:text-5xl mb-4">Serviços de Transfer</h1>
           <p className="text-xl max-w-2xl">Conforto e segurança em seus deslocamentos com nossa frota moderna</p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-gray-50 rounded-xl shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
@@ -96,12 +96,12 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
         </div>
 
         {loadError ? (
-          <div className="py-12 text-center text-gray-600" role="alert">
+          <div className="py-12 text-center text-white/80" role="alert">
             Não foi possível carregar os transfers agora. Tente novamente mais tarde.
           </div>
         ) : filteredTransfers.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">Nenhum transfer encontrado com os filtros selecionados.</p>
+            <p className="text-white/80 text-lg">Nenhum transfer encontrado com os filtros selecionados.</p>
             <button onClick={() => setSearchTerm('')} className="mt-4 text-secondary-600 hover:text-secondary-700 font-medium">
               Limpar filtros
             </button>

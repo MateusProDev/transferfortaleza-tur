@@ -6,11 +6,23 @@ import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site-url";
 import { getCachedHomepageSeo } from "@/lib/public-data-cache";
+import { DM_Serif_Display, Manrope } from "next/font/google";
 
 const baseUrl = getSiteUrl();
 const shouldLoadAnalytics = process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true";
 const googleAdsTagId = `AW-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID || "11405399413"}`;
 const googleTagId = process.env.NEXT_PUBLIC_GA_ID || googleAdsTagId;
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-manrope",
+});
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-display",
+});
 
 const defaultSiteTitle = "Transfer Fortaleza Tur - Passeios e Transfers";
 const defaultSiteDescription = "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!";
@@ -118,7 +130,7 @@ export default function RootLayout({
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body className="antialiased">
+      <body className={`${manrope.variable} ${dmSerifDisplay.variable} font-sans antialiased`}>
         {shouldLoadAnalytics && (
           <>
             <Script

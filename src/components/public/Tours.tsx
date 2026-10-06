@@ -90,26 +90,26 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
       });
 
   return (
-    <section id="tours" className="py-14 bg-gray-100">
+    <section id="tours" className="py-14 bg-[#0F3A4A]">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-left sm:text-center">
-          <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-primary-700">
+          <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-cyan-200">
             <MapPin size={18} aria-hidden="true" />
             Destinos em Destaque
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">
             Transfers e Passeios mais procurados
           </h2>
-          <p className="max-w-3xl text-gray-600 sm:mx-auto">
+          <p className="max-w-3xl text-white/80 sm:mx-auto">
             Transfers e Passeios saindo de Fortaleza exclusivos e organizados por categoria para transformar sua viagem em uma experiência única.
           </p>
         </div>
 
         <div className="mb-8 text-left sm:text-center">
-          <h3 className="mb-3 text-2xl font-bold text-gray-900 md:text-3xl">
+          <h3 className="font-display mb-3 text-2xl text-white md:text-3xl">
             Nossos Passeios
           </h3>
-          <p className="max-w-2xl text-gray-600 sm:mx-auto">
+          <p className="max-w-2xl text-white/80 sm:mx-auto">
             Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados
           </p>
         </div>
@@ -258,7 +258,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
         {otherTours.length > 0 && (
           <div className="mt-16 border-t border-gray-200 pt-14">
             <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
                 Mais Passeios
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">

@@ -64,6 +64,7 @@ const config = {
       fontFamily: {
         poppins: ["var(--font-poppins)", "sans-serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       spacing: {
         sidebar: "256px",

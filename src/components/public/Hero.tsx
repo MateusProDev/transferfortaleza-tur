@@ -47,7 +47,7 @@ export default function Hero({ banners }: HeroProps) {
     return (
       <section className="relative flex h-[600px] items-center justify-start bg-gradient-to-r from-primary-600 to-secondary-600 sm:justify-center">
         <div className="px-4 text-left text-white sm:text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">Passeios e Transfers em Fortaleza e Região</h1>
+          <h1 className="font-display text-4xl md:text-6xl mb-4">Passeios e Transfers em Fortaleza e Região</h1>
           <p className="text-xl md:text-2xl mb-8">Reserve experiências únicas com conforto, segurança e atendimento personalizado.</p>
         </div>
       </section>
@@ -79,7 +79,7 @@ export default function Hero({ banners }: HeroProps) {
 
       <div className="relative flex h-full items-center justify-start px-4 text-white sm:justify-center sm:px-8 lg:px-16">
         <div className="max-w-4xl text-left sm:text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <h1 className="font-display text-4xl md:text-6xl mb-4">
             {heroTitle}
           </h1>
           <p className="text-xl md:text-2xl mb-8">

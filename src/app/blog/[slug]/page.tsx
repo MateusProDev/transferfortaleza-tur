@@ -161,7 +161,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <ArrowLeft size={20} />
                 Voltar ao Blog
               </Link>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title || 'Título não disponível'}</h1>
+              <h1 className="font-display text-4xl md:text-5xl mb-4">{post.title || 'Título não disponível'}</h1>
               <div className="flex items-center gap-4 text-white/80">
                 <div className="flex items-center gap-1">
                   <Calendar size={18} />

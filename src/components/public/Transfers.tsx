@@ -63,13 +63,13 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
 
   return (
     <>
-    <section id="transfers" className="py-14 bg-gray-100">
+    <section id="transfers" className="py-14 bg-[#0F3A4A]">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-left sm:text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">
             Serviços de Transfer
           </h2>
-          <p className="max-w-2xl text-gray-600 sm:mx-auto">
+          <p className="max-w-2xl text-white/80 sm:mx-auto">
             Conforto e segurança em seus deslocamentos com nossa frota moderna
           </p>
         </div>
