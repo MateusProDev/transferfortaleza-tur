@@ -1,8 +1,21 @@
 import type { Metadata } from 'next';
+import { getSiteUrl } from '@/lib/site-url';
+
+const baseUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: 'Política de Privacidade',
   description: 'Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.',
+  alternates: {
+    canonical: `${baseUrl}/politica-de-privacidade`,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: `${baseUrl}/politica-de-privacidade`,
+    title: 'Política de Privacidade | Transfer Fortaleza Tur',
+    description: 'Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.',
+  },
 };
 
 export default function PrivacyPolicyPage() {

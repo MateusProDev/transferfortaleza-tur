@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
 import ShareButtons from '@/components/public/ShareButtons';
+import MarkdownDescription from '@/components/public/MarkdownDescription';
 import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import { getSiteUrl } from '@/lib/site-url';
 
@@ -74,9 +75,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     };
   } catch (error) {
-    return {
-      title: 'Post não encontrado',
-    };
+    console.error("Error generating blog post metadata:", error);
+    throw error;
   }
 }
 
@@ -188,15 +188,10 @@ export default async function BlogPostPage({ params }: PageProps) {
 
               {/* Article Content */}
               <article className="bg-gray-50 rounded-xl shadow-lg p-8 md:p-12">
-                <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
-                  {content.split('\n\n').map((paragraph, idx) => (
-                    paragraph.trim() && (
-                      <p key={idx} className="mb-4">
-                        {paragraph}
-                      </p>
-                    )
-                  ))}
-                </div>
+                <MarkdownDescription
+                  content={content}
+                  className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
+                />
 
                 {/* Share */}
                 <ShareButtons title={post.title || ''} />
@@ -220,7 +215,11 @@ export default async function BlogPostPage({ params }: PageProps) {
       </main>
     );
   } catch (error) {
+    if (error instanceof Error && "digest" in error) {
+      throw error;
+    }
+
     console.error('Error loading blog post:', error);
-    notFound();
+    throw error;
   }
 }

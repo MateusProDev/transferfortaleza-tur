@@ -58,9 +58,6 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter((keyword): keyword is string => typeof keyword === "string")
         .map(replaceLegacyBrand)
     : ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará"];
-  const canonical = typeof homeSeo?.canonical === "string" && homeSeo.canonical.trim()
-    ? replaceLegacyBrand(homeSeo.canonical)
-    : baseUrl;
   const ogImage = typeof homeSeo?.ogImage === "string" && homeSeo.ogImage.trim()
     ? homeSeo.ogImage
     : `${baseUrl}/OG.png`;
@@ -72,7 +69,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       locale: "pt_BR",
-      url: canonical,
+      url: baseUrl,
       title,
       description,
       siteName: title,
@@ -92,7 +89,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [ogImage],
     },
     alternates: {
-      canonical,
+      canonical: baseUrl,
     },
   };
 }

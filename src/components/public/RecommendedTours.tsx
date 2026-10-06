@@ -36,7 +36,7 @@ export default function RecommendedTours({ tours }: RecommendedToursProps) {
           {tours.map((tour) => (
             <Link
               key={tour.id}
-              href={`/passeios/${tour.slug || tour.id}`}
+              href={`/pacote/${tour.slug || tour.id}`}
               className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               {/* Imagem */}

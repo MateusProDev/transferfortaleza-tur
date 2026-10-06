@@ -58,7 +58,7 @@ export default function Footer() {
     { label: 'Blog', href: '/blog' },
     { label: 'Transfers', href: '/transfer' },
     { label: 'Política', href: '/politica-de-privacidade' },
-    { label: 'Contato', href: '/contact' },
+    { label: 'Contato', href: '/contato' },
   ];
 
   return (

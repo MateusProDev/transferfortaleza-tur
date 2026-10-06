@@ -26,7 +26,7 @@ export const revalidate = 300;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   try {
-    const tours = await tourService.getAll(false);
+    const tours = await tourService.getAll(true);
     return tours.map((tour) => ({ id: tour.slug || tour.id }));
   } catch (error) {
     console.error("Error generating tour pages:", error);
@@ -95,7 +95,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       type: "website",
       locale: "pt_BR",
-      url: `${baseUrl}/passeios/${params.id}`,
+      url: `${baseUrl}/pacote/${params.id}`,
       title: tour.name,
       description,
       siteName: "Transfer Fortaleza Tur",
@@ -115,7 +115,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: tour.mainImageUrl ? [tour.mainImageUrl] : [],
     },
     alternates: {
-      canonical: `${baseUrl}/passeios/${params.id}`,
+      canonical: `${baseUrl}/pacote/${params.id}`,
     },
   };
 }
@@ -151,7 +151,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
     { name: "Passeios", url: `${baseUrl}/passeios` },
-    { name: tour.name, url: `${baseUrl}/passeios/${params.id}` },
+    { name: tour.name, url: `${baseUrl}/pacote/${params.id}` },
   ];
 
   return (
@@ -170,7 +170,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
           description={tour.description}
           image={tour.mainImageUrl}
           price={tour.price}
-          url={`${baseUrl}/passeios/${params.id}`}
+          url={`${baseUrl}/pacote/${params.id}`}
         />
       )}
 

@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Página de teste",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default function TestPage() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>

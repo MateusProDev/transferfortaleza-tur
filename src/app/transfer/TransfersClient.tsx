@@ -128,7 +128,7 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
                   </div>
                   <div className="flex items-center justify-end">
                     <Link
-                      href={`/transfer/${transfer.slug || transfer.id}`}
+                      href={`/pacote/${transfer.slug || transfer.id}`}
                       className="bg-secondary-600 hover:bg-secondary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
                       aria-label={`Ver detalhes de ${transfer.name}`}
                     >

@@ -22,9 +22,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Transfer Fortaleza Tur" }],
   creator: "Transfer Fortaleza Tur",
   publisher: "Transfer Fortaleza Tur",
-  alternates: {
-    canonical: baseUrl,
-  },
   robots: {
     index: true,
     follow: true,
@@ -39,7 +36,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: baseUrl,
     title: "Transfer Fortaleza Tur - Passeios e Transfers",
     description: "Descubra os melhores passeios e transfers",
     siteName: "Transfer Fortaleza Tur",

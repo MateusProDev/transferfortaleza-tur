@@ -108,7 +108,7 @@ export default function ContactPage() {
 
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
-    { name: "Contato", url: `${baseUrl}/contact` },
+    { name: "Contato", url: `${baseUrl}/contato` },
   ];
 
   const contactInfo = settings?.contactInfo || {};

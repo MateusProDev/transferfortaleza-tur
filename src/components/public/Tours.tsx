@@ -132,7 +132,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                     description={tour.description}
                     image={tour.mainImageUrl}
                     price={tour.price}
-                    url={`${BRAND_URL}/passeios/${tour.slug || tour.id}`}
+                    url={`${BRAND_URL}/pacote/${tour.slug || tour.id}`}
                   />
                 )}
                 <div className="relative group">
@@ -181,7 +181,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                 <div className="p-6 flex flex-col flex-1">
                   <h3>
                     <Link
-                      href={`/passeios/${tour.slug || tour.id}`}
+                      href={`/pacote/${tour.slug || tour.id}`}
                       className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
                       onClick={() => handleTourClick(tour.name)}
                     >
@@ -213,7 +213,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                       <span className="whitespace-nowrap">Reservar pelo WhatsApp</span>
                     </WhatsAppConversionLink>
                     <Link
-                      href={`/passeios/${tour.slug || tour.id}`}
+                      href={`/pacote/${tour.slug || tour.id}`}
                       className="flex-shrink-0 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                       onClick={() => handleTourClick(tour.name)}
                     >

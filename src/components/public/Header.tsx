@@ -17,8 +17,8 @@ const menuItems: MenuItem[] = [
   { label: 'Passeios', href: '/passeios', icon: Map },
   { label: 'Transfer', href: '/transfer', icon: Map },
   { label: 'Blog', href: '/blog', icon: Newspaper },
-  { label: 'Sobre', href: '/about', icon: Info },
-  { label: 'Contato', href: '/contact', icon: Phone },
+  { label: 'Sobre', href: '/sobre', icon: Info },
+  { label: 'Contato', href: '/contato', icon: Phone },
 ];
 
 export default function Header() {

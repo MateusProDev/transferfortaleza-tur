@@ -320,9 +320,18 @@ npm install -g vercel
 vercel
 ```
 
+## SEO and legacy URLs
+
+- Tour and transfer details use the legacy `/pacote/:slug` URL. Keep existing slugs exactly as stored; do not regenerate them from names.
+- The Portuguese routes `/sobre` and `/contato` are canonical. English aliases and replaced detail paths return permanent redirects to the preferred URLs.
+- Blog pages are server-rendered so article links and content are present in the initial HTML response.
+- Configure `NEXT_PUBLIC_APP_URL` with the production origin. Localhost values fall back to the brand domain so they cannot become public canonical URLs.
+- `/sitemap.xml` contains the canonical static pages and active catalog/blog URLs. Submit it in Google Search Console after deployment.
+
 ## 📝 Environment Variables for Production
 
 Remember to set all environment variables in Vercel project settings:
+- `NEXT_PUBLIC_APP_URL`
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`

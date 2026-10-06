@@ -130,7 +130,7 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError }: Pa
                     <div className="flex items-center space-x-1"><Clock size={16} /><span>{tour.duration || 'Consulte'}</span></div>
                     <div className="flex items-center space-x-1"><Users size={16} /><span>Gr pequenos</span></div>
                   </div>
-                  <div className="flex items-center justify-end"><Link href={`/passeios/${tour.slug || tour.id}`} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium" aria-label={`Ver detalhes de ${tour.name}`}>Ver Detalhes</Link></div>
+                  <div className="flex items-center justify-end"><Link href={`/pacote/${tour.slug || tour.id}`} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium" aria-label={`Ver detalhes de ${tour.name}`}>Ver Detalhes</Link></div>
                 </div>
               </article>
             ))}

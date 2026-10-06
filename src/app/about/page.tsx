@@ -12,10 +12,14 @@ const baseUrl = getSiteUrl();
 export const metadata: Metadata = {
   title: "Sobre Nós",
   description: "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo com conforto, segurança e profissionalismo.",
+  alternates: {
+    canonical: `${baseUrl}/sobre`,
+  },
   openGraph: {
     title: "Sobre Nós - Transfer Fortaleza Tur",
     description: "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo",
-    url: `${baseUrl}/about`,
+    url: `${baseUrl}/sobre`,
+    siteName: "Transfer Fortaleza Tur",
   },
 };
 
@@ -31,7 +35,7 @@ export default async function AboutPage() {
   ];
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
-    { name: "Sobre Nós", url: `${baseUrl}/about` },
+    { name: "Sobre Nós", url: `${baseUrl}/sobre` },
   ];
 
   return (

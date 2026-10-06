@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       type: "website",
       locale: "pt_BR",
-      url: `${baseUrl}/transfer/${params.id}`,
+      url: `${baseUrl}/pacote/${params.id}`,
       title: transfer.name,
       description,
       siteName: "Transfer Fortaleza Tur",
@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: transfer.imageUrl ? [transfer.imageUrl] : [],
     },
     alternates: {
-      canonical: `${baseUrl}/transfer/${params.id}`,
+      canonical: `${baseUrl}/pacote/${params.id}`,
     },
   };
 }
@@ -100,7 +100,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
     { name: "Transfer", url: `${baseUrl}/transfer` },
-    { name: transfer.name, url: `${baseUrl}/transfer/${params.id}` },
+    { name: transfer.name, url: `${baseUrl}/pacote/${params.id}` },
   ];
   const galleryImages = [
     {

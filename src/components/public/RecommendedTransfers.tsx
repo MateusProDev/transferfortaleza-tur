@@ -26,7 +26,7 @@ export default function RecommendedTransfers({ transfers }: RecommendedTransfers
           {transfers.map((transfer) => (
             <Link
               key={transfer.id}
-              href={`/transfer/${transfer.slug || transfer.id}`}
+              href={`/pacote/${transfer.slug || transfer.id}`}
               className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               <div className="relative h-48 overflow-hidden">

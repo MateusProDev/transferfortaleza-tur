@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactPage from "@/app/contact/page";
 import { getSiteUrl } from "@/lib/site-url";
 
 const baseUrl = getSiteUrl();
@@ -16,6 +17,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default function LegacyContactPage() {
+  return <ContactPage />;
 }

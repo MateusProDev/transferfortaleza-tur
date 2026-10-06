@@ -55,7 +55,63 @@ const nextConfig = {
     ];
   },
   redirects: async () => {
-    return [];
+    return [
+      {
+        source: "/passeios/:id",
+        destination: "/pacote/:id",
+        statusCode: 301,
+      },
+      {
+        source: "/transfer/:id",
+        destination: "/pacote/:id",
+        statusCode: 301,
+      },
+      {
+        source: "/about",
+        destination: "/sobre",
+        statusCode: 301,
+      },
+      {
+        source: "/contact",
+        destination: "/contato",
+        statusCode: 301,
+      },
+      {
+        source: "/pacotes",
+        destination: "/passeios",
+        statusCode: 301,
+      },
+      {
+        source: "/destinos",
+        destination: "/passeios",
+        statusCode: 301,
+      },
+      {
+        source: "/avaliacoes",
+        destination: "/#avaliacoes",
+        statusCode: 301,
+      },
+      {
+        source: "/categoria/passeio",
+        destination: "/passeios",
+        statusCode: 301,
+      },
+      {
+        source: "/categoria/transfer",
+        destination: "/transfer",
+        statusCode: 301,
+      },
+      {
+        source: "/politica",
+        destination: "/politica-de-privacidade",
+        statusCode: 301,
+      },
+      {
+        source: "/reservas",
+        destination: "/contato",
+        statusCode: 301,
+      },
+    ];
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],

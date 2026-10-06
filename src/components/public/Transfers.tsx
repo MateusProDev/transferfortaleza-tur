@@ -125,7 +125,7 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
 
                 <h3>
                   <Link
-                    href={`/transfer/${transfer.slug || transfer.id}`}
+                    href={`/pacote/${transfer.slug || transfer.id}`}
                     className="block text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
                   >
                     {transfer.name}
@@ -146,7 +146,7 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
 
                 <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
                   <Link
-                    href={`/transfer/${transfer.slug || transfer.id}`}
+                    href={`/pacote/${transfer.slug || transfer.id}`}
                     className="flex-1 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                   >
                     Ver transfer

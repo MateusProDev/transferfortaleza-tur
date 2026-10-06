@@ -33,59 +33,46 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/sobre`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${baseUrl}/contato`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
   ];
 
-  const dynamicPages: MetadataRoute.Sitemap = [];
-
-  try {
-    const [tours, transfers, blogPosts] = await Promise.all([
-      tourService.getAll(true),
-      transferService.getAll(true),
-      blogService.getAll(true),
-    ]);
-
-    blogPosts.forEach((post) => {
-      if (!post.slug) return;
-      dynamicPages.push({
+  const [tours, transfers, blogPosts] = await Promise.all([
+    tourService.getAll(true),
+    transferService.getAll(true),
+    blogService.getAll(true),
+  ]);
+  const dynamicPages: MetadataRoute.Sitemap = [
+    ...blogPosts
+      .filter((post) => post.slug)
+      .map((post) => ({
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: post.updatedAt,
-        changeFrequency: "weekly",
+        changeFrequency: "weekly" as const,
         priority: 0.7,
-      });
-    });
-
-    tours.forEach((tour) => {
-      dynamicPages.push({
-        url: `${baseUrl}/passeios/${tour.slug || tour.id}`,
-        lastModified: tour.updatedAt,
-        changeFrequency: "weekly",
-        priority: 0.8,
-      });
-    });
-
-    transfers.forEach((transfer) => {
-      dynamicPages.push({
-        url: `${baseUrl}/transfer/${transfer.slug || transfer.id}`,
-        lastModified: transfer.updatedAt,
-        changeFrequency: "weekly",
-        priority: 0.8,
-      });
-    });
-
-  } catch (error) {
-    console.error("Error fetching dynamic pages for sitemap:", error);
-  }
+      })),
+    ...tours.map((tour) => ({
+      url: `${baseUrl}/pacote/${tour.slug || tour.id}`,
+      lastModified: tour.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...transfers.map((transfer) => ({
+      url: `${baseUrl}/pacote/${transfer.slug || transfer.id}`,
+      lastModified: transfer.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+  ];
 
   return [...staticPages, ...dynamicPages];
 }
