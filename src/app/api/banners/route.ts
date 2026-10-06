@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { bannerService } from "@/lib/firestore";
+import { getCachedBanners, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/banners - Get all banners
 export async function GET() {
   try {
-    const banners = await bannerService.getAll();
+    const banners = await getCachedBanners();
     return NextResponse.json(banners);
   } catch (error) {
     console.error("Error fetching banners:", error);
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await bannerService.create(body);
+    invalidatePublicDataCache("banners");
     revalidatePath("/");
     return NextResponse.json(
       { id, message: "Banner created successfully" },

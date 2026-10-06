@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
-import { cache } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
-import { blogService } from '@/lib/firestore';
+import { getCachedBlogPosts } from '@/lib/public-data-cache';
 import { notFound } from 'next/navigation';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
@@ -22,7 +21,7 @@ export const revalidate = 300;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   try {
-    const posts = await blogService.getAll(true);
+    const posts = await getCachedBlogPosts();
     return posts
       .filter((post) => post.published && post.slug)
       .map((post) => ({ slug: post.slug }));
@@ -32,12 +31,10 @@ export async function generateStaticParams(): Promise<PageProps["params"][]> {
   }
 }
 
-const getPublishedPosts = cache(() => blogService.getAll(true));
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const baseUrl = getSiteUrl();
   try {
-    const posts = await getPublishedPosts();
+    const posts = await getCachedBlogPosts();
     const post = posts.find(p => p.slug === params.slug && p.published);
 
     if (!post) {
@@ -89,7 +86,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params }: PageProps) {
   try {
-    const posts = await getPublishedPosts();
+    const posts = await getCachedBlogPosts();
     const post = posts.find(p => p.slug === params.slug && p.published);
 
     if (!post) {

@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await tourService.create(body);
-    invalidatePublicDataCache("tours");
+    invalidatePublicDataCache("catalog");
     return NextResponse.json(
       { id, message: "Tour created successfully" },
       { status: 201 }

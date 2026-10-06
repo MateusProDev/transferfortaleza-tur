@@ -3,7 +3,7 @@ import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminFirestore } from "@/lib/firebase-admin";
 import { mapBlogPostDocument, mapBlogPostInputToDocument, toPlainFirestoreValue } from "@/lib/firestore-content";
 import { isValidBlogPost, revalidateBlogPages } from "@/lib/blog-admin";
-import { blogService } from "@/lib/firestore";
+import { getCachedBlogPosts } from "@/lib/public-data-cache";
 
 // GET /api/blog - Get all blog posts
 export async function GET(request: NextRequest) {
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(posts);
     }
 
-    const posts = (await blogService.getAll(true)).map((post) => toPlainFirestoreValue(post));
+    const posts = (await getCachedBlogPosts()).map((post) => toPlainFirestoreValue(post));
     return NextResponse.json(posts);
   } catch (error) {
     console.error("Error fetching blog posts:", error);

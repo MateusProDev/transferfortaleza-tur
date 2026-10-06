@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { faqService } from "@/lib/firestore";
+import { getCachedFaqItems, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/faq - Get all FAQ items
 export async function GET() {
   try {
-    const faqItems = await faqService.getAll();
+    const faqItems = await getCachedFaqItems();
     return NextResponse.json(faqItems);
   } catch (error) {
     console.error("Error fetching FAQ items:", error);
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await faqService.create(body);
+    invalidatePublicDataCache("faqs", "site-content");
     return NextResponse.json(
       { id, message: "FAQ item created successfully" },
       { status: 201 }

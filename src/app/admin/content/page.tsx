@@ -116,10 +116,13 @@ export default function SiteContentAdminPage() {
           && /credenciais|configurad[oa]|autenticaç/i.test(message)
           ? " Confirme ADMIN_EMAILS e as credenciais Firebase Admin nas variáveis de ambiente do Vercel e verifique se apontam para o projeto Firebase do site."
           : "";
+        const quotaHint = result?.code === "8" || result?.code === "resource-exhausted"
+          ? " A quota não pode ser corrigida pelo painel: no Google Cloud Console, confira Firestore > Usage e IAM & Admin > Quotas e System Limits; verifique também se o faturamento do projeto Firebase está ativo. Se a quota diária foi consumida, aguarde a renovação ou solicite aumento de quota."
+          : "";
         const authenticationHint = response.status === 401 || response.status === 403
           ? " Saia do painel e entre novamente com uma conta autorizada."
           : "";
-        throw new Error(`${message}${code}${configurationHint}${authenticationHint}`);
+        throw new Error(`${message}${code}${configurationHint}${quotaHint}${authenticationHint}`);
       }
       if (!Array.isArray(result?.documents)) {
         throw new Error("A resposta da API não contém a lista de documentos esperada.");

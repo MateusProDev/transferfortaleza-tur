@@ -62,9 +62,11 @@ function contentReadError(error: unknown): NextResponse {
 
   const firebaseCode = details.code.replace(/^firestore\//, "").replace(/^auth\//, "");
   const errorMessages: Record<string, string> = {
+    "8": "O Firestore excedeu a quota ou o limite de requisições do projeto (RESOURCE_EXHAUSTED). Verifique o uso e as quotas do Firestore no Google Cloud Console e confirme se o faturamento do projeto está ativo.",
     "7": "A conta de serviço do Firebase não tem permissão para ler o Firestore. No Google Cloud IAM, conceda a função Cloud Datastore User à conta de serviço configurada no Vercel.",
     "16": "A autenticação do Firebase Admin falhou. Confira se a chave de serviço configurada no Vercel está correta, ativa e pertence ao projeto Firebase do site.",
     "14": "O Firestore está temporariamente indisponível. Tente novamente em alguns minutos.",
+    "resource-exhausted": "O Firestore excedeu a quota ou o limite de requisições do projeto (RESOURCE_EXHAUSTED). Verifique o uso e as quotas do Firestore no Google Cloud Console e confirme se o faturamento do projeto está ativo.",
     "permission-denied": "A conta de serviço do Firebase não tem permissão para ler o Firestore. No Google Cloud IAM, conceda a função Cloud Datastore User à conta de serviço configurada no Vercel.",
     "unauthenticated": "A autenticação do Firebase Admin falhou. Confira se a chave de serviço configurada no Vercel está correta, ativa e pertence ao projeto Firebase do site.",
     "unavailable": "O Firestore está temporariamente indisponível. Tente novamente em alguns minutos.",
@@ -76,10 +78,17 @@ function contentReadError(error: unknown): NextResponse {
       error: message,
       code: firebaseCode,
     },
-    { status: firebaseCode === "7" || firebaseCode === "16"
-      || firebaseCode === "permission-denied" || firebaseCode === "unauthenticated"
-      ? 503
-      : 500 },
+    {
+      status: firebaseCode === "8" || firebaseCode === "resource-exhausted"
+        || firebaseCode === "7" || firebaseCode === "16"
+        || firebaseCode === "permission-denied" || firebaseCode === "unauthenticated"
+        || firebaseCode === "14" || firebaseCode === "unavailable"
+        ? 503
+        : 500,
+      headers: firebaseCode === "8" || firebaseCode === "resource-exhausted"
+        ? { "Retry-After": "60" }
+        : undefined,
+    },
   );
 }
 
@@ -168,7 +177,7 @@ export async function PUT(request: NextRequest) {
       { ...editableData, updatedAt: new Date() },
       { merge: true },
     );
-    invalidatePublicDataCache("site-settings");
+    invalidatePublicDataCache("site-settings", "site-content", "faqs");
     revalidatePath("/", "layout");
 
     return NextResponse.json({ message: "Conteúdo atualizado.", id });

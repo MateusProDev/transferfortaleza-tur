@@ -5,12 +5,12 @@ import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
 import { getSiteUrl } from '@/lib/site-url';
-import { blogService } from '@/lib/firestore';
+import { getCachedBlogPosts } from '@/lib/public-data-cache';
 
 export const revalidate = 300;
 
 export default async function BlogPage() {
-  const posts = await blogService.getAll(true);
+  const posts = await getCachedBlogPosts();
   
   const baseUrl = getSiteUrl();
   const breadcrumbItems = [

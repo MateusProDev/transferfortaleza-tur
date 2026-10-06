@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import TourDetailPage from "@/app/passeios/[id]/page";
 import TransferDetailPage from "@/app/transfer/[id]/page";
-import { tourService, transferService } from "@/lib/firestore";
+import { getCachedTours, getCachedTransfers } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 
 interface PageProps {
@@ -11,8 +11,8 @@ interface PageProps {
 
 async function getPackage(slug: string) {
   const [tours, transfers] = await Promise.all([
-    tourService.getAll(true),
-    transferService.getAll(true),
+    getCachedTours(true),
+    getCachedTransfers(true),
   ]);
 
   const tour = tours.find((item) => item.slug === slug || item.id === slug);
@@ -28,8 +28,8 @@ export const revalidate = 300;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   const [tours, transfers] = await Promise.all([
-    tourService.getAll(true),
-    transferService.getAll(true),
+    getCachedTours(true),
+    getCachedTransfers(true),
   ]);
 
   return Array.from(

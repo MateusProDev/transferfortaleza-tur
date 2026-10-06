@@ -3,8 +3,18 @@ import { Metadata } from "next";
 import Header from "@/components/public/Header";
 import Hero from "@/components/public/Hero";
 import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
-import { bannerService, tourService, transferService, testimonialService, googleReviewsService, homeContentService, blogService, faqService, firebaseService } from "@/lib/firestore";
-import { getCachedSiteSettings } from "@/lib/public-data-cache";
+import {
+  getCachedBanners,
+  getCachedBlogPosts,
+  getCachedFaqContent,
+  getCachedGoogleReviews,
+  getCachedHomeSections,
+  getCachedHomepageSeo,
+  getCachedSiteSettings,
+  getCachedTestimonials,
+  getCachedTours,
+  getCachedTransfers,
+} from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 import { replaceLegacyBrand } from "@/lib/brand";
 
@@ -42,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let homeSeo: Record<string, unknown> | null = null;
 
   try {
-    homeSeo = await firebaseService.get<Record<string, unknown>>("content", "homeSeo");
+    homeSeo = await getCachedHomepageSeo();
   } catch (error) {
     console.error("Error fetching homepage SEO content:", error);
   }
@@ -96,22 +106,28 @@ export async function generateMetadata(): Promise<Metadata> {
 
 async function getPageData() {
   try {
-    const [banners, featuredTours, featuredTransfers, testimonials, googleReviews, homeSections, blogPosts, faqContent, settings] = await Promise.all([
-      bannerService.getAll(),
-      tourService.getFeatured(),
-      transferService.getFeatured(),
-      testimonialService.getAll(),
-      googleReviewsService.get(),
-      homeContentService.getSections(),
-      blogService.getAll(true),
-      faqService.getHomeContent(),
+    const [banners, tours, transfers, testimonials, googleReviews, homeSections, blogPosts, faqContent, settings] = await Promise.all([
+      getCachedBanners(),
+      getCachedTours(true),
+      getCachedTransfers(true),
+      getCachedTestimonials(),
+      getCachedGoogleReviews(),
+      getCachedHomeSections(),
+      getCachedBlogPosts(),
+      getCachedFaqContent(),
       getCachedSiteSettings(),
     ]);
 
     return {
       banners,
-      tours: featuredTours.slice(0, 5),
-      transfers: featuredTransfers.slice(0, 5),
+      tours: tours.filter((tour) => tour.featured).slice(0, 5),
+      transfers: transfers
+        .filter((transfer) => transfer.featuredOnHome)
+        .sort((first, second) =>
+          (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER)
+          || first.name.localeCompare(second.name)
+        )
+        .slice(0, 5),
       testimonials: testimonials.filter((testimonial) => testimonial.active),
       googleReviews,
       homeSections,

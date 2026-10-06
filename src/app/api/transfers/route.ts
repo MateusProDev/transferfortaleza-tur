@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await transferService.create(body);
-    invalidatePublicDataCache("transfers");
+    invalidatePublicDataCache("catalog");
     return NextResponse.json(
       { id, message: "Transfer created successfully" },
       { status: 201 }

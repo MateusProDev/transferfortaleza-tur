@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { faqService, transferService } from "@/lib/firestore";
-import { getCachedSiteSettings } from "@/lib/public-data-cache";
+import { getCachedFaqItems, getCachedSiteSettings, getCachedTransfers } from "@/lib/public-data-cache";
 import { Car, Check, ChevronDown, Users, X } from "lucide-react";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -25,7 +24,7 @@ export const revalidate = 300;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   try {
-    const transfers = await transferService.getAll(true);
+    const transfers = await getCachedTransfers(true);
     return transfers.map((transfer) => ({ id: transfer.slug || transfer.id }));
   } catch (error) {
     console.error("Error generating transfer pages:", error);
@@ -35,10 +34,8 @@ export async function generateStaticParams(): Promise<PageProps["params"][]> {
 
 const getTransfer = cache(async (id: string): Promise<Types.Transfer | null> => {
   try {
-    // Tenta buscar pelo slug primeiro, se não encontrar tenta pelo ID
-    const transfer = await transferService.getBySlug(id);
-    if (transfer) return transfer;
-    return await transferService.getById(id);
+    const transfers = await getCachedTransfers(false);
+    return transfers.find((transfer) => transfer.slug === id || transfer.id === id) || null;
   } catch (error) {
     console.error("Error fetching transfer:", error);
     return null;
@@ -112,7 +109,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
     ...(transfer.galleryImages || []),
   ].filter((image) => image.url);
   const [faqs, settings] = await Promise.all([
-    faqService.getAll(),
+    getCachedFaqItems(),
     getCachedSiteSettings(),
   ]);
   const transferFaqs = Array.isArray(transfer.faqs)
@@ -120,9 +117,13 @@ export default async function TransferDetailPage({ params }: PageProps) {
     : [];
   const includesItems = Array.isArray(transfer.includesItems) ? transfer.includesItems.filter(Boolean) : [];
   const excludesItems = Array.isArray(transfer.excludesItems) ? transfer.excludesItems.filter(Boolean) : [];
+  const allTransfers = await getCachedTransfers(true);
   const relatedTransfers = transfer.recommendedTransferIds?.length
-    ? await transferService.getRecommended(transfer.recommendedTransferIds, transfer.id, 3)
-    : await transferService.getRelated(transfer.id, 3);
+    ? transfer.recommendedTransferIds
+        .map((id) => allTransfers.find((item) => item.id === id))
+        .filter((item): item is Types.Transfer => Boolean(item && item.id !== transfer.id))
+        .slice(0, 3)
+    : allTransfers.filter((item) => item.id !== transfer.id).slice(0, 3);
   const whatsappNumber = (settings?.whatsappConfig?.number || "5585997314093").replace(/\D/g, "");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
 

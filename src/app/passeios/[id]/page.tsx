@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { tourService } from "@/lib/firestore";
-import { getCachedSiteSettings } from "@/lib/public-data-cache";
+import { getCachedSiteSettings, getCachedTours } from "@/lib/public-data-cache";
 import { Clock, Check, X, Users, AlertCircle, Sparkles, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -26,7 +25,7 @@ export const revalidate = 300;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   try {
-    const tours = await tourService.getAll(true);
+    const tours = await getCachedTours(true);
     return tours.map((tour) => ({ id: tour.slug || tour.id }));
   } catch (error) {
     console.error("Error generating tour pages:", error);
@@ -36,10 +35,8 @@ export async function generateStaticParams(): Promise<PageProps["params"][]> {
 
 const getTour = cache(async (id: string): Promise<Types.Tour | null> => {
   try {
-    // Tenta buscar pelo slug primeiro, se não encontrar tenta pelo ID
-    const tour = await tourService.getBySlug(id);
-    if (tour) return tour;
-    return await tourService.getById(id);
+    const tours = await getCachedTours(false);
+    return tours.find((tour) => tour.slug === id || tour.id === id) || null;
   } catch (error) {
     console.error("Error fetching tour:", error);
     return null;
@@ -128,16 +125,16 @@ export default async function PasseioDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const [relatedTours, settings] = await Promise.all([
-    (tour.recommendedTourIds?.length
-      ? tourService.getRecommended(tour.recommendedTourIds, tour.id, 3)
-      : tourService.getRelated(tour.id, 3)
-    ).catch((error) => {
-      console.error("Error fetching related tours:", error);
-      return [];
-    }),
+  const [allTours, settings] = await Promise.all([
+    getCachedTours(true),
     getCachedSiteSettings(),
   ]);
+  const relatedTours = tour.recommendedTourIds?.length
+    ? tour.recommendedTourIds
+        .map((id) => allTours.find((item) => item.id === id))
+        .filter((item): item is Types.Tour => Boolean(item && item.id !== tour.id))
+        .slice(0, 3)
+    : allTours.filter((item) => item.id !== tour.id).slice(0, 3);
   const galleryImages = [
     {
       id: "main",

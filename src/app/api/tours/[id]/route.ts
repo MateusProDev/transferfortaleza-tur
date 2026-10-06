@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tourService } from "@/lib/firestore";
-import { invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { getCachedTourById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/tours/[id] - Get single tour
@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const tour = await tourService.getById(params.id);
+    const tour = await getCachedTourById(params.id);
     if (!tour) {
       return NextResponse.json(
         { error: "Tour not found" },
@@ -37,7 +37,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await tourService.update(params.id, body);
-    invalidatePublicDataCache("tours");
+    invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Tour updated successfully" });
   } catch (error) {
     console.error("Error updating tour:", error);
@@ -58,7 +58,7 @@ export async function DELETE(
 
   try {
     await tourService.delete(params.id);
-    invalidatePublicDataCache("tours");
+    invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Tour deleted successfully" });
   } catch (error) {
     console.error("Error deleting tour:", error);

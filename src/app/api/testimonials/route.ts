@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { testimonialService } from "@/lib/firestore";
+import { getCachedTestimonials, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/testimonials - Get all testimonials
 export async function GET() {
   try {
-    const testimonials = await testimonialService.getAll();
+    const testimonials = await getCachedTestimonials();
     return NextResponse.json(testimonials);
   } catch (error) {
     console.error("Error fetching testimonials:", error);
@@ -37,6 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await testimonialService.create(body);
+    invalidatePublicDataCache("testimonials");
     return NextResponse.json(
       { id, message: "Testimonial created successfully" },
       { status: 201 }

@@ -61,6 +61,14 @@ Firestore `content` collection. It preserves unknown fields and document IDs;
 catalog records, banners, blog posts, FAQs, testimonials, and general settings
 remain available in their existing dedicated admin screens.
 
+Public Firestore data is cached by the Next.js server for up to one hour;
+changes made through this app's admin APIs invalidate the related cache
+immediately. Changes made directly in the Firebase console or by another app
+may take up to one hour to appear. Firestore quotas are shared by every app
+connected to this Firebase project, including any older React site. Check
+Firestore usage by day and Query Insights in Google Cloud when investigating
+quota exhaustion; the site's cache cannot limit reads made by other clients.
+
 ## Initialize starter site content
 
 After configuring a valid local Admin SDK credential, run

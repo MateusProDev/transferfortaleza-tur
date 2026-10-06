@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { bannerService } from "@/lib/firestore";
+import { getCachedBannerById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/banners/[id] - Get single banner
@@ -9,7 +10,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const banner = await bannerService.getById(params.id);
+    const banner = await getCachedBannerById(params.id);
     if (!banner) {
       return NextResponse.json(
         { error: "Banner not found" },
@@ -37,6 +38,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await bannerService.update(params.id, body);
+    invalidatePublicDataCache("banners");
     revalidatePath("/");
     return NextResponse.json({ message: "Banner updated successfully" });
   } catch (error) {
@@ -58,6 +60,7 @@ export async function DELETE(
 
   try {
     await bannerService.delete(params.id);
+    invalidatePublicDataCache("banners");
     revalidatePath("/");
     return NextResponse.json({ message: "Banner deleted successfully" });
   } catch (error) {

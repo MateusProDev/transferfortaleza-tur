@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { blogService, tourService, transferService } from "@/lib/firestore";
+import { getCachedBlogPosts, getCachedTours, getCachedTransfers } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 
 export const revalidate = 3600;
@@ -47,9 +47,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const [tours, transfers, blogPosts] = await Promise.all([
-    tourService.getAll(true),
-    transferService.getAll(true),
-    blogService.getAll(true),
+    getCachedTours(true),
+    getCachedTransfers(true),
+    getCachedBlogPosts(),
   ]);
   const dynamicPages: MetadataRoute.Sitemap = [
     ...blogPosts

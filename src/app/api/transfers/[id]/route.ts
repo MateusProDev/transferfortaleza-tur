@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { transferService } from "@/lib/firestore";
-import { invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { getCachedTransferById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/transfers/[id] - Get single transfer
@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const transfer = await transferService.getById(params.id);
+    const transfer = await getCachedTransferById(params.id);
     if (!transfer) {
       return NextResponse.json(
         { error: "Transfer not found" },
@@ -37,7 +37,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await transferService.update(params.id, body);
-    invalidatePublicDataCache("transfers");
+    invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Transfer updated successfully" });
   } catch (error) {
     console.error("Error updating transfer:", error);
@@ -58,7 +58,7 @@ export async function DELETE(
 
   try {
     await transferService.delete(params.id);
-    invalidatePublicDataCache("transfers");
+    invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Transfer deleted successfully" });
   } catch (error) {
     console.error("Error deleting transfer:", error);

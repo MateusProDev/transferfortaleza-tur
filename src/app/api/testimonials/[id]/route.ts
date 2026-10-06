@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { testimonialService } from "@/lib/firestore";
+import { getCachedTestimonialById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/testimonials/[id] - Get single testimonial
@@ -8,7 +9,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const testimonial = await testimonialService.getById(params.id);
+    const testimonial = await getCachedTestimonialById(params.id);
     if (!testimonial) {
       return NextResponse.json(
         { error: "Testimonial not found" },
@@ -36,6 +37,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await testimonialService.update(params.id, body);
+    invalidatePublicDataCache("testimonials");
     return NextResponse.json({ message: "Testimonial updated successfully" });
   } catch (error) {
     console.error("Error updating testimonial:", error);
@@ -56,6 +58,7 @@ export async function DELETE(
 
   try {
     await testimonialService.delete(params.id);
+    invalidatePublicDataCache("testimonials");
     return NextResponse.json({ message: "Testimonial deleted successfully" });
   } catch (error) {
     console.error("Error deleting testimonial:", error);

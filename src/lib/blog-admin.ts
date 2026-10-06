@@ -1,4 +1,5 @@
 import { revalidatePath } from "next/cache";
+import { invalidatePublicDataCache } from "@/lib/public-data-cache";
 
 export function isValidBlogPost(value: unknown): value is Record<string, unknown> & {
   title: string;
@@ -15,6 +16,7 @@ export function isValidBlogPost(value: unknown): value is Record<string, unknown
 }
 
 export function revalidateBlogPages() {
+  invalidatePublicDataCache("blog-posts");
   revalidatePath("/blog");
   revalidatePath("/blog/[slug]", "page");
 }

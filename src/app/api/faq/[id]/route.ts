@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { faqService } from "@/lib/firestore";
+import { getCachedFaqItems, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/faq/[id] - Get single FAQ item
@@ -8,7 +9,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const faq = await faqService.getById(params.id);
+    const faq = (await getCachedFaqItems()).find((item) => item.id === params.id) || null;
     if (!faq) {
       return NextResponse.json(
         { error: "FAQ item not found" },
@@ -36,6 +37,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await faqService.update(params.id, body);
+    invalidatePublicDataCache("faqs", "site-content");
     return NextResponse.json({ message: "FAQ item updated successfully" });
   } catch (error) {
     console.error("Error updating FAQ item:", error);
@@ -56,6 +58,7 @@ export async function DELETE(
 
   try {
     await faqService.delete(params.id);
+    invalidatePublicDataCache("faqs", "site-content");
     return NextResponse.json({ message: "FAQ item deleted successfully" });
   } catch (error) {
     console.error("Error deleting FAQ item:", error);
