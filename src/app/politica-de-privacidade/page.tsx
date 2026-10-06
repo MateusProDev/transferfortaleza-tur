@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     url: `${baseUrl}/politica-de-privacidade`,
     title: 'Política de Privacidade | Transfer Fortaleza Tur',
     description: 'Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.',
+    images: [{ url: `${baseUrl}/OG.png`, width: 1200, height: 630, alt: 'Transfer Fortaleza Tur' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Política de Privacidade | Transfer Fortaleza Tur',
+    description: 'Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.',
+    images: [`${baseUrl}/OG.png`],
   },
 };
 

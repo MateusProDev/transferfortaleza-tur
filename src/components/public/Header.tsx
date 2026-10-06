@@ -22,8 +22,10 @@ const menuItems: MenuItem[] = [
   { label: 'Contato', href: '/contato', icon: Phone },
 ];
 
+const DEFAULT_HEADER_LOGO = '/android-icon-192x192.png';
+
 export default function Header() {
-  const [logoUrl, setLogoUrl] = useState<string>();
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_HEADER_LOGO);
   const [logoAlt, setLogoAlt] = useState('Transfer Fortaleza Tur');
   const [configuredMenuItems, setConfiguredMenuItems] = useState<MenuItem[] | null>(null);
 
@@ -35,7 +37,7 @@ export default function Header() {
     fetchSettingsCached()
       .then((settings) => {
         if (!active || !settings) return;
-        setLogoUrl(settings.headerLogo);
+        setLogoUrl(settings.headerLogo || DEFAULT_HEADER_LOGO);
         setLogoAlt(replaceLegacyBrand(settings.headerLogoAlt || 'Transfer Fortaleza Tur'));
         if (Array.isArray(settings.menuLinks)) {
           const configuredLinks = settings.menuLinks as MenuLink[];
@@ -70,21 +72,17 @@ export default function Header() {
       <nav className="container mx-auto px-3 py-3 sm:px-4 sm:py-2" role="navigation" aria-label="Navegação principal">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center" aria-label="Transfer Fortaleza Tur - Página inicial">
-            {logoUrl ? (
-              <div className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-white/0 transition-transform duration-200 hover:scale-105 sm:h-[64px] sm:w-[64px] lg:h-[80px] lg:w-[80px]">
-                <Image
-                  src={logoUrl}
-                  alt={logoAlt}
-                  width={96}
-                  height={96}
-                  className="h-full w-full object-contain"
-                />
-              </div>
-            ) : (
-              <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/40 bg-white/10 text-lg font-black text-white transition-transform duration-200 hover:scale-105 sm:h-[64px] sm:w-[64px] sm:text-xl lg:h-[80px] lg:w-[80px]">
-                PL
-              </div>
-            )}
+            <div className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-white/0 transition-transform duration-200 hover:scale-105 sm:h-[64px] sm:w-[64px] lg:h-[80px] lg:w-[80px]">
+              <Image
+                src={logoUrl}
+                alt={logoAlt}
+                width={96}
+                height={96}
+                sizes="(min-width: 1024px) 80px, 72px"
+                priority
+                className="h-full w-full object-contain"
+              />
+            </div>
           </Link>
 
           <ul className="hidden md:flex items-center space-x-8" role="menubar">

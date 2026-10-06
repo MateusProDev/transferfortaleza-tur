@@ -54,6 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const description = transfer.description || `Solicite um orçamento para ${transfer.name} com a Transfer Fortaleza Tur.`;
+  const image = transfer.imageUrl || `${baseUrl}/OG.png`;
 
   return {
     title: transfer.name,
@@ -65,20 +66,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: transfer.name,
       description,
       siteName: "Transfer Fortaleza Tur",
-      images: transfer.imageUrl ? [
-        {
-          url: transfer.imageUrl,
-          width: 1200,
-          height: 630,
-          alt: transfer.imageAlt || transfer.name,
-        },
-      ] : [],
+      images: [{
+        url: image,
+        width: 1200,
+        height: 630,
+        alt: transfer.imageAlt || transfer.name,
+      }],
     },
     twitter: {
       card: "summary_large_image",
       title: transfer.name,
       description,
-      images: transfer.imageUrl ? [transfer.imageUrl] : [],
+      images: [image],
     },
     alternates: {
       canonical: `${baseUrl}/pacote/${params.id}`,

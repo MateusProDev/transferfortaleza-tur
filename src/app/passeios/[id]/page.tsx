@@ -73,6 +73,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "passeio fortaleza",
     "excursão fortaleza",
   ].join(", ");
+  const image = tour.mainImageUrl || `${baseUrl}/OG.png`;
 
   return {
     title,
@@ -96,20 +97,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: tour.name,
       description,
       siteName: "Transfer Fortaleza Tur",
-      images: tour.mainImageUrl ? [
-        {
-          url: tour.mainImageUrl,
-          width: 1200,
-          height: 630,
-          alt: `${tour.name} - Passeio turístico em Fortaleza`,
-        },
-      ] : [],
+      images: [{
+        url: image,
+        width: 1200,
+        height: 630,
+        alt: `${tour.name} - Passeio turístico em Fortaleza`,
+      }],
     },
     twitter: {
       card: "summary_large_image",
       title: tour.name,
       description,
-      images: tour.mainImageUrl ? [tour.mainImageUrl] : [],
+      images: [image],
     },
     alternates: {
       canonical: `${baseUrl}/pacote/${params.id}`,

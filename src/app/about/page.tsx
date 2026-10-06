@@ -25,6 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       url: `${baseUrl}/sobre`,
       siteName: "Transfer Fortaleza Tur",
+      images: [{ url: `${baseUrl}/OG.png`, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} - Transfer Fortaleza Tur`,
+      description,
+      images: [`${baseUrl}/OG.png`],
     },
   };
 }

@@ -49,6 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const seoDescription = typeof post.seo?.description === "string" && post.seo.description.trim()
       ? post.seo.description
       : post.summary || `Leia o artigo completo no blog da Transfer Fortaleza Tur. Dicas de turismo em Fortaleza e região.`;
+    const image = post.imageUrl || `${baseUrl}/OG.png`;
 
     return {
       title: seoTitle,
@@ -59,20 +60,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         url: `${baseUrl}/blog/${params.slug}`,
         title: seoTitle,
         description: seoDescription,
-        images: post.imageUrl ? [
+        images: [
           {
-            url: post.imageUrl,
+            url: image,
             width: 1200,
             height: 630,
             alt: post.imageAlt || post.title,
           },
-        ] : [],
+        ],
       },
       twitter: {
         card: "summary_large_image",
         title: seoTitle,
         description: seoDescription,
-        images: post.imageUrl ? [post.imageUrl] : [],
+        images: [image],
       },
       alternates: {
         canonical: `${baseUrl}/blog/${params.slug}`,

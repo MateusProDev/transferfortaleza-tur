@@ -391,7 +391,7 @@ export default function SettingsAdmin() {
                   label=""
                   onImageUpload={(url) => setSiteSeo({ ...siteSeo, ogImage: url })}
                 />
-                <p className="text-xs text-muted-foreground">Imagem horizontal recomendada: 1200 × 630 px. Se não escolher uma, será usada a imagem padrão do site.</p>
+                <p className="text-xs text-muted-foreground">Imagem horizontal recomendada: 1200 × 630 px. Na página inicial, a imagem do primeiro passeio com foto tem prioridade; esta imagem fica como alternativa.</p>
               </div>
               <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-4">
                 <Button type="button" onClick={handleSaveSiteSeo} disabled={siteSeoSaving}>

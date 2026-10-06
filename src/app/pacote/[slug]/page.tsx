@@ -54,7 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonical = `${baseUrl}/pacote/${slug}`;
   const title = item.item.name;
   const description = item.item.description;
-  const image = item.type === "tour" ? item.item.mainImageUrl : item.item.imageUrl;
+  const productImage = item.type === "tour" ? item.item.mainImageUrl : item.item.imageUrl;
+  const image = productImage || `${baseUrl}/OG.png`;
 
   return {
     title,
@@ -67,15 +68,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       siteName: "Transfer Fortaleza Tur",
-      images: image
-        ? [{ url: image, width: 1200, height: 630, alt: title }]
-        : [],
+      images: [{ url: image, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: image ? [image] : [],
+      images: [image],
     },
   };
 }

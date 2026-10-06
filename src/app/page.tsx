@@ -68,9 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter((keyword): keyword is string => typeof keyword === "string")
         .map(replaceLegacyBrand)
     : ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará"];
-  const ogImage = typeof homeSeo?.ogImage === "string" && homeSeo.ogImage.trim()
-    ? homeSeo.ogImage
-    : `${baseUrl}/OG.png`;
+  const ogImage = `${baseUrl}/OG.png`;
 
   return {
     title,
