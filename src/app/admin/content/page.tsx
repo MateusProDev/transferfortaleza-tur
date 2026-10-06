@@ -12,6 +12,12 @@ interface ContentDocument {
   data: ContentValue;
 }
 
+interface ContentResponse {
+  documents: ContentDocument[];
+  totalDocuments: number;
+  projectId: string | null;
+}
+
 const documentNames: Record<string, string> = {
   about: "Sobre",
   carousel: "Carrossel",
@@ -92,16 +98,32 @@ export default function SiteContentAdminPage() {
   const [draft, setDraft] = useState<ContentValue | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [loadError, setLoadError] = useState("");
+  const [projectId, setProjectId] = useState<string | null>(null);
 
   const loadDocuments = useCallback(async () => {
     setLoading(true);
+    setLoadError("");
     try {
       const response = await fetch("/api/admin/content", { cache: "no-store" });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Falha ao carregar conteúdo.");
+      const result = await response.json().catch(() => null) as
+        | (Partial<ContentResponse> & { error?: string })
+        | null;
+      if (!response.ok) {
+        const message = result?.error || `A API respondeu com HTTP ${response.status}.`;
+        throw new Error(response.status === 503
+          ? `${message} Confira as variáveis ADMIN_EMAILS e FIREBASE_ADMIN_SDK no Vercel e verifique se as credenciais apontam para o mesmo projeto Firebase do site.`
+          : response.status === 401 || response.status === 403
+            ? `${message} Saia do painel e entre novamente com uma conta autorizada.`
+            : message);
+      }
+      if (!Array.isArray(result?.documents)) {
+        throw new Error("A resposta da API não contém a lista de documentos esperada.");
+      }
 
-      const records = result.documents as ContentDocument[];
+      const records = result.documents;
       setDocuments(records);
+      setProjectId(result.projectId || null);
       setSelectedId((currentId) =>
         records.some((record) => record.id === currentId)
           ? currentId
@@ -109,7 +131,9 @@ export default function SiteContentAdminPage() {
       );
     } catch (error) {
       console.error("Error loading site content:", error);
-      toast.error(error instanceof Error ? error.message : "Falha ao carregar conteúdo.");
+      const message = error instanceof Error ? error.message : "Falha ao carregar conteúdo.";
+      setLoadError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -290,10 +314,34 @@ export default function SiteContentAdminPage() {
         <div className="flex min-h-48 items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-primary" />
         </div>
+      ) : loadError ? (
+        <div role="alert" className="space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+          <p className="font-semibold">Não foi possível carregar o conteúdo do Firebase.</p>
+          <p>{loadError}</p>
+          <button
+            type="button"
+            onClick={() => void loadDocuments()}
+            className="rounded-md border border-red-300 bg-white px-3 py-2 font-medium hover:bg-red-100"
+          >
+            Tentar novamente
+          </button>
+        </div>
       ) : documents.length === 0 ? (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          Nenhum documento foi encontrado na coleção de conteúdo do Firebase.
-        </p>
+        <div className="space-y-2 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-semibold">A conexão com o Firebase funcionou, mas a coleção `content` retornou zero documentos.</p>
+          <p>
+            {projectId ? `Projeto conectado: ${projectId}. ` : ""}
+            Se você esperava ver conteúdo existente, confirme se as credenciais Firebase do Vercel apontam
+            para o mesmo projeto usado pelo site e se os documentos estão na coleção `content`.
+          </p>
+          <button
+            type="button"
+            onClick={() => void loadDocuments()}
+            className="rounded-md border border-amber-300 bg-white px-3 py-2 font-medium hover:bg-amber-100"
+          >
+            Atualizar lista
+          </button>
+        </div>
       ) : (
         <>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -311,7 +359,9 @@ export default function SiteContentAdminPage() {
                 ))}
               </select>
             </label>
-            <span className="text-xs text-gray-500">Documento Firebase: {selectedId}</span>
+            <span className="text-xs text-gray-500">
+              {projectId ? `Projeto: ${projectId} · ` : ""}Documento: {selectedId}
+            </span>
           </div>
 
           {draft && (

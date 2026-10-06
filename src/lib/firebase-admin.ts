@@ -62,6 +62,7 @@ export const adminDb = admin.apps.length ? admin.firestore() : null;
 export const adminAuth = admin.apps.length ? admin.auth() : null;
 export const getAdminFirestore = () => adminDb;
 export const getAdminAuth = () => adminAuth;
+export const getAdminProjectId = () => admin.apps[0]?.options.projectId || null;
 export const verifyIdToken = async (token: string) => {
   if (!adminAuth) {
     throw new Error('Firebase Admin Auth não inicializado');

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
-import { getAdminFirestore } from "@/lib/firebase-admin";
+import { getAdminFirestore, getAdminProjectId } from "@/lib/firebase-admin";
 import { invalidatePublicDataCache } from "@/lib/public-data-cache";
 
 type ContentDocument = Record<string, unknown>;
@@ -31,6 +31,18 @@ export async function GET(request: NextRequest) {
       { status: 503 },
     );
   }
+  const adminProjectId = getAdminProjectId();
+  const configuredProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  if (adminProjectId && configuredProjectId && adminProjectId !== configuredProjectId) {
+    console.error("Firebase project mismatch for editable content:", {
+      adminProjectId,
+      configuredProjectId,
+    });
+    return NextResponse.json(
+      { error: "As credenciais do servidor apontam para um projeto Firebase diferente do site." },
+      { status: 503 },
+    );
+  }
 
   try {
     const snapshot = await db.collection("content").get();
@@ -41,7 +53,11 @@ export async function GET(request: NextRequest) {
       return { id: document.id, data: serializeValue(data) as ContentDocument };
     });
 
-    return NextResponse.json({ documents });
+    return NextResponse.json({
+      documents,
+      totalDocuments: documents.length,
+      projectId: adminProjectId || configuredProjectId || null,
+    });
   } catch (error) {
     console.error("Error loading editable site content:", error);
     return NextResponse.json({ error: "Não foi possível carregar o conteúdo do site." }, { status: 500 });
