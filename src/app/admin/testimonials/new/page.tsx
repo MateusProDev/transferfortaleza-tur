@@ -44,7 +44,7 @@ export default function NewTestimonial() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Novo Depoimento</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Novo Depoimento</h1>
         <p className="text-muted-foreground">Criar um novo depoimento</p>
       </div>
 
@@ -110,7 +110,7 @@ export default function NewTestimonial() {
               />
               <label className="text-sm font-medium">Ativo</label>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <Button type="submit" disabled={loading}>
                 {loading ? "Criando..." : "Criar Depoimento"}
               </Button>

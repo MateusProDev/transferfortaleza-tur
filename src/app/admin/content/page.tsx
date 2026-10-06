@@ -310,10 +310,11 @@ export default function SiteContentAdminPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Conteúdo do site</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Textos e seções</h1>
         <p className="mt-2 text-sm text-gray-600">
-          Edite títulos, textos, links, imagens e listas das seções salvas no Firebase.
-          Passeios, transfers, banners, artigos, avaliações e configurações gerais têm telas próprias.
+          Edite os textos, links, imagens e listas dos blocos de conteúdo do site.
+          Para banners, passeios, transfers, artigos, depoimentos e perguntas frequentes, use as áreas próprias do menu.
+          Informações de contato, navegação e identidade ficam em Configurações do site.
         </p>
       </div>
 

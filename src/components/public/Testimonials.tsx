@@ -34,18 +34,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
   }, [testimonials.length]);
 
   if (testimonials.length === 0) {
-    return (
-      <section id="avaliacoes" className="py-14 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              O Que Nossos Clientes Dizem
-            </h2>
-          </div>
-          <p className="text-center text-gray-600">Nenhum depoimento disponível no momento.</p>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   const featuredTestimonial = testimonials[activeIndex];

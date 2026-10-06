@@ -35,9 +35,9 @@ export default function TestimonialsAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Depoimentos</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Depoimentos</h1>
           <p className="text-muted-foreground">
             Gerenciar depoimentos de clientes
           </p>
@@ -60,7 +60,7 @@ export default function TestimonialsAdmin() {
           testimonials.map((testimonial: any) => (
             <Card key={testimonial.id}>
               <CardContent className="pt-6">
-                <div className="flex gap-4">
+                <div className="flex gap-3 sm:gap-4">
                   {testimonial.clientPhoto && (
                     <div className="relative w-16 h-16 flex-shrink-0">
                       <Image
@@ -73,7 +73,7 @@ export default function TestimonialsAdmin() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                       <div className="flex-1 min-w-0">
                         <h3 className="text-lg font-semibold mb-1">{testimonial.clientName}</h3>
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{testimonial.text}</p>
@@ -90,7 +90,7 @@ export default function TestimonialsAdmin() {
                           ))}
                         </div>
                       </div>
-                      <div className="flex gap-2 flex-shrink-0">
+                      <div className="flex flex-wrap gap-2 sm:flex-shrink-0">
                         <Button variant="outline" size="sm" asChild>
                           <Link href={`/admin/testimonials/${testimonial.id}`}>Editar</Link>
                         </Button>

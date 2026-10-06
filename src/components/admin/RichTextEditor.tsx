@@ -15,8 +15,9 @@ interface RichTextEditorProps {
 
 export default function RichTextEditor({ value, onChange, label }: RichTextEditorProps) {
   return (
-    <div data-color-mode="light">
+    <div className="min-w-0 max-w-full overflow-hidden" data-color-mode="light">
       <MDEditor
+        className="!w-full !max-w-full"
         value={value}
         onChange={(nextValue) => onChange(nextValue || "")}
         preview="live"

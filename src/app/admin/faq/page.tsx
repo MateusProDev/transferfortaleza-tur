@@ -34,9 +34,9 @@ export default function FAQAdmin() {
 
   return (
     <div className="space-y-6"> 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">FAQ</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">FAQ</h1>
           <p className="text-muted-foreground">
             Gerenciar perguntas frequentes
           </p>
@@ -59,12 +59,12 @@ export default function FAQAdmin() {
           faqs.map((faq: any) => (
             <Card key={faq.id}>
               <CardContent className="pt-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="min-w-0 flex-1">
                     <h3 className="text-lg font-semibold mb-2">{faq.question}</h3>
                     <p className="text-sm text-muted-foreground">{faq.answer}</p>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex flex-wrap gap-2 sm:flex-shrink-0">
                     <Button variant="outline" size="sm" asChild>
                       <Link href={`/admin/faq/${faq.id}`}>Editar</Link>
                     </Button>

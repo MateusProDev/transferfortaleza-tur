@@ -35,7 +35,7 @@ export default function ConfirmarConversaoPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50">
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="mx-4 w-full max-w-md rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm sm:mx-0 sm:p-8">
         {status === 'loading' && <p className="text-slate-700">Enviando conversão...</p>}
         {status === 'ok' && <p className="text-emerald-700">Conversão enviada com sucesso.</p>}
         {status === 'error' && <p className="text-red-700">Não foi possível enviar a conversão.</p>}

@@ -51,9 +51,9 @@ export default function BlogAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Blog</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Blog</h1>
           <p className="text-muted-foreground">
             Gerenciar artigos do blog
           </p>
@@ -87,9 +87,9 @@ export default function BlogAdmin() {
           blogs.map((post: any) => (
             <Card key={post.id}>
               <CardContent className="pt-6">
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row">
                   {post.imageUrl && (
-                    <div className="relative w-32 h-32 flex-shrink-0">
+                    <div className="relative aspect-video w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-square sm:w-32">
                       <Image
                         src={post.imageUrl}
                         alt={post.imageAlt || post.title}
@@ -100,18 +100,18 @@ export default function BlogAdmin() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold mb-1 truncate">{post.title}</h3>
+                        <h3 className="mb-1 break-words text-lg font-semibold sm:truncate">{post.title}</h3>
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{post.summary}</p>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                           <span>{formatDate(post.createdAt)}</span>
                           <span className={`px-2 py-1 rounded-full ${post.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                             {post.published ? 'Publicado' : 'Rascunho'}
                           </span>
                         </div>
                       </div>
-                      <div className="flex gap-2 flex-shrink-0">
+                      <div className="flex flex-wrap gap-2 sm:flex-shrink-0">
                         <Button variant="outline" size="sm" asChild>
                           <Link href={`/admin/blog/${post.id}`}>Editar</Link>
                         </Button>

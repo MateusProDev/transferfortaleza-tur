@@ -78,9 +78,9 @@ export default function EditTestimonial() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="mx-auto w-full max-w-4xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Editar Depoimento</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Editar Depoimento</h1>
         <p className="text-muted-foreground">
           Atualize as informações do depoimento do cliente
         </p>
@@ -174,7 +174,7 @@ export default function EditTestimonial() {
           </CardContent>
         </Card>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <Button type="submit" disabled={saving}>
             {saving ? "Salvando..." : "Salvar Alterações"}
           </Button>

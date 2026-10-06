@@ -70,7 +70,7 @@ export default function NewTransfer() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Novo Transfer</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Novo Transfer</h1>
         <p className="text-muted-foreground">Criar um novo transfer</p>
       </div>
 
@@ -234,7 +234,7 @@ export default function NewTransfer() {
               />
               <label className="text-sm font-medium">Exibir na página inicial (até 3 transfers)</label>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <Button type="submit" disabled={loading}>
                 {loading ? "Criando..." : "Criar Transfer"}
               </Button>

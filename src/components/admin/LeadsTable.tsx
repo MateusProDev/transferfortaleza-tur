@@ -147,7 +147,7 @@ export function LeadsTable({ leads }: LeadsTableProps) {
 
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
         <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-0 table-auto divide-y divide-slate-200 text-left">
+          <table className="w-full min-w-[720px] table-auto divide-y divide-slate-200 text-left">
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-3 py-3 text-[10px] font-semibold uppercase tracking-wide text-slate-600 sm:px-4 sm:text-xs">Data</th>

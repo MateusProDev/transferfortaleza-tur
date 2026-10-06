@@ -91,7 +91,7 @@ export default function EditBanner() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Editar Banner</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Editar Banner</h1>
         <p className="text-muted-foreground">Editar informações do banner</p>
       </div>
 
@@ -166,7 +166,7 @@ export default function EditBanner() {
               />
               <label className="text-sm font-medium">Ativo</label>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <Button type="submit" disabled={saving}>
                 {saving ? "Salvando..." : "Salvar Alterações"}
               </Button>

@@ -35,9 +35,9 @@ export default function BannersAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Banners</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Banners</h1>
           <p className="text-muted-foreground">
             Gerenciar banners da página inicial
           </p>
@@ -68,12 +68,12 @@ export default function BannersAdmin() {
           {banners.map((banner: any) => (
             <Card key={banner.id}>
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
                     <CardTitle>{banner.title}</CardTitle>
                     <CardDescription>{banner.subtitle}</CardDescription>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -94,13 +94,13 @@ export default function BannersAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row">
                   <img
                     src={banner.imageUrl}
                     alt={banner.imageAlt}
-                    className="w-32 h-20 object-cover rounded"
+                    className="h-40 w-full rounded object-cover sm:h-20 sm:w-32"
                   />
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1 break-words">
                     <p className="text-sm">
                       <span className="font-medium">Botão:</span> {banner.buttonText}
                     </p>

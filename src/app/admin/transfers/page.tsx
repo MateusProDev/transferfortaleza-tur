@@ -19,9 +19,9 @@ export default function TransfersAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Transfers</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Transfers</h1>
           <p className="text-muted-foreground">
             Gerenciar seus serviços de transfer
           </p>
@@ -52,12 +52,12 @@ export default function TransfersAdmin() {
           {transfers.map((transfer: any) => (
             <Card key={transfer.id}>
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
                     <CardTitle>{transfer.name}</CardTitle>
                     <CardDescription>{transfer.description}</CardDescription>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -89,13 +89,13 @@ export default function TransfersAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row">
                   <img
                     src={transfer.imageUrl}
                     alt={transfer.imageAlt}
-                    className="w-32 h-20 object-cover rounded"
+                    className="h-40 w-full rounded object-cover sm:h-20 sm:w-32"
                   />
-                  <div className="flex-1 grid grid-cols-3 gap-4">
+                  <div className="grid min-w-0 flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <div>
                       <p className="text-xs text-muted-foreground">Veículo</p>
                       <p className="font-semibold">{transfer.vehicleType || 'Consulte'}</p>

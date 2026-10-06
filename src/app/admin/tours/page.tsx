@@ -60,9 +60,9 @@ export default function ToursAdmin() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Passeios</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Passeios</h1>
           <p className="text-muted-foreground">
             Gerenciar seus passeios e excursões
           </p>
@@ -97,12 +97,12 @@ export default function ToursAdmin() {
             return (
             <Card key={tour.id}>
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
                     <CardTitle>{tour.name}</CardTitle>
                     <CardDescription>{tour.description}</CardDescription>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {tour.featured && (
                       <div className="flex gap-1">
                         <Button
@@ -158,13 +158,13 @@ export default function ToursAdmin() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row">
                   <img
                     src={tour.mainImageUrl}
                     alt={tour.mainImageAlt}
-                    className="w-32 h-20 object-cover rounded"
+                    className="h-40 w-full rounded object-cover sm:h-20 sm:w-32"
                   />
-                  <div className="flex-1 grid grid-cols-2 gap-4">
+                  <div className="grid min-w-0 flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <p className="text-xs text-muted-foreground">Duração</p>
                       <p className="font-semibold">{tour.duration || 'Consulte'}</p>

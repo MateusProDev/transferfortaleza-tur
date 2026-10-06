@@ -174,11 +174,11 @@ export default function SettingsAdmin() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="mx-auto w-full max-w-4xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Configurações</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Configurações do site</h1>
         <p className="text-muted-foreground">
-          Gerenciar configurações gerais do site
+          Gerencie identidade, SEO, navegação, contato e informações institucionais.
         </p>
       </div>
 
@@ -559,7 +559,7 @@ export default function SettingsAdmin() {
               onChange={(e) => setSettings({ ...settings, footerCopyright: e.target.value })}
             />
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium">Crédito de desenvolvimento</label>
               <Input
@@ -670,7 +670,7 @@ export default function SettingsAdmin() {
             Títulos, horários, rótulos do formulário, mensagens e textos dos botões da página /contato.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 sm:grid-cols-2">
           {(Object.keys(contactCopyLabels) as Array<keyof ContactPageCopy>).map((key) => (
             <div key={key} className="space-y-1.5">
               <label className="text-sm font-medium">{contactCopyLabels[key]}</label>
@@ -930,7 +930,7 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <Button onClick={handleSave} disabled={saving}>
           {saving ? "Salvando..." : "Salvar Configurações"}
         </Button>
