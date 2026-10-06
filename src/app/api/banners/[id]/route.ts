@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { bannerService } from "@/lib/firestore";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/banners/[id] - Get single banner
 export async function GET(
@@ -30,6 +31,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await bannerService.update(params.id, body);
@@ -46,9 +50,12 @@ export async function PUT(
 
 // DELETE /api/banners/[id] - Delete banner
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     await bannerService.delete(params.id);
     revalidatePath("/");

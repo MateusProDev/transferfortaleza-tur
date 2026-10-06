@@ -40,6 +40,16 @@ export function setCachedSettings<T = unknown>(data: T, ttlMs = SETTINGS_CACHE_T
   window.localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(entry));
 }
 
+export function clearCachedSettings() {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.removeItem(SETTINGS_CACHE_KEY);
+  } catch (error) {
+    console.error("Unable to clear cached site settings:", error);
+  }
+}
+
 export async function fetchSettingsCached<T = SiteSettings>(fetcher: typeof fetch = fetch): Promise<T | null> {
   const cached = getCachedSettings<T>();
   if (cached) return cached;

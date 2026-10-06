@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { faqService } from "@/lib/firestore";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/faq/[id] - Get single FAQ item
 export async function GET(
@@ -29,6 +30,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await faqService.update(params.id, body);
@@ -44,9 +48,12 @@ export async function PUT(
 
 // DELETE /api/faq/[id] - Delete FAQ item
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     await faqService.delete(params.id);
     return NextResponse.json({ message: "FAQ item deleted successfully" });

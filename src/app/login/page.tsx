@@ -1,104 +1,74 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { signInWithGoogle, logoutAdmin } from "@/lib/firebase/client";
 
 function LoginForm() {
-  console.log("[LOGIN] Component rendering");
-
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/admin/dashboard";
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const requestedRedirect = searchParams.get("redirect") || "/admin/dashboard";
+  const redirect = requestedRedirect.startsWith("/admin/") && !requestedRedirect.startsWith("//")
+    ? requestedRedirect
+    : "/admin/dashboard";
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  async function handleLogin() {
     setLoading(true);
-    console.log("[LOGIN] Starting login process for:", email);
-    console.log("[LOGIN] Redirect target:", redirect);
+    setError("");
 
     try {
+      const user = await signInWithGoogle();
+      const idToken = await user.getIdToken(true);
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
+        credentials: "same-origin",
+        body: JSON.stringify({ idToken }),
       });
-
-      console.log("[LOGIN] Response status:", response.status);
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error("Login failed");
+        throw new Error(result.error || "Não foi possível entrar no painel.");
       }
 
-      const data = await response.json();
-      console.log("[LOGIN] Login successful, received:", data);
-      console.log("[LOGIN] Redirecting to:", redirect);
-
-      // Small delay to ensure cookie is set
-      setTimeout(() => {
-        window.location.href = redirect;
-      }, 100);
-    } catch (error) {
-      console.error("[LOGIN] Login error:", error);
-      alert("Invalid email or password");
+      window.location.assign(redirect);
+    } catch (loginError) {
+      console.error("[login] Admin authentication failed:", loginError);
+      setError(loginError instanceof Error ? loginError.message : "Erro ao entrar no painel.");
+      await logoutAdmin();
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', padding: '1rem', fontFamily: 'sans-serif' }}>
-      <div style={{ width: '100%', maxWidth: '400px', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', backgroundColor: 'white', padding: '24px' }}>
-        <div style={{ marginBottom: '16px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '4px', margin: 0 }}>Transfer Fortaleza Tur</h1>
-          <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Admin Panel Login</p>
-        </div>
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="email" style={{ fontSize: '14px', fontWeight: '500', margin: 0 }}>
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="admin@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px' }}
-            />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label htmlFor="password" style={{ fontSize: '14px', fontWeight: '500', margin: 0 }}>
-              Senha
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px' }}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ width: '100%', padding: '10px 16px', backgroundColor: loading ? '#9ca3af' : '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', fontSize: '14px', fontWeight: '500', cursor: loading ? 'not-allowed' : 'pointer' }}
-          >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
-        <p style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center', marginTop: '16px', margin: '16px 0 0 0' }}>
-          Credenciais: use sua conta Firebase Auth
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          Acesso restrito
         </p>
+        <h1 className="mt-3 text-2xl font-bold text-slate-900">
+          Admin Transfer Fortaleza Tur
+        </h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Entre com a conta Google autorizada para gerenciar o site.
+        </p>
+
+        {error && (
+          <p role="alert" className="mt-5 rounded-md bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={handleLogin}
+          disabled={loading}
+          className="mt-8 w-full rounded-md bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-wait disabled:opacity-60"
+        >
+          {loading ? "Verificando acesso..." : "Entrar com Google"}
+        </button>
       </div>
     </div>
   );
@@ -106,7 +76,7 @@ function LoginForm() {
 
 export default function AdminLogin() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}>Loading...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Carregando...</div>}>
       <LoginForm />
     </Suspense>
   );

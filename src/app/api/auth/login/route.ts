@@ -1,52 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAdminAuth } from "@/lib/firebase-admin";
+import { isAdminAllowlistConfigured, isAllowedAdminEmail } from "@/lib/admin-api-auth";
 
-// POST /api/auth/login - Simple login endpoint
 export async function POST(request: NextRequest) {
   try {
-    console.log("[LOGIN API] Login request received");
-    const { email, password } = await request.json();
-    console.log("[LOGIN API] Email:", email);
-
-    if (!email || !password) {
-      console.log("[LOGIN API] Missing email or password");
+    const { idToken } = await request.json();
+    if (typeof idToken !== "string" || !idToken) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Token de autenticação inválido." },
         { status: 400 }
       );
     }
 
-    // In production, this would authenticate with Firebase
-    // For now, return a mock token
-    const token = Buffer.from(email).toString("base64");
-    console.log("[LOGIN API] Generated token:", token);
+    const auth = getAdminAuth();
+    if (!auth || !isAdminAllowlistConfigured()) {
+      return NextResponse.json(
+        { error: "A autenticação administrativa não está configurada." },
+        { status: 503 }
+      );
+    }
 
-    const response = NextResponse.json(
-      {
-        token,
-        user: {
-          email,
-          role: "admin",
-        },
-        message: "Login successful",
-      },
-      { status: 200 }
-    );
+    const decoded = await auth.verifyIdToken(idToken, true);
+    if (!isAllowedAdminEmail(decoded.email)) {
+      return NextResponse.json({ error: "Este usuário não pode acessar o painel." }, { status: 403 });
+    }
 
-    // Set cookie for middleware to read
-    response.cookies.set("authToken", token, {
+    const expiresIn = 5 * 24 * 60 * 60 * 1000;
+    const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
+
+    const response = NextResponse.json({ email: decoded.email });
+
+    response.cookies.set("authToken", sessionCookie, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
+      maxAge: expiresIn / 1000,
     });
 
-    console.log("[LOGIN API] Cookie set, returning response");
     return response;
   } catch (error) {
-    console.error("[LOGIN API] Login error:", error);
+    console.error("[auth/login] Failed to create admin session:", error);
+    const code = error && typeof error === "object" && "code" in error
+      ? String(error.code)
+      : "";
     return NextResponse.json(
-      { error: "Login failed" },
-      { status: 500 }
+      { error: code.startsWith("auth/")
+        ? "Não foi possível autenticar. Verifique sua conta e tente novamente."
+        : "Não foi possível criar a sessão administrativa." },
+      { status: code.startsWith("auth/") ? 401 : 500 }
     );
   }
 }

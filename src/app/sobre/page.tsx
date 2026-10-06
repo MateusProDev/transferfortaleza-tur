@@ -1,4 +1,4 @@
-import AboutPage, { metadata } from "@/app/about/page";
+import AboutPage, { generateMetadata } from "@/app/about/page";
 
-export { metadata };
+export { generateMetadata };
 export default AboutPage;

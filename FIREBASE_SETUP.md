@@ -39,7 +39,13 @@ CLI may need to be installed first (`npm install --global firebase-tools`).
 
 ## Local Firebase Admin SDK
 
-If a server-side script needs privileged Firestore access, create a new service
+The admin panel uses Firebase Google sign-in and a server-verified session.
+Enable the Google provider in Firebase Authentication and configure the
+authorized administrator email addresses in `ADMIN_EMAILS` as a comma-separated
+server-side environment variable. The server checks this allowlist when creating
+sessions and authorizing content writes.
+
+Admin routes also require Firebase Admin SDK credentials. Create a service
 account key in Google Cloud and save the downloaded JSON in the project root as
 `firebase-adminsdk.json`. `.gitignore` and `.vercelignore` exclude this file.
 Never paste service-account keys into chat or commit them. Revoke any key that
@@ -49,6 +55,11 @@ The local `.env.local` already sets `FIREBASE_ADMIN_SDK_PATH=./firebase-adminsdk
 For hosted environments, configure the service-account credentials through the
 hosting provider's encrypted environment settings instead of uploading a key
 file.
+
+The admin panel's **Conteúdo do site** page edits existing documents in the
+Firestore `content` collection. It preserves unknown fields and document IDs;
+catalog records, banners, blog posts, FAQs, testimonials, and general settings
+remain available in their existing dedicated admin screens.
 
 ## Initialize starter site content
 

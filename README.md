@@ -17,7 +17,7 @@ A complete Next.js 14+ application with admin panel, featuring tours and transfe
 - **SEO Optimized**: Next.js Metadata API with Open Graph tags
 
 ### Admin Dashboard
-- **Authentication**: Email/password login with Firebase Auth
+- **Authentication**: Google sign-in with server-verified Firebase sessions
 - **Dashboard**: Overview of content statistics
 - **Banners Management**: Create, edit, delete, and reorder banners
 - **Tours Management**: Full CRUD with image gallery support
@@ -26,6 +26,7 @@ A complete Next.js 14+ application with admin panel, featuring tours and transfe
 - **Blog Management**: Article creation with slug generation
 - **FAQ Management**: Reorderable FAQ entries
 - **Settings**: Global site configuration
+- **Site Content Editor**: Edit Firestore content sections, nested text, links, lists, and images
 - **Activity Logs**: Track all admin actions
 
 ### Backend
@@ -93,7 +94,7 @@ NODE_ENV=development
 1. Go to [Firebase Console](https://console.firebase.google.com)
 2. Create a new project or use existing one
 3. Enable Firestore Database
-4. Enable Authentication (Email/Password)
+4. Enable Authentication and the Google sign-in provider
 5. Copy your Firebase config to `.env.local`
 
 ### 5. Set up Cloudinary
@@ -131,19 +132,19 @@ Additional home content is read from `content/homeSeo`, `content/header`,
 from `settings/whatsapp`. Testimonials and blog posts are read from
 `avaliacoes` and `blogPosts`.
 
-### 7. Create admin user
+### 7. Configure admin access
 
-1. Go to Firebase Console → Authentication
-2. Create a user with email/password
-3. In Firestore, add a document to `users/{uid}` with:
-```json
-{
-  "email": "admin@example.com",
-  "role": "admin",
-  "displayName": "Admin Name",
-  "active": true
-}
-```
+1. Enable Google as a sign-in provider in Firebase Authentication.
+2. Create or use a Google account for each administrator.
+3. Set `ADMIN_EMAILS` to a comma-separated list of the allowed email addresses
+   in `.env.local` and in the hosting provider's encrypted environment settings.
+4. Configure Firebase Admin service-account credentials as described in
+   [FIREBASE_SETUP.md](./FIREBASE_SETUP.md). Admin API writes are disabled when
+   either the allowlist or server credentials are missing.
+
+Use the admin panel's **Conteúdo do site** page to edit existing documents in
+the Firestore `content` collection. Existing catalog, banner, blog, FAQ,
+testimonial, and settings screens remain available for their respective data.
 
 ## 🚀 Running the Application
 
@@ -244,12 +245,13 @@ Similar routes exist for: `/testimonials`, `/blog`, `/faq`, `/settings`
 
 ## 🔐 Authentication
 
-The admin panel uses Firebase Authentication with email/password. Authentication is handled through:
+The admin panel authenticates through Firebase Google sign-in and a server-verified
+session cookie:
 
-1. **Login Page** (`/admin/login`) - Email/password form
-2. **Middleware** - Protects `/admin/*` routes
-3. **Auth Context** - Manages user state globally
-4. **Local Storage** - Persists auth token
+1. **Login Page** (`/login`) - Google sign-in; `/admin/login` redirects here
+2. **Admin allowlist** (`ADMIN_EMAILS`) - Comma-separated authorized addresses
+3. **Firebase Admin SDK** - Verifies identity tokens and session cookies
+4. **HttpOnly cookie** - Authorizes admin APIs; identity tokens are not stored in localStorage
 
 ## 🖼️ Image Management
 
@@ -357,9 +359,9 @@ Remember to set all environment variables in Vercel project settings:
 - Ensure CORS is properly configured
 
 ### Admin Login Not Working
-- Clear browser cache and localStorage
-- Verify user exists in Firebase Authentication
-- Check that user document exists in Firestore `users` collection
+- Confirm Google sign-in is enabled in Firebase Authentication
+- Confirm the account's email is in the server-side `ADMIN_EMAILS` variable
+- Confirm Firebase Admin service-account credentials are configured
 
 ### Images Not Loading
 - Verify Cloudinary URL format

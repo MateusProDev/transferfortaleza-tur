@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { settingsService } from "@/lib/firestore";
 import { getCachedSiteSettings, invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/settings - Get site settings
 export async function GET() {
@@ -18,6 +19,9 @@ export async function GET() {
 
 // PUT /api/settings - Update site settings
 export async function PUT(request: NextRequest) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await settingsService.update(body);
@@ -34,6 +38,9 @@ export async function PUT(request: NextRequest) {
 
 // POST /api/settings - Create/update site settings (alternative method)
 export async function POST(request: NextRequest) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await settingsService.update(body);

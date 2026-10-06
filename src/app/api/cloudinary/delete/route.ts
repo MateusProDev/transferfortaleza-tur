@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // POST /api/cloudinary/delete - Delete image from Cloudinary
 export async function POST(request: NextRequest) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const { publicId } = await request.json();
 

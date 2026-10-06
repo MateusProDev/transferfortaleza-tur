@@ -9,7 +9,11 @@ https://your-domain.com/api  (Production)
 ```
 
 ## Authentication
-All admin routes should include an `authToken` in the Authorization header:
+Admin write routes require the HttpOnly `authToken` session cookie. It is
+created by `POST /api/auth/login` after Firebase Google sign-in and verified
+against the server-side `ADMIN_EMAILS` allowlist. Public `GET` routes do not
+require authentication. The old Authorization-header example below is obsolete;
+admin requests use the HttpOnly cookie instead.
 ```
 Authorization: Bearer {authToken}
 ```

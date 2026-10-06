@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tourService } from "@/lib/firestore";
 import { getCachedTours, invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/tours - Get all tours
 export async function GET(request: NextRequest) {
@@ -20,6 +21,9 @@ export async function GET(request: NextRequest) {
 
 // POST /api/tours - Create tour
 export async function POST(request: NextRequest) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
 

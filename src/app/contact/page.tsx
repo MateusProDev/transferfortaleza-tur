@@ -14,6 +14,8 @@ import {
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getSiteUrl } from "@/lib/site-url";
 import { fetchSettingsCached } from "@/lib/settings-cache";
+import { defaultContactCopy } from "@/lib/site-copy";
+import type { ContactPageCopy } from "@/types";
 
 interface ContactSettings {
   contactInfo?: {
@@ -25,6 +27,9 @@ interface ContactSettings {
   whatsappConfig?: {
     number?: string;
     defaultMessage?: string;
+  };
+  pageCopy?: {
+    contact?: Partial<ContactPageCopy>;
   };
 }
 
@@ -78,7 +83,7 @@ export default function ContactPage() {
     try {
       /* Conversa imediata no WhatsApp, com o formulário já preenchido. */
       const message = [
-        "Olá! Vim pelo site da Transfer Fortaleza Tur e gostaria de falar com vocês.",
+        copy.whatsappGreeting,
         "",
         `*Nome:* ${formData.name}`,
         `*E-mail:* ${formData.email}`,
@@ -99,7 +104,7 @@ export default function ContactPage() {
     } catch (err) {
       console.error("Erro ao enviar contato:", err);
       setError(
-        "Não foi possível enviar agora. Fale com a gente pelo WhatsApp enquanto isso."
+        copy.submitError
       );
     } finally {
       setIsSubmitting(false);
@@ -112,6 +117,7 @@ export default function ContactPage() {
   ];
 
   const contactInfo = settings?.contactInfo || {};
+  const copy = { ...defaultContactCopy, ...settings?.pageCopy?.contact };
   const whatsappNumber =
     settings?.whatsappConfig?.number || contactInfo.whatsapp || FALLBACK_WHATSAPP;
 
@@ -124,10 +130,10 @@ export default function ContactPage() {
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Entre em Contato
+            {copy.title}
           </h1>
           <p className="text-xl max-w-2xl">
-            Estamos aqui para ajudar você a planejar a experiência perfeita
+            {copy.introduction}
           </p>
         </div>
       </div>
@@ -136,7 +142,7 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Informações de Contato
+              {copy.detailsTitle}
             </h2>
 
             <div className="space-y-6">
@@ -147,7 +153,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">
-                      Telefone
+                      {copy.phoneLabel}
                     </h3>
                     <p className="text-gray-600">{contactInfo.phone}</p>
                   </div>
@@ -161,10 +167,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">
-                      WhatsApp
+                      {copy.whatsappLabel}
                     </h3>
                     <p className="text-gray-600">
-                      {contactInfo.whatsapp || "Atendimento direto"}
+                      {contactInfo.whatsapp || copy.whatsappFallback}
                     </p>
                     <a
                       href={buildWhatsAppUrl(
@@ -175,7 +181,7 @@ export default function ContactPage() {
                       rel="noopener noreferrer"
                       className="text-green-600 hover:text-green-700 font-medium inline-flex items-center gap-1 mt-2"
                     >
-                      Chamar no WhatsApp
+                      {copy.whatsappButton}
                     </a>
                   </div>
                 </div>
@@ -187,7 +193,7 @@ export default function ContactPage() {
                     <Mail className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">E-mail</h3>
+                    <h3 className="font-semibold text-gray-900 mb-1">{copy.emailLabel}</h3>
                     <p className="text-gray-600">{contactInfo.email}</p>
                   </div>
                 </div>
@@ -200,7 +206,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">
-                      Endereço
+                      {copy.addressLabel}
                     </h3>
                     <p className="text-gray-600">{contactInfo.address}</p>
                   </div>
@@ -210,21 +216,21 @@ export default function ContactPage() {
 
             <div className="mt-8 p-6 bg-gray-50 rounded-xl">
               <h3 className="font-semibold text-gray-900 mb-2">
-                Horário de Atendimento
+                {copy.hoursTitle}
               </h3>
               <p className="text-gray-600">
-                Segunda a Sexta: 9h às 18h
+                {copy.weekdayHours}
                 <br />
-                Sábado: 9h às 14h
+                {copy.saturdayHours}
                 <br />
-                Domingo: Fechado
+                {copy.sundayHours}
               </p>
             </div>
           </div>
 
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Envie uma Mensagem
+              {copy.formTitle}
             </h2>
 
             {isSubmitted ? (
@@ -234,13 +240,12 @@ export default function ContactPage() {
                     <Check size={20} />
                   </span>
                   <p className="font-semibold text-lg">
-                    Recebemos seus dados, {formData.name}!
+                    {copy.successGreeting} {formData.name}!
                   </p>
                 </div>
                 <p className="text-gray-600">
-                  Falta um passo: toque no botão abaixo para abrir o WhatsApp com
-                  sua mensagem já preenchida.{" "}
-                  <strong>Se a janela não abrir sozinha, o botão resolve.</strong>
+                  {copy.successInstructions}{" "}
+                  <strong>{copy.successPopupHint}</strong>
                 </p>
                 <a
                   href={waUrl}
@@ -249,7 +254,7 @@ export default function ContactPage() {
                   className="w-full bg-[#25D366] hover:bg-[#1da851] text-white font-semibold px-6 py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   <MessageCircle size={20} />
-                  Abrir conversa no WhatsApp
+                  {copy.successButton}
                 </a>
               </div>
             ) : (
@@ -259,7 +264,7 @@ export default function ContactPage() {
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Nome Completo
+                    {copy.nameLabel}
                   </label>
                   <input
                     type="text"
@@ -269,7 +274,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Seu nome"
+                    placeholder={copy.namePlaceholder}
                   />
                 </div>
 
@@ -278,7 +283,7 @@ export default function ContactPage() {
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    E-mail
+                    {copy.emailFormLabel}
                   </label>
                   <input
                     type="email"
@@ -288,7 +293,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="seu@email.com"
+                    placeholder={copy.emailPlaceholder}
                   />
                 </div>
 
@@ -297,7 +302,7 @@ export default function ContactPage() {
                     htmlFor="phone"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Telefone
+                    {copy.phoneFormLabel}
                   </label>
                   <input
                     type="tel"
@@ -306,7 +311,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="(85) 99999-9999"
+                    placeholder={copy.phonePlaceholder}
                   />
                 </div>
 
@@ -315,7 +320,7 @@ export default function ContactPage() {
                     htmlFor="message"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Mensagem
+                    {copy.messageLabel}
                   </label>
                   <textarea
                     id="message"
@@ -325,7 +330,7 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                    placeholder="Como podemos ajudar você?"
+                    placeholder={copy.messagePlaceholder}
                   />
                 </div>
 
@@ -341,11 +346,11 @@ export default function ContactPage() {
                   className="w-full bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
-                    <>Enviando...</>
+                    <>{copy.submittingButton}</>
                   ) : (
                     <>
                       <Send size={20} />
-                      Enviar e abrir o WhatsApp
+                      {copy.submitButton}
                     </>
                   )}
                 </button>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { bannerService } from "@/lib/firestore";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/banners - Get all banners
 export async function GET() {
@@ -18,6 +19,9 @@ export async function GET() {
 
 // POST /api/banners - Create banner
 export async function POST(request: NextRequest) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
 

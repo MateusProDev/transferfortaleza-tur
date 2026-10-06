@@ -1,21 +1,38 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { logoutAdmin } from "@/lib/firebase/client";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const pathname = usePathname();
+  const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is authenticated via cookie
-    // Cookie is set by the login API and checked by middleware
-    // We just need to verify we're on the admin side
-    setIsLoggedIn(true);
-    setLoading(false);
-  }, [router]);
+    let active = true;
+    fetch("/api/auth/session", { cache: "no-store" })
+      .then((response) => {
+        if (response.ok) {
+          if (active) setAuthorized(true);
+          return;
+        }
+        router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      })
+      .catch((error) => {
+        console.error("[admin] Failed to verify session:", error);
+        router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [pathname, router]);
 
   if (loading) {
     return (
@@ -25,13 +42,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!isLoggedIn) {
+  if (!authorized) {
     return null;
   }
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      await logoutAdmin();
+    } catch (error) {
+      console.error("[admin] Failed to log out:", error);
+    } finally {
+      router.replace("/login");
+    }
   };
 
   return (
@@ -91,6 +114,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="block rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent lg:px-4"
           >
             Configurações
+          </a>
+          <a
+            href="/admin/content"
+            className="block rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent lg:px-4"
+          >
+            Conteúdo do site
           </a>
         </nav>
 

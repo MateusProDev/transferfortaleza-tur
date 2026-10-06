@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { blogService } from "@/lib/firestore";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/blog - Get all blog posts
 export async function GET(request: NextRequest) {
@@ -19,6 +20,9 @@ export async function GET(request: NextRequest) {
 
 // POST /api/blog - Create blog post
 export async function POST(request: NextRequest) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
 

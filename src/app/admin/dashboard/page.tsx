@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { getFreshAdminIdToken } from "@/lib/firebase/client";
 import Link from "next/link";
 
 interface DashboardStats {
@@ -104,15 +103,7 @@ export default function AdminDashboard() {
           return next;
         });
 
-        const token = await getFreshAdminIdToken();
-        if (!token) {
-          setActivities([]);
-          return;
-        }
-
-        const activityResponse = await fetch("/api/activity", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const activityResponse = await fetch("/api/activity");
         if (!activityResponse.ok) {
           throw new Error(`Falha ao carregar atividades (${activityResponse.status})`);
         }

@@ -531,6 +531,23 @@ export function mapSiteSettings(
 
   const oldContact = asDocument(settings.contactInfo);
   const footerContact = asDocument(footer.contact);
+  const footerLinks = Array.isArray(footer.quickLinks)
+    ? footer.quickLinks
+      .map((value, index) => {
+        const link = asDocument(value);
+        const url = firstString(link.url, link.href);
+        const label = firstString(link.label, link.title);
+        return url && label
+          ? {
+              id: firstString(link.id) || `footer-link-${index}`,
+              label,
+              url,
+              active: link.active !== false,
+            }
+          : null;
+      })
+      .filter((link): link is NonNullable<typeof link> => Boolean(link))
+    : [];
   const oldWhatsappConfig = asDocument(settings.whatsappConfig);
   const oldSeo = asDocument(settings.seoSettings);
   const sections = asDocument(settings.sections);
@@ -558,6 +575,7 @@ export function mapSiteSettings(
     headerLogo: firstString(header.logoUrl, settings.headerLogo),
     headerLogoAlt: firstString(header.logoAlt, settings.headerLogoAlt),
     menuLinks: Array.isArray(settings.menuLinks) ? settings.menuLinks as SiteSettings["menuLinks"] : [],
+    footerLinks,
     footerLogo: firstString(footer.logoUrl, settings.footerLogo, header.logoUrl),
     footerLogoAlt: firstString(footer.logoAlt, settings.footerLogoAlt, header.logoAlt),
     socialLinks: socialLinks.length > 0
@@ -594,6 +612,16 @@ export function mapSiteSettings(
     ...(settings.aboutSection ? { aboutSection: settings.aboutSection as SiteSettings["aboutSection"] } : {}),
     companyName: firstString(footer.companyName, settings.companyName),
     footerText: firstString(footer.text, settings.footerText),
+    footerCnpj: firstString(footer.cnpj, settings.footerCnpj),
+    footerCopyright: firstString(footer.copyrightText, settings.footerCopyright),
+    footerDeveloperName: firstString(footer.developerName, settings.footerDeveloperName),
+    footerDeveloperUrl: firstString(footer.developerUrl, settings.footerDeveloperUrl),
+    footerCertificationImage: firstString(footer.certificationImage, settings.footerCertificationImage),
+    footerCertificationAlt: firstString(footer.certificationAlt, settings.footerCertificationAlt),
+    footerPaymentImage: firstString(footer.paymentImage, settings.footerPaymentImage),
+    footerPaymentAlt: firstString(footer.paymentAlt, settings.footerPaymentAlt),
+    footerSecurityImage: firstString(footer.securityImage, settings.footerSecurityImage),
+    footerSecurityAlt: firstString(footer.securityAlt, settings.footerSecurityAlt),
     updatedAt: toDate(settings.updatedAt ?? footer.updatedAt ?? header.updatedAt),
   } as SiteSettings;
 }

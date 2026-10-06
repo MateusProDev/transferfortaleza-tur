@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { testimonialService } from "@/lib/firestore";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/testimonials/[id] - Get single testimonial
 export async function GET(
@@ -29,6 +30,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await testimonialService.update(params.id, body);
@@ -44,9 +48,12 @@ export async function PUT(
 
 // DELETE /api/testimonials/[id] - Delete testimonial
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     await testimonialService.delete(params.id);
     return NextResponse.json({ message: "Testimonial deleted successfully" });

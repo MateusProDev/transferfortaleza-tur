@@ -544,8 +544,28 @@ export const settingsService = {
     }
 
     const footerPatch: Record<string, unknown> = {};
+    if (data.footerLogo !== undefined) footerPatch.logoUrl = data.footerLogo;
+    if (data.footerLogoAlt !== undefined) footerPatch.logoAlt = data.footerLogoAlt;
+    if (data.footerCnpj !== undefined) footerPatch.cnpj = data.footerCnpj;
+    if (data.footerCopyright !== undefined) footerPatch.copyrightText = data.footerCopyright;
+    if (data.footerDeveloperName !== undefined) footerPatch.developerName = data.footerDeveloperName;
+    if (data.footerDeveloperUrl !== undefined) footerPatch.developerUrl = data.footerDeveloperUrl;
+    if (data.footerCertificationImage !== undefined) footerPatch.certificationImage = data.footerCertificationImage;
+    if (data.footerCertificationAlt !== undefined) footerPatch.certificationAlt = data.footerCertificationAlt;
+    if (data.footerPaymentImage !== undefined) footerPatch.paymentImage = data.footerPaymentImage;
+    if (data.footerPaymentAlt !== undefined) footerPatch.paymentAlt = data.footerPaymentAlt;
+    if (data.footerSecurityImage !== undefined) footerPatch.securityImage = data.footerSecurityImage;
+    if (data.footerSecurityAlt !== undefined) footerPatch.securityAlt = data.footerSecurityAlt;
     if (data.companyName !== undefined) footerPatch.companyName = data.companyName;
     if (data.footerText !== undefined) footerPatch.text = data.footerText;
+    if (data.footerLinks !== undefined) {
+      footerPatch.quickLinks = data.footerLinks.map((link) => ({
+        id: link.id,
+        label: link.label,
+        href: link.url,
+        active: link.active,
+      }));
+    }
     if (data.contactInfo) {
       const footer = await firebaseService.get<Record<string, unknown>>("content", "footer");
       const currentContact = footer && typeof footer.contact === "object"

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Info, Map, Menu, Newspaper, Phone, X, type LucideIcon } from 'lucide-react';
 import { fetchSettingsCached } from '@/lib/settings-cache';
 import { replaceLegacyBrand } from '@/lib/brand';
+import type { MenuLink } from '@/types';
 
 interface MenuItem {
   label: string;
@@ -24,6 +25,9 @@ const menuItems: MenuItem[] = [
 export default function Header() {
   const [logoUrl, setLogoUrl] = useState<string>();
   const [logoAlt, setLogoAlt] = useState('Transfer Fortaleza Tur');
+  const [configuredMenuItems, setConfiguredMenuItems] = useState<MenuItem[] | null>(null);
+
+  const navigationItems = configuredMenuItems ?? menuItems;
 
   useEffect(() => {
     let active = true;
@@ -33,6 +37,24 @@ export default function Header() {
         if (!active || !settings) return;
         setLogoUrl(settings.headerLogo);
         setLogoAlt(replaceLegacyBrand(settings.headerLogoAlt || 'Transfer Fortaleza Tur'));
+        if (Array.isArray(settings.menuLinks)) {
+          const configuredLinks = settings.menuLinks as MenuLink[];
+          const links = configuredLinks
+            .filter((item) => item.active && item.label?.trim() && item.url?.trim())
+            .sort((first, second) => first.order - second.order)
+            .map((item): MenuItem => ({
+              label: item.label,
+              href: item.url,
+              icon: item.url.includes('blog')
+                ? Newspaper
+                : item.url.includes('sobre')
+                  ? Info
+                  : item.url.includes('contato')
+                    ? Phone
+                    : Map,
+            }));
+          setConfiguredMenuItems(configuredLinks.length > 0 ? links : null);
+        }
       })
       .catch((error) => {
         console.error('Error fetching header settings:', error);
@@ -66,16 +88,29 @@ export default function Header() {
           </Link>
 
           <ul className="hidden md:flex items-center space-x-8" role="menubar">
-            {menuItems.map((item) => (
+            {navigationItems.map((item) => (
               <li key={item.href} role="none">
-                <Link
-                  href={item.href}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20"
-                  role="menuitem"
-                >
-                  <item.icon size={17} strokeWidth={2.2} />
-                  {item.label}
-                </Link>
+                {item.href.startsWith("/") && !item.href.startsWith("//") ? (
+                  <Link
+                    href={item.href}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                    role="menuitem"
+                  >
+                    <item.icon size={17} strokeWidth={2.2} />
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a
+                    href={item.href}
+                    target={/^https?:\/\//i.test(item.href) ? "_blank" : undefined}
+                    rel={/^https?:\/\//i.test(item.href) ? "noopener noreferrer" : undefined}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                    role="menuitem"
+                  >
+                    <item.icon size={17} strokeWidth={2.2} />
+                    {item.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
@@ -93,16 +128,29 @@ export default function Header() {
 
             <div className="fixed inset-x-0 top-[90px] z-[60] h-[35vh] min-h-[260px] max-h-[40vh] border-t border-b border-white/10 bg-primary-700 p-3 shadow-2xl">
               <ul className="space-y-2 pt-1" role="menu">
-                {menuItems.map((item) => (
+                {navigationItems.map((item) => (
                   <li key={item.href} role="none">
-                    <Link
-                      href={item.href}
-                      className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-white transition-colors hover:bg-white/15"
-                      role="menuitem"
-                    >
-                      <item.icon size={18} strokeWidth={2.2} />
-                      {item.label}
-                    </Link>
+                    {item.href.startsWith("/") && !item.href.startsWith("//") ? (
+                      <Link
+                        href={item.href}
+                        className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-white transition-colors hover:bg-white/15"
+                        role="menuitem"
+                      >
+                        <item.icon size={18} strokeWidth={2.2} />
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={item.href}
+                        target={/^https?:\/\//i.test(item.href) ? "_blank" : undefined}
+                        rel={/^https?:\/\//i.test(item.href) ? "noopener noreferrer" : undefined}
+                        className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-white transition-colors hover:bg-white/15"
+                        role="menuitem"
+                      >
+                        <item.icon size={18} strokeWidth={2.2} />
+                        {item.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

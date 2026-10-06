@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { transferService } from "@/lib/firestore";
 import { invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/transfers/[id] - Get single transfer
 export async function GET(
@@ -30,6 +31,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await transferService.update(params.id, body);
@@ -46,9 +50,12 @@ export async function PUT(
 
 // DELETE /api/transfers/[id] - Delete transfer
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     await transferService.delete(params.id);
     invalidatePublicDataCache("transfers");

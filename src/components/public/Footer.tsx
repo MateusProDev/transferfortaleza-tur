@@ -60,6 +60,11 @@ export default function Footer() {
     { label: 'Política', href: '/politica-de-privacidade' },
     { label: 'Contato', href: '/contato' },
   ];
+  const configuredQuickLinks: Array<{ label: string; href: string }> | undefined = settings?.footerLinks
+    ?.filter((link: { active: boolean }) => link.active)
+    .map((link: { label: string; url: string }) => ({ label: link.label, href: link.url }));
+  const hasConfiguredQuickLinks = Boolean(settings?.footerLinks?.length);
+  const visibleQuickLinks = hasConfiguredQuickLinks ? configuredQuickLinks || [] : quickLinks;
 
   return (
     <footer className="bg-gray-900 text-white" role="contentinfo">
@@ -68,11 +73,11 @@ export default function Footer() {
           {/* About Section */}
           <div>
             <Link href="/" className="mb-4 flex items-center space-x-2">
-              {settings?.headerLogo ? (
+              {settings?.footerLogo || settings?.headerLogo ? (
                 <div className="relative h-10 w-10">
                   <Image
-                    src={settings.headerLogo}
-                    alt={replaceLegacyBrand(settings.headerLogoAlt || 'Transfer Fortaleza Tur')}
+                    src={settings.footerLogo || settings.headerLogo}
+                    alt={replaceLegacyBrand(settings.footerLogoAlt || settings.headerLogoAlt || 'Transfer Fortaleza Tur')}
                     fill
                     className="object-contain"
                   />
@@ -95,14 +100,25 @@ export default function Footer() {
           <div>
             <h2 className="text-lg font-semibold mb-4">Links Rápidos</h2>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {visibleQuickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
+                  {link.href.startsWith('/') && !link.href.startsWith('//') ? (
+                    <Link
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      target={/^https?:\/\//i.test(link.href) ? "_blank" : undefined}
+                      rel={/^https?:\/\//i.test(link.href) ? "noopener noreferrer" : undefined}
+                      className="text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -199,8 +215,8 @@ export default function Footer() {
             <div className="mt-5 flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-2">
               <div className="order-1 w-full sm:relative sm:h-20 sm:w-44">
                 <Image
-                  src="/cadastur.png"
-                  alt="Cadastur"
+                  src={settings?.footerCertificationImage || "/cadastur.png"}
+                  alt={settings?.footerCertificationAlt || "Cadastur"}
                   width={352}
                   height={240}
                   className="mx-auto block h-auto w-[70%] object-contain sm:absolute sm:inset-0 sm:h-full sm:w-full"
@@ -208,8 +224,8 @@ export default function Footer() {
               </div>
               <div className="order-3 w-full sm:relative sm:h-20 sm:w-44">
                 <Image
-                  src="/pagamentos.png"
-                  alt="Formas de pagamento"
+                  src={settings?.footerPaymentImage || "/pagamentos.png"}
+                  alt={settings?.footerPaymentAlt || "Formas de pagamento"}
                   width={352}
                   height={240}
                   className="block h-auto w-full object-contain sm:absolute sm:inset-0 sm:h-full"
@@ -221,20 +237,22 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-8 pt-8 pb-4 text-center text-gray-400 text-sm">
-          <p>&copy; {currentYear} Transfer Fortaleza Tur. Todos os direitos reservados.</p>
-          <p className="mt-1">CNPJ: 64.042.188/0001-13</p>
+          <p>&copy; {currentYear} {settings?.companyName || "Transfer Fortaleza Tur"}. {settings?.footerCopyright || "Todos os direitos reservados."}</p>
+          {(settings?.footerCnpj || "64.042.188/0001-13") && (
+            <p className="mt-1">CNPJ: {settings?.footerCnpj || "64.042.188/0001-13"}</p>
+          )}
           <a
-            href="https://turvia.com.br"
+            href={settings?.footerDeveloperUrl || "https://turvia.com.br"}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block mt-2 hover:text-white transition-colors"
           >
-            Desenvolvido por TURVIA
+            Desenvolvido por {settings?.footerDeveloperName || "TURVIA"}
           </a>
           <div className="mt-2 mx-auto w-[60%] max-w-[240px] sm:relative sm:h-20 sm:w-44">
             <Image
-              src="/seguranca.png"
-              alt="Site certificado e seguro"
+              src={settings?.footerSecurityImage || "/seguranca.png"}
+              alt={settings?.footerSecurityAlt || "Site certificado e seguro"}
               width={240}
               height={180}
               className="mx-auto block h-auto w-full object-contain"

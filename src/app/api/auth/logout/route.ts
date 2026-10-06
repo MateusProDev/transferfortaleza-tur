@@ -8,7 +8,13 @@ export async function POST(_request: NextRequest) {
   );
 
   // Clear the auth cookie
-  response.cookies.delete("authToken");
+  response.cookies.set("authToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
 
   return response;
 }

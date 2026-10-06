@@ -28,6 +28,10 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
+# Admin access and server authentication
+ADMIN_EMAILS=admin@example.com
+FIREBASE_ADMIN_SDK_PATH=./firebase-adminsdk.json
+
 # Cloudinary Configuration
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
@@ -38,8 +42,6 @@ NEXT_PUBLIC_APP_NAME=Transfer Fortaleza Tur
 NEXT_PUBLIC_APP_URL=https://transferfortalezatur.com.br
 NODE_ENV=development
 
-# Firebase Admin SDK (opcional - pode usar o arquivo JSON)
-FIREBASE_ADMIN_SDK='{"type":"service_account","project_id":"...","private_key":"..."}'
 ```
 
 ### 3. Configurar Firebase
@@ -47,8 +49,11 @@ FIREBASE_ADMIN_SDK='{"type":"service_account","project_id":"...","private_key":"
 1. Acesse o [Firebase Console](https://console.firebase.google.com)
 2. Crie um novo projeto ou use um existente
 3. Habilite o **Firestore Database**
-4. Habilite o **Authentication** (Email/Password)
+4. Habilite o **Authentication** e o provedor **Google**
 5. Copie sua configuração Firebase para o `.env.local`
+6. Configure os e-mails autorizados em `ADMIN_EMAILS` e as credenciais do
+   Firebase Admin SDK. Essas configurações são necessárias para acessar o painel
+   e salvar alterações.
 
 ### 4. Configurar Cloudinary
 
@@ -70,21 +75,7 @@ Crie estas coleções no Firestore (coleções vazias são aceitas):
 - `activityLogs`
 - `users`
 
-### 6. Criar Usuário Admin
-
-1. Vá ao Firebase Console → Authentication
-2. Crie um usuário com email/senha
-3. No Firestore, adicione um documento em `users/{uid}`:
-```json
-{
-  "email": "admin@example.com",
-  "role": "admin",
-  "displayName": "Admin Name",
-  "active": true
-}
-```
-
-### 7. Popular Firestore com Dados de Exemplo
+### 6. Popular Firestore com Dados de Exemplo
 
 ```bash
 npm run seed
@@ -125,7 +116,7 @@ npm run type-check
 
 ## 🔐 Acesso ao Painel Admin
 
-1. Acesse [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
+1. Acesse [http://localhost:3000/login](http://localhost:3000/login)
 2. Faça login com o email e senha do usuário admin criado
 3. Você será redirecionado para o dashboard
 
@@ -276,7 +267,7 @@ O projeto está pronto para uso! Após a instalação e configuração:
 4. Execute `npm run seed` para popular com dados de exemplo
 5. Execute `npm run dev` para iniciar o servidor de desenvolvimento
 6. Acesse http://localhost:3000 para ver o site público
-7. Acesse http://localhost:3000/admin/login para acessar o painel admin
+7. Acesse http://localhost:3000/login para acessar o painel admin
 
 ---
 

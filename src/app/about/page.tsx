@@ -9,19 +9,25 @@ import { replaceLegacyBrand } from "@/lib/brand";
 
 const baseUrl = getSiteUrl();
 
-export const metadata: Metadata = {
-  title: "Sobre Nós",
-  description: "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo com conforto, segurança e profissionalismo.",
-  alternates: {
-    canonical: `${baseUrl}/sobre`,
-  },
-  openGraph: {
-    title: "Sobre Nós - Transfer Fortaleza Tur",
-    description: "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo",
-    url: `${baseUrl}/sobre`,
-    siteName: "Transfer Fortaleza Tur",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getCachedSiteSettings();
+  const about = settings?.aboutSection;
+  const title = about?.title || "Sobre Nós";
+  const description = about?.pageIntro || about?.description
+    || "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo com conforto, segurança e profissionalismo.";
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `${baseUrl}/sobre` },
+    openGraph: {
+      title: `${title} - Transfer Fortaleza Tur`,
+      description,
+      url: `${baseUrl}/sobre`,
+      siteName: "Transfer Fortaleza Tur",
+    },
+  };
+}
 
 export const revalidate = 300;
 
@@ -32,6 +38,20 @@ export default async function AboutPage() {
     { value: 10, label: "Anos de Experiência" },
     { value: 5000, label: "Clientes Satisfeitos" },
     { value: 100, label: "Destinos" },
+  ];
+  const values = aboutSection?.values?.filter(Boolean) || [
+    "Segurança em primeiro lugar",
+    "Qualidade e excelência no atendimento",
+    "Transparência e honestidade",
+    "Respeito ao meio ambiente e às comunidades locais",
+    "Inovação constante em nossos serviços",
+    "Paixão pelo que fazemos",
+  ];
+  const benefits = aboutSection?.benefits?.length ? aboutSection.benefits : [
+    { title: "Guias Experientes", description: "Profissionais qualificados e apaixonados por mostrar o melhor de cada destino." },
+    { title: "Veículos Confortáveis", description: "Frota moderna e bem conservada para garantir seu conforto durante as viagens." },
+    { title: "Roteiros Exclusivos", description: "Passeios cuidadosamente planejados para oferecer experiências autênticas." },
+    { title: "Atendimento 24h", description: "Suporte completo antes, durante e após sua viagem." },
   ];
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
@@ -49,7 +69,7 @@ export default async function AboutPage() {
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{replaceLegacyBrand(aboutSection?.title || "Sobre a Transfer Fortaleza Tur")}</h1>
           <p className="text-xl max-w-2xl">
-            Conheça nossa história e compromisso com proporcionar experiências inesquecíveis
+            {replaceLegacyBrand(aboutSection?.pageIntro || "Conheça nossa história e compromisso com proporcionar experiências inesquecíveis")}
           </p>
         </div>
       </div>
@@ -60,7 +80,7 @@ export default async function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Nossa História
+                {aboutSection?.historyTitle || "Nossa História"}
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
                 {replaceLegacyBrand(aboutSection?.description || "A Transfer Fortaleza Tur nasceu com a missão de proporcionar momentos inesquecíveis para nossos clientes. Somos uma empresa referência em passeios e transfers, sempre focada na qualidade, segurança e satisfação de quem nos escolhe.")}
@@ -69,34 +89,29 @@ export default async function AboutPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               <div className="bg-gray-50 p-6 rounded-xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Nossa Missão</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.missionTitle || "Nossa Missão"}</h3>
                 <p className="text-gray-600">
-                  Proporcionar experiências turísticas únicas e memoráveis, com segurança, conforto e profissionalismo, superando as expectativas de nossos clientes em cada jornada.
+                  {replaceLegacyBrand(aboutSection?.missionText || "Proporcionar experiências turísticas únicas e memoráveis, com segurança, conforto e profissionalismo, superando as expectativas de nossos clientes em cada jornada.")}
                 </p>
               </div>
               <div className="bg-gray-50 p-6 rounded-xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Nossa Visão</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.visionTitle || "Nossa Visão"}</h3>
                 <p className="text-gray-600">
-                  Ser reconhecidos como a melhor empresa de turismo da região, sinônimo de qualidade, confiança e experiências transformadoras.
+                  {replaceLegacyBrand(aboutSection?.visionText || "Ser reconhecidos como a melhor empresa de turismo da região, sinônimo de qualidade, confiança e experiências transformadoras.")}
                 </p>
               </div>
             </div>
 
             <div className="bg-gray-50 p-6 rounded-xl mb-12">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Nossos Valores</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.valuesTitle || "Nossos Valores"}</h3>
               <ul className="space-y-2 text-gray-600">
-                <li>• Segurança em primeiro lugar</li>
-                <li>• Qualidade e excelência no atendimento</li>
-                <li>• Transparência e honestidade</li>
-                <li>• Respeito ao meio ambiente e às comunidades locais</li>
-                <li>• Inovação constante em nossos serviços</li>
-                <li>• Paixão pelo que fazemos</li>
+                {values.map((value, index) => <li key={`${value}-${index}`}>• {value}</li>)}
               </ul>
             </div>
 
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-                Nossos Números
+              {aboutSection?.statsTitle || "Nossos Números"}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                 {aboutStats.map((stat) => (
@@ -110,45 +125,20 @@ export default async function AboutPage() {
 
             <div className="text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Por Que Escolher a Transfer Fortaleza Tur?
+                {replaceLegacyBrand(aboutSection?.whyChooseTitle || "Por Que Escolher a Transfer Fortaleza Tur?")}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                {benefits.map((benefit) => (
+                  <div className="flex items-start gap-4" key={benefit.title}>
+                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-primary-600 text-xl">✓</span>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 mb-1">{replaceLegacyBrand(benefit.title)}</h3>
+                      <p className="text-gray-600 text-sm">{replaceLegacyBrand(benefit.description)}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Guias Experientes</h3>
-                    <p className="text-gray-600 text-sm">Profissionais qualificados e apaixonados por mostrar o melhor de cada destino.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-primary-600 text-xl">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Veículos Confortáveis</h3>
-                    <p className="text-gray-600 text-sm">Frota moderna e bem conservada para garantir seu conforto durante as viagens.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-primary-600 text-xl">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Roteiros Exclusivos</h3>
-                    <p className="text-gray-600 text-sm">Passeios cuidadosamente planejados para oferecer experiências autênticas.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-primary-600 text-xl">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Atendimento 24h</h3>
-                    <p className="text-gray-600 text-sm">Suporte completo antes, durante e após sua viagem.</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

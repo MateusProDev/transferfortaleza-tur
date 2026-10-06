@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (pathname === "/admin/login") {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (pathname === "/teste-gclid") {
@@ -30,8 +30,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allow login page without authentication
-  if (pathname === '/login') {
+  // Allow the admin login page without an authenticated session.
+  if (pathname === "/login") {
     return NextResponse.next();
   }
 

@@ -184,6 +184,7 @@ export interface SiteSettings {
   headerLogo: string;
   headerLogoAlt: string;
   menuLinks: MenuLink[];
+  footerLinks?: FooterLink[];
   footerLogo: string;
   footerLogoAlt: string;
   socialLinks: SocialLink[];
@@ -194,14 +195,71 @@ export interface SiteSettings {
   secondaryColor: string;
   sections: SectionSettings;
   aboutSection?: AboutSectionSettings;
+  pageCopy?: {
+    contact?: Partial<ContactPageCopy>;
+  };
   companyName?: string;
   footerText?: string;
+  footerCnpj?: string;
+  footerCopyright?: string;
+  footerDeveloperName?: string;
+  footerDeveloperUrl?: string;
+  footerCertificationImage?: string;
+  footerCertificationAlt?: string;
+  footerPaymentImage?: string;
+  footerPaymentAlt?: string;
+  footerSecurityImage?: string;
+  footerSecurityAlt?: string;
   updatedAt: Date;
+}
+
+export interface ContactPageCopy {
+  title: string;
+  introduction: string;
+  detailsTitle: string;
+  phoneLabel: string;
+  whatsappLabel: string;
+  whatsappFallback: string;
+  whatsappButton: string;
+  emailLabel: string;
+  addressLabel: string;
+  hoursTitle: string;
+  weekdayHours: string;
+  saturdayHours: string;
+  sundayHours: string;
+  formTitle: string;
+  successGreeting: string;
+  successInstructions: string;
+  successPopupHint: string;
+  successButton: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  emailFormLabel: string;
+  emailPlaceholder: string;
+  phoneFormLabel: string;
+  phonePlaceholder: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  submitButton: string;
+  submittingButton: string;
+  whatsappGreeting: string;
+  submitError: string;
 }
 
 export interface AboutSectionSettings {
   title: string;
   description: string;
+  pageIntro?: string;
+  historyTitle?: string;
+  missionTitle?: string;
+  missionText?: string;
+  visionTitle?: string;
+  visionText?: string;
+  valuesTitle?: string;
+  values?: string[];
+  statsTitle?: string;
+  whyChooseTitle?: string;
+  benefits?: Array<{ title: string; description: string }>;
   stats: AboutStat[];
 }
 
@@ -220,6 +278,13 @@ export interface MenuLink {
   label: string;
   url: string;
   order: number;
+  active: boolean;
+}
+
+export interface FooterLink {
+  id: string;
+  label: string;
+  url: string;
   active: boolean;
 }
 

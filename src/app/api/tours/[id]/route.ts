@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { tourService } from "@/lib/firestore";
 import { invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/tours/[id] - Get single tour
 export async function GET(
@@ -30,6 +31,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     const body = await request.json();
     await tourService.update(params.id, body);
@@ -46,9 +50,12 @@ export async function PUT(
 
 // DELETE /api/tours/[id] - Delete tour
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session = await requireAdminSession(request);
+  if (session instanceof NextResponse) return session;
+
   try {
     await tourService.delete(params.id);
     invalidatePublicDataCache("tours");
