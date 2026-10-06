@@ -39,7 +39,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className="w-full border-b border-gray-200 bg-white shadow-lg lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:min-w-64 lg:border-b-0 lg:border-r">
         <div className="border-b border-border p-4 lg:p-6">
-          <h1 className="text-xl font-bold text-primary sm:text-2xl">Transfer Fortaleza Tur</h1>
+          <p className="text-xl font-bold text-primary sm:text-2xl">Transfer Fortaleza Tur</p>
           <p className="text-sm text-muted-foreground">Painel administrativo</p>
         </div>
 

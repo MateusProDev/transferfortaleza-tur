@@ -179,7 +179,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                 </div>
 
                 <div className="p-6 flex flex-col flex-1">
-                  <h3>
+                  <h4>
                     <Link
                       href={`/pacote/${tour.slug || tour.id}`}
                       className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
@@ -187,7 +187,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                     >
                       {tour.name}
                     </Link>
-                  </h3>
+                  </h4>
                   <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
 
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">

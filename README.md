@@ -325,6 +325,8 @@ vercel
 - Tour and transfer details use the legacy `/pacote/:slug` URL. Keep existing slugs exactly as stored; do not regenerate them from names.
 - The Portuguese routes `/sobre` and `/contato` are canonical. English aliases and replaced detail paths return permanent redirects to the preferred URLs.
 - Blog pages are server-rendered so article links and content are present in the initial HTML response.
+- Every public page template has one page-level `<h1>`; section headings use `<h2>` and nested topics/cards use `<h3>` or `<h4>` as appropriate. Multiple `<h2>` elements are expected and are not duplicate H1s.
+- Blog and catalog descriptions from Firestore are sanitized before rendering. Any stored `<h1>` inside an article body is rendered as `<h2>` so it cannot compete with the page title; the stored Firestore content is not changed.
 - Configure `NEXT_PUBLIC_APP_URL` with the production origin. Localhost values fall back to the brand domain so they cannot become public canonical URLs.
 - `/sitemap.xml` contains the canonical static pages and active catalog/blog URLs. Submit it in Google Search Console after deployment.
 

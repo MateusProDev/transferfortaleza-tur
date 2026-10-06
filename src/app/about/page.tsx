@@ -118,7 +118,7 @@ export default async function AboutPage() {
                     <span className="text-primary-600 text-xl">✓</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Guias Experientes</h4>
+                    <h3 className="font-bold text-gray-900 mb-1">Guias Experientes</h3>
                     <p className="text-gray-600 text-sm">Profissionais qualificados e apaixonados por mostrar o melhor de cada destino.</p>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export default async function AboutPage() {
                     <span className="text-primary-600 text-xl">✓</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Veículos Confortáveis</h4>
+                    <h3 className="font-bold text-gray-900 mb-1">Veículos Confortáveis</h3>
                     <p className="text-gray-600 text-sm">Frota moderna e bem conservada para garantir seu conforto durante as viagens.</p>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ export default async function AboutPage() {
                     <span className="text-primary-600 text-xl">✓</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Roteiros Exclusivos</h4>
+                    <h3 className="font-bold text-gray-900 mb-1">Roteiros Exclusivos</h3>
                     <p className="text-gray-600 text-sm">Passeios cuidadosamente planejados para oferecer experiências autênticas.</p>
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default async function AboutPage() {
                     <span className="text-primary-600 text-xl">✓</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Atendimento 24h</h4>
+                    <h3 className="font-bold text-gray-900 mb-1">Atendimento 24h</h3>
                     <p className="text-gray-600 text-sm">Suporte completo antes, durante e após sua viagem.</p>
                   </div>
                 </div>

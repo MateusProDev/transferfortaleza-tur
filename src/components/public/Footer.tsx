@@ -93,7 +93,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Links Rápidos</h3>
+            <h2 className="text-lg font-semibold mb-4">Links Rápidos</h2>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
@@ -110,7 +110,7 @@ export default function Footer() {
 
           {/* External trust links */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Avaliações e segurança</h3>
+            <h2 className="mb-4 text-lg font-semibold">Avaliações e segurança</h2>
             <ul className="space-y-2">
               <li>
                 <a
@@ -137,7 +137,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contato</h3>
+            <h2 className="text-lg font-semibold mb-4">Contato</h2>
             <ul className="space-y-3">
               {settings?.contactInfo?.phone && (
                 <li className="flex items-center space-x-3 text-gray-400 text-sm">
@@ -168,7 +168,7 @@ export default function Footer() {
 
           {/* Social Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Redes Sociais</h3>
+            <h2 className="text-lg font-semibold mb-4">Redes Sociais</h2>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
                 isWhatsAppUrl(social.href) ? (

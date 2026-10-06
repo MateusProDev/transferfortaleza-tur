@@ -124,7 +124,7 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError }: Pa
                   {tour.featured && <span className="absolute top-4 right-4 bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-semibold">Destaque</span>}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{tour.name}</h3>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{tour.name}</h2>
                   <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1"><Clock size={16} /><span>{tour.duration || 'Consulte'}</span></div>
