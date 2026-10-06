@@ -101,14 +101,81 @@ const multilineContactCopy = new Set<keyof ContactPageCopy>([
   "submitError",
 ]);
 
+interface SiteSeo {
+  title: string;
+  description: string;
+  keywords: string;
+  ogImage: string;
+}
+
+const defaultSiteSeo: SiteSeo = {
+  title: "Passeios e Transfers em Fortaleza e Região",
+  description: "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!",
+  keywords: "passeios fortaleza, tours fortaleza, transfer fortaleza, turismo ceará",
+  ogImage: "",
+};
+
 export default function SettingsAdmin() {
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [siteSeo, setSiteSeo] = useState<SiteSeo>(defaultSiteSeo);
+  const [siteSeoLoading, setSiteSeoLoading] = useState(true);
+  const [siteSeoSaving, setSiteSeoSaving] = useState(false);
+  const [siteSeoError, setSiteSeoError] = useState("");
 
   useEffect(() => {
     fetchSettings();
+    void fetchSiteSeo();
   }, []);
+
+  const fetchSiteSeo = async () => {
+    setSiteSeoLoading(true);
+    setSiteSeoError("");
+    try {
+      const response = await fetch("/api/admin/site-seo", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Falha ao carregar os metadados.");
+
+      setSiteSeo({
+        title: data.title || defaultSiteSeo.title,
+        description: data.description || defaultSiteSeo.description,
+        keywords: Array.isArray(data.keywords) ? data.keywords.join(", ") : defaultSiteSeo.keywords,
+        ogImage: data.ogImage || "",
+      });
+    } catch (error) {
+      console.error("Error fetching site SEO:", error);
+      const message = error instanceof Error ? error.message : "Falha ao carregar os metadados.";
+      setSiteSeoError(message);
+      toast.error(message);
+    } finally {
+      setSiteSeoLoading(false);
+    }
+  };
+
+  const handleSaveSiteSeo = async () => {
+    setSiteSeoSaving(true);
+    try {
+      const response = await fetch("/api/admin/site-seo", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...siteSeo,
+          keywords: siteSeo.keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Falha ao salvar os metadados.");
+
+      clearCachedSettings();
+      toast.success("Metadados do site salvos.");
+    } catch (error) {
+      console.error("Error saving site SEO:", error);
+      toast.error(error instanceof Error ? error.message : "Falha ao salvar os metadados.");
+    } finally {
+      setSiteSeoSaving(false);
+    }
+  };
 
   const fetchSettings = async () => {
     try {
@@ -187,6 +254,7 @@ export default function SettingsAdmin() {
       <nav aria-label="Atalhos das configurações" className="flex flex-wrap gap-2">
         {[
           ["#marca", "Marca e logos"],
+          ["#seo", "Metadados e SEO"],
           ["#navegacao", "Menu do site"],
           ["#contato", "Contato"],
           ["#rodape", "Rodapé"],
@@ -203,12 +271,6 @@ export default function SettingsAdmin() {
             {label}
           </a>
         ))}
-        <Link
-          href="/admin/content"
-          className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-        >
-          SEO da página inicial: Textos e seções
-        </Link>
       </nav>
 
       <Card id="marca" className="scroll-mt-6">
@@ -269,18 +331,79 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card className="border-primary/20 bg-primary/5">
+      <Card id="seo" className="scroll-mt-6">
         <CardHeader>
-          <CardTitle>Onde editar o SEO da página inicial?</CardTitle>
+          <CardTitle>Metadados e SEO do site</CardTitle>
           <CardDescription>
-            O título, a descrição, as palavras-chave e a imagem de compartilhamento da página inicial ficam em
-            “Textos e seções” &gt; “SEO da página inicial”. Essa é a fonte usada pelo site; não há uma cópia desses campos aqui.
+            Esses dados definem o padrão de título, descrição, palavras-chave e imagem usados nos resultados de busca e
+            compartilhamentos. Páginas e artigos com SEO próprio continuam usando seus metadados específicos.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button variant="outline" asChild>
-            <Link href="/admin/content">Abrir Textos e seções</Link>
-          </Button>
+        <CardContent className="space-y-4">
+          {siteSeoLoading ? (
+            <p className="text-sm text-muted-foreground">Carregando metadados...</p>
+          ) : siteSeoError ? (
+            <div role="alert" className="space-y-2 text-sm text-red-700">
+              <p>{siteSeoError}</p>
+              <Button type="button" variant="outline" onClick={() => void fetchSiteSeo()}>
+                Tentar novamente
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-1">
+                <label htmlFor="site-seo-title" className="text-sm font-medium">Título padrão do site</label>
+                <Input
+                  id="site-seo-title"
+                  maxLength={160}
+                  value={siteSeo.title}
+                  onChange={(event) => setSiteSeo({ ...siteSeo, title: event.target.value })}
+                  placeholder="Passeios e Transfers em Fortaleza e Região"
+                />
+                <p className="text-xs text-muted-foreground">Até 160 caracteres. As páginas com título próprio não são alteradas.</p>
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="site-seo-description" className="text-sm font-medium">Descrição padrão</label>
+                <textarea
+                  id="site-seo-description"
+                  maxLength={320}
+                  rows={3}
+                  value={siteSeo.description}
+                  onChange={(event) => setSiteSeo({ ...siteSeo, description: event.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  placeholder="Resumo do site exibido nos resultados de busca."
+                />
+                <p className="text-xs text-muted-foreground">Até 320 caracteres. Páginas com descrição própria mantêm seu texto.</p>
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="site-seo-keywords" className="text-sm font-medium">Palavras-chave</label>
+                <Input
+                  id="site-seo-keywords"
+                  value={siteSeo.keywords}
+                  onChange={(event) => setSiteSeo({ ...siteSeo, keywords: event.target.value })}
+                  placeholder="passeios Fortaleza, transfer Fortaleza, turismo Ceará"
+                />
+                <p className="text-xs text-muted-foreground">Separe os termos por vírgula.</p>
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium">Imagem para compartilhamento (Open Graph)</label>
+                <ImageUpload
+                  currentImage={siteSeo.ogImage}
+                  label=""
+                  onImageUpload={(url) => setSiteSeo({ ...siteSeo, ogImage: url })}
+                />
+                <p className="text-xs text-muted-foreground">Imagem horizontal recomendada: 1200 × 630 px. Se não escolher uma, será usada a imagem padrão do site.</p>
+              </div>
+              <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-4">
+                <Button type="button" onClick={handleSaveSiteSeo} disabled={siteSeoSaving}>
+                  {siteSeoSaving ? "Salvando..." : "Salvar metadados"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => void fetchSiteSeo()} disabled={siteSeoSaving}>
+                  Descartar alterações
+                </Button>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 

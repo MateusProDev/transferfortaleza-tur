@@ -26,7 +26,6 @@ const documentNames: Record<string, string> = {
   googleReviews: "Avaliações do Google",
   header: "Cabeçalho",
   homeFAQ: "Perguntas frequentes da página inicial",
-  homeSeo: "SEO da página inicial",
   imageCarouselSection: "Galeria de imagens",
   linkInBio: "Link na bio",
   pacotesPage: "Página de pacotes",
@@ -128,7 +127,9 @@ export default function SiteContentAdminPage() {
         throw new Error("A resposta da API não contém a lista de documentos esperada.");
       }
 
-      const records = result.documents.filter((document) => document.id !== "about");
+      const records = result.documents.filter(
+        (document) => document.id !== "about" && document.id !== "homeSeo",
+      );
       setTotalDocuments(result.totalDocuments ?? result.documents.length);
       setDocuments(records);
       setProjectId(result.projectId || null);
@@ -322,7 +323,7 @@ export default function SiteContentAdminPage() {
           Edite os textos, links, imagens e listas dos blocos de conteúdo do site.
           Para banners, passeios, transfers, artigos, depoimentos e perguntas frequentes, use as áreas próprias do menu.
           Informações de contato, navegação, identidade e o conteúdo da página Sobre ficam em Configurações do site.
-          O SEO da página inicial é editado na seção “SEO da página inicial” desta tela.
+          Os metadados e o SEO padrão do site são editados em Configurações do site &gt; Metadados e SEO.
         </p>
       </div>
 

@@ -5,60 +5,91 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site-url";
+import { getCachedHomepageSeo } from "@/lib/public-data-cache";
 
 const baseUrl = getSiteUrl();
 const shouldLoadAnalytics = process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true";
 const googleAdsTagId = `AW-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID || "11405399413"}`;
 const googleTagId = process.env.NEXT_PUBLIC_GA_ID || googleAdsTagId;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(baseUrl),
-  title: {
-    default: "Transfer Fortaleza Tur - Passeios e Transfers",
-    template: "%s | Transfer Fortaleza Tur",
-  },
-  description: "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!",
-  keywords: ["tours", "transfers", "travel", "passeios", "turismo", "viagens", "excursões", "transfer fortaleza tur", "turismo brasil"],
-  authors: [{ name: "Transfer Fortaleza Tur" }],
-  creator: "Transfer Fortaleza Tur",
-  publisher: "Transfer Fortaleza Tur",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+const defaultSiteTitle = "Transfer Fortaleza Tur - Passeios e Transfers";
+const defaultSiteDescription = "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!";
+const defaultSiteKeywords = [
+  "tours",
+  "transfers",
+  "travel",
+  "passeios",
+  "turismo",
+  "viagens",
+  "excursões",
+  "transfer fortaleza tur",
+  "turismo brasil",
+];
+
+export async function generateMetadata(): Promise<Metadata> {
+  let siteSeo: Record<string, unknown> | null = null;
+
+  try {
+    siteSeo = await getCachedHomepageSeo();
+  } catch (error) {
+    console.error("Error fetching site-wide SEO metadata:", error);
+  }
+
+  const title = typeof siteSeo?.title === "string" && siteSeo.title.trim()
+    ? siteSeo.title.trim()
+    : defaultSiteTitle;
+  const description = typeof siteSeo?.description === "string" && siteSeo.description.trim()
+    ? siteSeo.description.trim()
+    : defaultSiteDescription;
+  const keywords = Array.isArray(siteSeo?.keywords)
+    ? siteSeo.keywords.filter((keyword): keyword is string => typeof keyword === "string")
+    : defaultSiteKeywords;
+  const ogImage = typeof siteSeo?.ogImage === "string" && siteSeo.ogImage.trim()
+    ? siteSeo.ogImage.trim()
+    : `${baseUrl}/OG.png`;
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: title,
+      template: "%s | Transfer Fortaleza Tur",
+    },
+    description,
+    keywords,
+    authors: [{ name: "Transfer Fortaleza Tur" }],
+    creator: "Transfer Fortaleza Tur",
+    publisher: "Transfer Fortaleza Tur",
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  openGraph: {
-    type: "website",
-    locale: "pt_BR",
-    title: "Transfer Fortaleza Tur - Passeios e Transfers",
-    description: "Descubra os melhores passeios e transfers",
-    siteName: "Transfer Fortaleza Tur",
-    images: [
-      {
-        url: `${baseUrl}/OG.png`,
-        width: 1200,
-        height: 630,
-        alt: "Transfer Fortaleza Tur - Passeios e Transfers",
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Transfer Fortaleza Tur",
-    description: "Descubra os melhores passeios e transfers",
-    images: [`${baseUrl}/OG.png`],
-    creator: "@transferfortalezatur",
-  },
-  verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
-  },
-};
+    },
+    openGraph: {
+      type: "website",
+      locale: "pt_BR",
+      title,
+      description,
+      siteName: "Transfer Fortaleza Tur",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+      creator: "@transferfortalezatur",
+    },
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
+  };
+}
 
 export default function RootLayout({
   children,
