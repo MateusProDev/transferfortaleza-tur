@@ -57,6 +57,56 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
+        source: "/pacote/van-fortaleza",
+        destination: "/pacote/van-em-fortaleza-com-motorista",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/transfer-carmel-taiba",
+        destination: "/pacote/transfer-carmel-taiba-exclusive-resort",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/transfer-aeroporto-fortaleza",
+        destination: "/pacote/transfer-aeroporto-de-fortaleza-hoteis",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/transfer-parque-das-fontes",
+        destination: "/pacote/transfer-hotel-parque-das-fontes",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/transfer-trairi-mundau--flecheiras--guajiru",
+        destination: "/pacote/transfer-trairi-mundau-flecheiras-e-guajiru",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/transfer-coliseum-hotel",
+        destination: "/pacote/transfer-coliseum-beach-hotel",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/passeio-jeri-1dia",
+        destination: "/pacote/passeio-jericoacoara-em-1-dia",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/passeio-3-praias-1-dia-com-canoa-quebrada",
+        destination: "/pacote/passeio-3-praias-morro-branco-fontes-e-canoa-quebrada",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/passeio-city-tour-fortaleza",
+        destination: "/pacote/passeio-city-tour-em-fortaleza-4h",
+        statusCode: 301,
+      },
+      {
+        source: "/pacote/3-praias-morro-branco-praia-das-fontes-barra-nova",
+        destination: "/pacote/passeio-3-praias-morro-branco-praia-das-fontes-barra-nova",
+        statusCode: 301,
+      },
+      {
         source: "/passeios/:id",
         destination: "/pacote/:id",
         statusCode: 301,

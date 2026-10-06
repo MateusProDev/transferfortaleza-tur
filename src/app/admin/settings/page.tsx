@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { defaultContactCopy } from "@/lib/site-copy";
