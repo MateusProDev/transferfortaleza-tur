@@ -132,11 +132,17 @@ export default function SiteContentAdminPage() {
       setTotalDocuments(result.totalDocuments ?? result.documents.length);
       setDocuments(records);
       setProjectId(result.projectId || null);
-      setSelectedId((currentId) =>
-        records.some((record) => record.id === currentId)
-          ? currentId
-          : records[0]?.id || "",
-      );
+      const requestedSection = new URLSearchParams(window.location.search).get("section");
+      const requestedDocument = records.find((record) => record.id === requestedSection);
+      if (requestedDocument) {
+        setSelectedId(requestedDocument.id);
+      } else {
+        setSelectedId((currentId) =>
+          records.some((record) => record.id === currentId)
+            ? currentId
+            : records[0]?.id || "",
+        );
+      }
     } catch (error) {
       console.error("Error loading site content:", error);
       const message = error instanceof Error ? error.message : "Falha ao carregar conteúdo.";

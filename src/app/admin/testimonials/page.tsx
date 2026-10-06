@@ -48,6 +48,20 @@ export default function TestimonialsAdmin() {
         </Button>
       </div>
 
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold">Está procurando as avaliações que aparecem como “Avaliações do Google” no site?</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Elas são diferentes dos depoimentos de clientes desta lista e são editadas na seção própria.
+            </p>
+          </div>
+          <Button variant="outline" asChild>
+            <Link href="/admin/content?section=googleReviews">Editar avaliações do Google</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4">
         {error ? (
           <Card>

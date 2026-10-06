@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-api-auth";
-import { getAdminFirestore } from "@/lib/firebase-admin";
-import { logAdminTestimonialActivity } from "@/lib/admin-testimonials";
+import { getAdminTestimonialsDb, logAdminTestimonialActivity } from "@/lib/admin-testimonials";
 import {
   mapTestimonialDocument,
   mapTestimonialInputToDocument,
@@ -18,13 +17,14 @@ export async function GET(request: NextRequest) {
   const session = await requireAdminSession(request);
   if (session instanceof NextResponse) return session;
 
-  const db = getAdminFirestore();
-  if (!db) {
+  const database = getAdminTestimonialsDb();
+  if ("error" in database) {
     return NextResponse.json(
-      { error: "O acesso administrativo ao Firestore não está configurado." },
+      { error: database.error },
       { status: 503, headers: responseHeaders },
     );
   }
+  const { db } = database;
 
   try {
     const snapshot = await db.collection("avaliacoes").get();
@@ -47,13 +47,14 @@ export async function POST(request: NextRequest) {
   const session = await requireAdminSession(request);
   if (session instanceof NextResponse) return session;
 
-  const db = getAdminFirestore();
-  if (!db) {
+  const database = getAdminTestimonialsDb();
+  if ("error" in database) {
     return NextResponse.json(
-      { error: "O acesso administrativo ao Firestore não está configurado." },
+      { error: database.error },
       { status: 503, headers: responseHeaders },
     );
   }
+  const { db } = database;
 
   try {
     const body = await request.json();

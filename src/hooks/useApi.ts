@@ -34,7 +34,11 @@ export function useQuery<T>(
       setError(null);
     } catch (err) {
       const axiosError = err as AxiosError;
-      setError(new Error(axiosError.message));
+      const responseData = axiosError.response?.data as { error?: unknown } | undefined;
+      const responseMessage = typeof responseData?.error === "string"
+        ? responseData.error
+        : axiosError.message;
+      setError(new Error(responseMessage));
     } finally {
       setLoading(false);
     }
