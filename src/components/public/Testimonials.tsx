@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Star } from 'lucide-react';
+import { shouldOptimizeImage } from '@/lib/image-optimization';
 
 interface Testimonial {
   id: string;
@@ -81,7 +82,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                     src={featuredTestimonial.clientPhoto}
                     alt={featuredTestimonial.clientPhotoAlt || featuredTestimonial.clientName}
                     fill
-                    unoptimized
+                    unoptimized={!shouldOptimizeImage(featuredTestimonial.clientPhoto)}
                     className="object-cover"
                     sizes="64px"
                   />

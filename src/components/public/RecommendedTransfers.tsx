@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Car, Users } from "lucide-react";
 import { Transfer } from "@/types";
+import { shouldOptimizeImage } from "@/lib/image-optimization";
 
 interface RecommendedTransfersProps {
   transfers: Transfer[];
@@ -30,7 +32,14 @@ export default function RecommendedTransfers({ transfers }: RecommendedTransfers
               className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               <div className="relative h-48 overflow-hidden">
-                <img src={transfer.imageUrl} alt={transfer.imageAlt || transfer.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <Image
+                  src={transfer.imageUrl}
+                  alt={transfer.imageAlt || transfer.name}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  unoptimized={!shouldOptimizeImage(transfer.imageUrl)}
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
               <div className="p-5">
                 <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">{transfer.name}</h3>

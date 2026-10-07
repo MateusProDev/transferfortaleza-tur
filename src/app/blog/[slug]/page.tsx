@@ -10,6 +10,7 @@ import ShareButtons from '@/components/public/ShareButtons';
 import MarkdownDescription from '@/components/public/MarkdownDescription';
 import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import { getSiteUrl } from '@/lib/site-url';
+import { shouldOptimizeImage } from '@/lib/image-optimization';
 
 interface PageProps {
   params: {
@@ -186,7 +187,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     alt={post.imageAlt || post.title || 'Imagem do post'}
                     fill
                     className="object-cover"
-                    unoptimized
+                    unoptimized={!shouldOptimizeImage(post.imageUrl)}
                   />
                 </div>
               )}

@@ -9,6 +9,7 @@ import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
 import { getSiteUrl } from '@/lib/site-url';
 import type { Tour } from '@/types';
+import { shouldOptimizeImage } from '@/lib/image-optimization';
 
 interface PasseiosClientProps {
   tours: Tour[];
@@ -120,7 +121,7 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError }: Pa
             {filteredTours.map((tour) => (
               <article key={tour.id} className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
                 <div className="relative aspect-square w-full overflow-hidden">
-                  {tour.mainImageUrl ? <Image src={tour.mainImageUrl} alt={tour.mainImageAlt || tour.name} fill className="h-full w-full object-cover object-center" unoptimized /> : <div className="w-full h-full bg-gray-200 flex items-center justify-center"><span className="text-gray-400">Sem imagem</span></div>}
+                  {tour.mainImageUrl ? <Image src={tour.mainImageUrl} alt={tour.mainImageAlt || tour.name} fill className="h-full w-full object-cover object-center" unoptimized={!shouldOptimizeImage(tour.mainImageUrl)} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" /> : <div className="w-full h-full bg-gray-200 flex items-center justify-center"><span className="text-gray-400">Sem imagem</span></div>}
                   {tour.featured && <span className="absolute top-4 right-4 bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-semibold">Destaque</span>}
                 </div>
                 <div className="p-6 flex flex-col flex-1">

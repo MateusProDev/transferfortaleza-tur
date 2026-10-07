@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { shouldOptimizeImage } from "@/lib/image-optimization";
 import type { SiteSettings } from "@/types";
 
 type ContentRecord = Record<string, unknown>;
@@ -168,7 +169,7 @@ export default function HomeConfiguredSections({
                   >
                     {image && (
                       <div className="relative h-48">
-                        <Image src={image} alt={text(service.alt) || title} fill unoptimized sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
+                        <Image src={image} alt={text(service.alt) || title} fill unoptimized={!shouldOptimizeImage(image)} sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
                       </div>
                     )}
                     <div className="p-5">
@@ -215,7 +216,7 @@ export default function HomeConfiguredSections({
               <div className="grid grid-cols-2 gap-3">
                 {collageImages.map((image, index) => (
                   <div key={image.id} className={`relative min-h-36 overflow-hidden rounded-xl ${index === 0 ? "row-span-2 min-h-72" : ""}`}>
-                    <Image src={image.url} alt={image.alt} fill unoptimized sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
+                    <Image src={image.url} alt={image.alt} fill unoptimized={!shouldOptimizeImage(image.url)} sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
                   </div>
                 ))}
               </div>
@@ -245,7 +246,7 @@ export default function HomeConfiguredSections({
             {galleryRows.map((row, rowIndex) => {
               const sourceImages = row.length > 0 ? row : gallery;
               const rowImages = Array.from(
-                { length: Math.max(1, Math.ceil(8 / sourceImages.length)) },
+                { length: Math.max(1, Math.ceil(4 / sourceImages.length)) },
                 () => sourceImages
               ).flat();
               const direction = rowIndex === 1 ? "left" : "right";
@@ -273,7 +274,7 @@ export default function HomeConfiguredSections({
                               src={image.url}
                               alt={copy === 0 ? image.alt : ""}
                               fill
-                              unoptimized
+                              unoptimized={!shouldOptimizeImage(image.url)}
                               sizes="(min-width: 1024px) 320px, 72vw"
                               className="object-cover"
                             />

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { GalleryImage } from "@/types";
+import { shouldOptimizeImage } from "@/lib/image-optimization";
 
 interface DetailGalleryProps {
   images: GalleryImage[];
@@ -24,7 +26,15 @@ export default function DetailGallery({ images, alt, featured = false }: DetailG
   return (
     <div>
       <div className="relative h-96 overflow-hidden rounded-xl shadow-lg lg:h-[500px]">
-        <img src={currentImage.url} alt={currentImage.alt || alt} className="h-full w-full object-cover" loading="eager" />
+        <Image
+          src={currentImage.url}
+          alt={currentImage.alt || alt}
+          fill
+          className="object-cover"
+          loading="eager"
+          unoptimized={!shouldOptimizeImage(currentImage.url)}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+        />
         {visibleImages.length > 1 && (
           <>
             <button type="button" onClick={() => goTo(currentIndex - 1)} aria-label="Imagem anterior" className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-md hover:bg-white">
@@ -46,7 +56,15 @@ export default function DetailGallery({ images, alt, featured = false }: DetailG
         <div className="mt-4 grid grid-cols-3 gap-3">
           {visibleImages.map((image, index) => (
             <button type="button" key={image.id} onClick={() => goTo(index)} className={`relative h-24 overflow-hidden rounded-lg ${index === currentIndex ? "ring-2 ring-primary-600" : "opacity-75 hover:opacity-100"}`}>
-              <img src={image.url} alt={image.alt || `${alt} - Foto ${index + 1}`} className="h-full w-full object-cover" loading="lazy" />
+              <Image
+                src={image.url}
+                alt={image.alt || `${alt} - Foto ${index + 1}`}
+                fill
+                className="object-cover"
+                loading="lazy"
+                unoptimized={!shouldOptimizeImage(image.url)}
+                sizes="(min-width: 1024px) 16vw, 33vw"
+              />
             </button>
           ))}
         </div>

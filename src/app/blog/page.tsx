@@ -6,6 +6,7 @@ import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
 import { getSiteUrl } from '@/lib/site-url';
 import { getCachedBlogPosts } from '@/lib/public-data-cache';
+import { shouldOptimizeImage } from '@/lib/image-optimization';
 
 export const revalidate = 300;
 
@@ -69,7 +70,7 @@ export default async function BlogPage() {
                         alt={post.imageAlt || post.title}
                         fill
                         className="object-cover"
-                        unoptimized
+                        unoptimized={!shouldOptimizeImage(post.imageUrl)}
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center">

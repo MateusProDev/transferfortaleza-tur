@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { shouldOptimizeImage } from "@/lib/image-optimization";
 import type { GoogleReviewsContent as GoogleReviewsContentType } from "@/types";
 
 interface GoogleReviewsProps {
@@ -65,7 +66,7 @@ export default function GoogleReviews({ content }: GoogleReviewsProps) {
                     src={review.photo}
                     alt={review.photoAlt || review.name}
                     fill
-                    unoptimized
+                    unoptimized={!shouldOptimizeImage(review.photo)}
                     sizes="44px"
                     className="object-cover"
                   />

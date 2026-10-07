@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Clock, Star, ArrowRight } from 'lucide-react';
 import { Tour } from '@/types';
+import { shouldOptimizeImage } from '@/lib/image-optimization';
 
 interface RecommendedToursProps {
   tours: Tour[];
@@ -41,10 +43,13 @@ export default function RecommendedTours({ tours }: RecommendedToursProps) {
             >
               {/* Imagem */}
               <div className="relative aspect-square w-full overflow-hidden">
-                <img
+                <Image
                   src={tour.mainImageUrl}
                   alt={`${tour.name} - Passeio em Fortaleza`}
-                  className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  unoptimized={!shouldOptimizeImage(tour.mainImageUrl)}
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
                 />
                 {tour.featured && (
                   <div className="absolute top-3 right-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">

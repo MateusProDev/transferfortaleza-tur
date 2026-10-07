@@ -8,6 +8,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import { getSiteUrl } from '@/lib/site-url';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
+import { shouldOptimizeImage } from '@/lib/image-optimization';
 
 interface Transfer {
   id: string;
@@ -112,7 +113,7 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
               <article key={transfer.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
                 <div className="relative h-48 w-full">
                   {transfer.imageUrl ? (
-                    <Image src={transfer.imageUrl} alt={transfer.imageAlt || transfer.name} fill className="object-cover" unoptimized />
+                    <Image src={transfer.imageUrl} alt={transfer.imageAlt || transfer.name} fill className="object-cover" unoptimized={!shouldOptimizeImage(transfer.imageUrl)} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                       <span className="text-gray-400">Sem imagem</span>
