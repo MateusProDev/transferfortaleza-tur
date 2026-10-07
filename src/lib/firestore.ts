@@ -221,10 +221,8 @@ export const tourService = {
       .filter((tour) => !onlyActive || tour.active);
     return tours.sort((first, second) => {
       if (first.featured !== second.featured) return first.featured ? -1 : 1;
-      if (first.featured && second.featured) {
-        return (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER);
-      }
-      return first.name.localeCompare(second.name);
+      return (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER)
+        || first.name.localeCompare(second.name);
     });
   },
 
@@ -282,7 +280,10 @@ export const transferService = {
       .filter(isTransferPackage)
       .map((item) => mapPackageToTransfer(String(item.id), item))
       .filter((transfer) => !onlyActive || transfer.active)
-      .sort((first, second) => first.name.localeCompare(second.name));
+      .sort((first, second) =>
+        (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER)
+        || first.name.localeCompare(second.name)
+      );
   },
 
   async getFeatured() {

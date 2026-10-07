@@ -197,6 +197,17 @@ export interface SiteSettings {
   aboutSection?: AboutSectionSettings;
   pageCopy?: {
     contact?: Partial<ContactPageCopy>;
+    home?: Partial<SitePageCopy>;
+    tours?: Partial<SitePageCopy>;
+    transfers?: Partial<SitePageCopy>;
+    packages?: Partial<SitePageCopy>;
+    blog?: Partial<SitePageCopy>;
+    testimonials?: Partial<SitePageCopy>;
+    faq?: Partial<SitePageCopy>;
+    tourDetails?: Partial<SitePageCopy>;
+    transferDetails?: Partial<SitePageCopy>;
+    privacy?: Partial<SitePageCopy>;
+    cookie?: Partial<SitePageCopy>;
   };
   companyName?: string;
   footerText?: string;
@@ -210,10 +221,20 @@ export interface SiteSettings {
   footerPaymentAlt?: string;
   footerSecurityImage?: string;
   footerSecurityAlt?: string;
+  footerTrustLinksTitle?: string;
+  footerTripadvisorUrl?: string;
+  footerTripadvisorLabel?: string;
+  footerGoogleSafeBrowsingUrl?: string;
+  footerGoogleSafeBrowsingLabel?: string;
   updatedAt: Date;
 }
 
+export interface SitePageCopy {
+  [key: string]: string;
+}
+
 export interface ContactPageCopy {
+  [key: string]: string;
   title: string;
   introduction: string;
   detailsTitle: string;
@@ -248,17 +269,25 @@ export interface ContactPageCopy {
 
 export interface AboutSectionSettings {
   title: string;
+  titleHeadingLevel?: string;
   description: string;
   pageIntro?: string;
   historyTitle?: string;
+  historyTitleHeadingLevel?: string;
   missionTitle?: string;
+  missionTitleHeadingLevel?: string;
   missionText?: string;
   visionTitle?: string;
+  visionTitleHeadingLevel?: string;
   visionText?: string;
   valuesTitle?: string;
+  valuesTitleHeadingLevel?: string;
   values?: string[];
   statsTitle?: string;
+  statsTitleHeadingLevel?: string;
   whyChooseTitle?: string;
+  whyChooseTitleHeadingLevel?: string;
+  benefitTitleHeadingLevel?: string;
   benefits?: Array<{ title: string; description: string }>;
   stats: AboutStat[];
 }

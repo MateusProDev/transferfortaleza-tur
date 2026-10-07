@@ -10,6 +10,8 @@ import { normalizeBrazilianPhone } from '@/lib/phone';
 import OtherToursCarousel from './OtherToursCarousel';
 import { ProductJsonLd } from '@/components/seo/JsonLd';
 import { BRAND_URL } from '@/lib/brand';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from './EditableHeading';
 
 interface Tour {
   id: string;
@@ -27,9 +29,10 @@ interface Tour {
 interface ToursProps {
   tours: Tour[];
   whatsappNumber?: string;
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function Tours({ tours, whatsappNumber }: ToursProps) {
+export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3;
@@ -96,22 +99,22 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
         <div className="mb-12 text-left sm:text-center">
           <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-cyan-200">
             <MapPin size={18} aria-hidden="true" />
-            Destinos em Destaque
+            {copy?.destinationsBadge || "Destinos em Destaque"}
           </p>
-          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">
-            Transfers e Passeios mais procurados
-          </h2>
+          <EditableHeading level={getHeadingLevel(copy, 'toursSectionTitle', 'h2')} className="font-display text-3xl md:text-4xl text-white mb-4">
+            {copy?.toursSectionTitle || "Transfers e Passeios mais procurados"}
+          </EditableHeading>
           <p className="max-w-3xl text-white/80 sm:mx-auto">
-            Transfers e Passeios saindo de Fortaleza exclusivos e organizados por categoria para transformar sua viagem em uma experiência única.
+            {copy?.toursSectionIntro || "Transfers e Passeios saindo de Fortaleza exclusivos e organizados por categoria para transformar sua viagem em uma experiência única."}
           </p>
         </div>
 
         <div className="mb-8 text-left sm:text-center">
-          <h3 className="font-display mb-3 text-2xl text-white md:text-3xl">
-            Nossos Passeios
-          </h3>
+          <EditableHeading level={getHeadingLevel(copy, 'toursTitle', 'h3')} className="font-display mb-3 text-2xl text-white md:text-3xl">
+            {copy?.toursTitle || "Nossos Passeios"}
+          </EditableHeading>
           <p className="max-w-2xl text-white/80 sm:mx-auto">
-            Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados
+            {copy?.toursIntro || "Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados"}
           </p>
         </div>
 
@@ -158,7 +161,12 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                   <article
                     className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group"
                   >
-                <div className="relative aspect-square w-full overflow-hidden">
+                <Link
+                  href={`/pacote/${tour.slug || tour.id}`}
+                  className="relative block aspect-square w-full overflow-hidden"
+                  onClick={() => handleTourClick(tour.name)}
+                  aria-label={`Ver passeio: ${tour.name}`}
+                >
                   {tour.mainImageUrl ? (
                     <Image
                       src={tour.mainImageUrl}
@@ -169,18 +177,18 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">Sem imagem</span>
+                      <span className="text-gray-400">{copy?.toursImagePlaceholder || "Sem imagem"}</span>
                     </div>
                   )}
                   {tour.featured && (
                     <span className="absolute top-4 right-4 bg-primary-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      Destaque
+                      {copy?.tourFeaturedBadge || "Destaque"}
                     </span>
                   )}
-                </div>
+                </Link>
 
                 <div className="p-6 flex flex-col flex-1">
-                  <h4>
+                  <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h4')}>
                     <Link
                       href={`/pacote/${tour.slug || tour.id}`}
                       className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
@@ -188,17 +196,17 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                     >
                       {tour.name}
                     </Link>
-                  </h4>
+                  </EditableHeading>
                   <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
 
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1">
                       <Clock size={16} />
-                      <span>{tour.duration || 'Consulte'}</span>
+                      <span>{tour.duration || copy?.toursDurationFallback || 'Consulte'}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Users size={16} />
-                      <span>Gr pequenos</span>
+                      <span>{copy?.toursGroupLabel || "Gr pequenos"}</span>
                     </div>
                   </div>
 
@@ -211,14 +219,14 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
                       aria-label={`Reservar ${tour.name} pelo WhatsApp`}
                     >
                       <MessageCircle size={18} />
-                      <span className="whitespace-nowrap">Reservar pelo WhatsApp</span>
+                      <span className="whitespace-nowrap">{copy?.tourReserveButton || "Reservar pelo WhatsApp"}</span>
                     </WhatsAppConversionLink>
                     <Link
                       href={`/pacote/${tour.slug || tour.id}`}
                       className="flex-shrink-0 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                       onClick={() => handleTourClick(tour.name)}
                     >
-                      Ver passeio
+                      {copy?.tourDetailsButton || "Ver passeio"}
                     </Link>
                   </div>
                 </div>
@@ -252,21 +260,21 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
             href="/passeios"
             className="inline-block bg-secondary-800 hover:bg-secondary-900 text-white px-8 py-3 rounded-lg transition-colors font-semibold"
           >
-            Ver Todos os Passeios
+            {copy?.toursButton || "Ver Todos os Passeios"}
           </Link>
         </div>
 
         {otherTours.length > 0 && (
           <div className="mt-16 border-t border-gray-200 pt-14">
             <div className="text-center mb-10">
-              <h2 className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
-                Mais Passeios
-              </h2>
+              <EditableHeading level={getHeadingLevel(copy, 'moreToursTitle', 'h2')} className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
+                {copy?.moreToursTitle || "Mais Passeios"}
+              </EditableHeading>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Explore outros roteiros para encontrar a experiência ideal para sua viagem
+                {copy?.moreToursIntro || "Explore outros roteiros para encontrar a experiência ideal para sua viagem"}
               </p>
             </div>
-            <OtherToursCarousel tours={otherTours} whatsappNumber={whatsappNumber} />
+            <OtherToursCarousel tours={otherTours} whatsappNumber={whatsappNumber} copy={copy} />
           </div>
         )}
       </div>

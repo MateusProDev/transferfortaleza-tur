@@ -9,6 +9,8 @@ import { getSiteUrl } from '@/lib/site-url';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from '@/components/public/EditableHeading';
 
 interface Transfer {
   id: string;
@@ -26,9 +28,10 @@ interface TransfersClientProps {
   transfers: Transfer[];
   sectionDisabled: boolean;
   loadError: boolean;
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function TransfersClient({ transfers, sectionDisabled, loadError }: TransfersClientProps) {
+export default function TransfersClient({ transfers, sectionDisabled, loadError, copy }: TransfersClientProps) {
   const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>(transfers);
   const [searchTerm, setSearchTerm] = useState('');
   const baseUrl = getSiteUrl();
@@ -57,7 +60,7 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Seção Indisponível</h1>
-            <p className="text-gray-600 mb-8">A seção de transfer está temporariamente desativada.</p>
+            <p className="text-gray-600 mb-8">{copy?.disabledMessage || "A seção de transfer está temporariamente desativada."}</p>
             <Link href="/" className="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors">
               Voltar para a Página Inicial
             </Link>
@@ -74,8 +77,8 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
       <BreadcrumbJsonLd items={breadcrumbItems} />
       <div className="bg-secondary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="font-display text-4xl md:text-5xl mb-4">Serviços de Transfer</h1>
-          <p className="text-xl max-w-2xl">Conforto e segurança em seus deslocamentos com nossa frota moderna</p>
+          <EditableHeading level={getHeadingLevel(copy, 'title', 'h1')} className="font-display text-4xl md:text-5xl mb-4">{copy?.title || "Serviços de Transfer"}</EditableHeading>
+          <p className="text-xl max-w-2xl">{copy?.intro || "Conforto e segurança em seus deslocamentos com nossa frota moderna"}</p>
         </div>
       </div>
 
@@ -85,47 +88,53 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Buscar transfers..."
+              placeholder={copy?.searchPlaceholder || "Buscar transfers..."}
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-600"
             />
           </div>
           <div className="mt-4 text-sm text-gray-600">
-            {filteredTransfers.length} {filteredTransfers.length === 1 ? 'transfer encontrado' : 'transfers encontrados'}
+            {filteredTransfers.length} {filteredTransfers.length === 1 ? copy?.foundSingular || 'transfer encontrado' : copy?.foundPlural || 'transfers encontrados'}
           </div>
         </div>
 
         {loadError ? (
           <div className="py-12 text-center text-white/80" role="alert">
-            Não foi possível carregar os transfers agora. Tente novamente mais tarde.
+            {copy?.loadError || "Não foi possível carregar os transfers agora. Tente novamente mais tarde."}
           </div>
         ) : filteredTransfers.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-white/80 text-lg">Nenhum transfer encontrado com os filtros selecionados.</p>
+            <p className="text-white/80 text-lg">{copy?.noResults || "Nenhum transfer encontrado com os filtros selecionados."}</p>
             <button onClick={() => setSearchTerm('')} className="mt-4 text-secondary-600 hover:text-secondary-700 font-medium">
-              Limpar filtros
+              {copy?.clearFilters || "Limpar filtros"}
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTransfers.map((transfer) => (
               <article key={transfer.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
-                <div className="relative h-48 w-full">
+                <Link
+                  href={`/pacote/${transfer.slug || transfer.id}`}
+                  className="relative block h-48 w-full"
+                  aria-label={`Ver transfer: ${transfer.name}`}
+                >
                   {transfer.imageUrl ? (
                     <Image src={transfer.imageUrl} alt={transfer.imageAlt || transfer.name} fill className="object-cover" unoptimized={!shouldOptimizeImage(transfer.imageUrl)} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">Sem imagem</span>
+                      <span className="text-gray-400">{copy?.imagePlaceholder || "Sem imagem"}</span>
                     </div>
                   )}
-                </div>
+                </Link>
                 <div className="p-6 flex flex-col flex-1">
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">{transfer.name}</h2>
+                  <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h2')} className="text-xl font-bold text-gray-900 mb-2">
+                    <Link href={`/pacote/${transfer.slug || transfer.id}`} className="hover:text-primary-600" aria-label={`Ver transfer: ${transfer.name}`}>{transfer.name}</Link>
+                  </EditableHeading>
                   <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{transfer.description}</p>
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                    <div className="flex items-center space-x-1"><Car size={16} /><span>{transfer.vehicleType || 'Consulte'}</span></div>
-                    <div className="flex items-center space-x-1"><Users size={16} /><span>{transfer.capacity > 0 ? `${transfer.capacity} pessoas` : 'Consulte'}</span></div>
+                    <div className="flex items-center space-x-1"><Car size={16} /><span>{transfer.vehicleType || copy?.vehicleFallback || 'Consulte'}</span></div>
+                    <div className="flex items-center space-x-1"><Users size={16} /><span>{transfer.capacity > 0 ? `${transfer.capacity} ${copy?.capacitySuffix || "pessoas"}` : copy?.capacityFallback || 'Consulte'}</span></div>
                   </div>
                   <div className="flex items-center justify-end">
                     <Link
@@ -133,7 +142,7 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
                       className="bg-secondary-600 hover:bg-secondary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
                       aria-label={`Ver detalhes de ${transfer.name}`}
                     >
-                      Ver transfer: {transfer.name}
+                      {copy?.detailsButton || "Ver transfer"}: {transfer.name}
                     </Link>
                   </div>
                 </div>

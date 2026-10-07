@@ -161,16 +161,17 @@ export default async function Home() {
   
   const toursEnabled = settings?.sections?.toursEnabled ?? true;
   const transfersEnabled = settings?.sections?.transfersEnabled ?? true;
+  const homeCopy = settings?.pageCopy?.home;
 
   return (
     <main className="min-h-screen pt-20 sm:pt-24">
       <Header />
       
-      <Hero banners={banners} />
+      <Hero banners={banners} copy={homeCopy} />
 
-      {toursEnabled && <Tours tours={tours} whatsappNumber={settings?.whatsappConfig?.number} />}
+      {toursEnabled && <Tours tours={tours} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
       
-      {transfersEnabled && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} />}
+      {transfersEnabled && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
 
       <HomeConfiguredSections
         services={homeSections.services}
@@ -180,13 +181,19 @@ export default async function Home() {
         settings={settings}
       />
 
-      <Blog posts={blogPosts} />
+      <Blog posts={blogPosts} copy={homeCopy} />
 
-      <Testimonials testimonials={testimonials} />
+      <Testimonials testimonials={testimonials} copy={homeCopy} />
 
       <GoogleReviews content={googleReviews} />
       
-      <FAQ faqs={faqs} title={faqContent.title || undefined} subtitle={faqContent.subtitle || undefined} />
+      <FAQ
+        faqs={faqs}
+        title={faqContent.title || homeCopy?.faqTitle || undefined}
+        subtitle={faqContent.subtitle || homeCopy?.faqIntro || undefined}
+        noItemsText={settings?.pageCopy?.faq?.noItems}
+        titleLevel={settings?.pageCopy?.faq?.titleHeadingLevel || homeCopy?.faqTitleHeadingLevel || "h2"}
+      />
       
       <Footer />
     </main>

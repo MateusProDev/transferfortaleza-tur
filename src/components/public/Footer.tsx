@@ -9,6 +9,9 @@ import { fetchSettingsCached } from '@/lib/settings-cache';
 import { replaceLegacyBrand } from '@/lib/brand';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 
+const defaultTripadvisorUrl = 'https://www.tripadvisor.com.br/UserReviewEdit-g23379655-d34005292-Transfer_Fortaleza_Tur-Porto_Das_Dunas_Aquiraz_State_of_Ceara.html';
+const defaultGoogleSafeBrowsingUrl = 'https://transparencyreport.google.com/safe-browsing/search?url=transferfortalezatur.com.br&hl=pt_BR';
+
 interface SocialLink {
   icon: any;
   href: string;
@@ -126,31 +129,37 @@ export default function Footer() {
           </div>
 
           {/* External trust links */}
-          <div>
-            <h2 className="mb-4 text-lg font-semibold">Avaliações e segurança</h2>
-            <ul className="space-y-2">
-              <li>
+          {(settings?.footerTripadvisorUrl ?? defaultTripadvisorUrl) || (settings?.footerGoogleSafeBrowsingUrl ?? defaultGoogleSafeBrowsingUrl) ? (
+            <div>
+              <h2 className="mb-4 text-lg font-semibold">{settings?.footerTrustLinksTitle || "Avaliações e segurança"}</h2>
+              <ul className="space-y-2">
+                {(settings?.footerTripadvisorUrl ?? defaultTripadvisorUrl) && (
+                  <li>
                 <a
-                  href="https://www.tripadvisor.com.br/UserReviewEdit-g23379655-d34005292-Transfer_Fortaleza_Tur-Porto_Das_Dunas_Aquiraz_State_of_Ceara.html"
+                  href={settings?.footerTripadvisorUrl ?? defaultTripadvisorUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-400 transition-colors hover:text-white"
                 >
-                  Avalie no TripAdvisor
+                  {settings?.footerTripadvisorLabel || "Avalie no TripAdvisor"}
                 </a>
-              </li>
-              <li>
+                  </li>
+                )}
+                {(settings?.footerGoogleSafeBrowsingUrl ?? defaultGoogleSafeBrowsingUrl) && (
+                  <li>
                 <a
-                  href="https://transparencyreport.google.com/safe-browsing/search?url=transferfortalezatur.com.br&hl=pt_BR"
+                  href={settings?.footerGoogleSafeBrowsingUrl ?? defaultGoogleSafeBrowsingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-400 transition-colors hover:text-white"
                 >
-                  Verificação Google Safe Browsing
+                  {settings?.footerGoogleSafeBrowsingLabel || "Verificação Google Safe Browsing"}
                 </a>
-              </li>
-            </ul>
-          </div>
+                  </li>
+                )}
+              </ul>
+            </div>
+          ) : null}
 
           {/* Contact Info */}
           <div>

@@ -1,26 +1,28 @@
 import { Shield, CreditCard, HeadphonesIcon, Building2 } from 'lucide-react';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from './EditableHeading';
 
-export default function TourTrustBadges() {
+export default function TourTrustBadges({ copy }: { copy?: Partial<SitePageCopy> }) {
   const badges = [
     {
       icon: Shield,
-      title: "Garantia de Satisfação",
-      description: "Se não gostar, devolvemos seu dinheiro",
+      title: copy?.trust1Title || "Garantia de Satisfação",
+      description: copy?.trust1Description || "Se não gostar, devolvemos seu dinheiro",
     },
     {
       icon: CreditCard,
-      title: "Pagamento Seguro",
-      description: "Ambiente criptografado e protegido",
+      title: copy?.trust2Title || "Pagamento Seguro",
+      description: copy?.trust2Description || "Ambiente criptografado e protegido",
     },
     {
       icon: HeadphonesIcon,
-      title: "Suporte 24h",
-      description: "Atendimento via WhatsApp a qualquer hora",
+      title: copy?.trust3Title || "Suporte 24h",
+      description: copy?.trust3Description || "Atendimento via WhatsApp a qualquer hora",
     },
     {
       icon: Building2,
-      title: "Empresa CNPJ Ativo",
-      description: "Turismo legal e confiável",
+      title: copy?.trust4Title || "Empresa CNPJ Ativo",
+      description: copy?.trust4Description || "Turismo legal e confiável",
     },
   ];
 
@@ -38,9 +40,9 @@ export default function TourTrustBadges() {
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
                   <Icon size={24} className="text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <EditableHeading level={getHeadingLevel(copy, `trust${index + 1}Title`, "h3")} className="font-semibold text-gray-900 text-sm mb-1">
                   {badge.title}
-                </h3>
+                </EditableHeading>
                 <p className="text-xs text-gray-600">{badge.description}</p>
               </div>
             );

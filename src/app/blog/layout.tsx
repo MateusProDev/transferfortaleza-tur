@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getCachedBlogPosts } from "@/lib/public-data-cache";
+import { getCachedBlogPosts, getCachedSiteSettings } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 
 const baseUrl = getSiteUrl();
@@ -13,12 +13,18 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Error fetching a blog image for listing metadata:", error);
   }
 
-  const title = "Blog de Turismo | Transfer Fortaleza Tur";
-  const description = "Dicas para conhecer Fortaleza, o Ceará e os melhores destinos turísticos.";
+  let title = "Blog de Turismo em Fortaleza e Ceará";
+  let description = "Dicas de turismo, praias, passeios e destinos no Ceará para planejar sua próxima viagem com a Transfer Fortaleza Tur.";
+  try {
+    const copy = (await getCachedSiteSettings())?.pageCopy?.blog;
+    title = copy?.seoTitle || title;
+    description = copy?.seoDescription || description;
+  } catch (error) {
+    console.error("Error fetching blog page copy for metadata:", error);
+  }
 
   return {
-    title: "Blog de Turismo em Fortaleza e Ceará",
-    description: "Dicas de turismo, praias, passeios e destinos no Ceará para planejar sua próxima viagem com a Transfer Fortaleza Tur.",
+    title,
     alternates: { canonical: `${baseUrl}/blog` },
     openGraph: {
       type: "website",

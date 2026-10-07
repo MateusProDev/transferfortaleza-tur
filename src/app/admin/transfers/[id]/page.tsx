@@ -19,8 +19,11 @@ export default function EditTransfer() {
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    slug: "",
     description: "",
     longDescription: "",
+    price: "",
+    order: "",
     capacity: "",
     vehicleType: "",
     active: true,
@@ -49,8 +52,11 @@ export default function EditTransfer() {
         const transfer = await response.json();
         setFormData({
           name: transfer.name || "",
+          slug: transfer.slug || "",
           description: transfer.description || "",
           longDescription: transfer.longDescription || "",
+          price: transfer.price !== undefined && transfer.price !== null ? String(transfer.price) : "",
+          order: transfer.order !== undefined && transfer.order !== null ? String(transfer.order) : "",
           capacity: transfer.capacity ? transfer.capacity.toString() : "",
           vehicleType: transfer.vehicleType || "",
           active: transfer.active ?? true,
@@ -82,6 +88,8 @@ export default function EditTransfer() {
       const payload = {
         ...formData,
         capacity: parseInt(formData.capacity),
+        price: formData.price ? Number(formData.price) : undefined,
+        order: formData.order ? Number(formData.order) : undefined,
         includesItems: formData.includesItems.split(",").map((item) => item.trim()).filter(Boolean),
         excludesItems: formData.excludesItems.split(",").map((item) => item.trim()).filter(Boolean),
         faqs: formData.faqs.filter((faq) => faq.question.trim() && faq.answer.trim()),
@@ -138,6 +146,15 @@ export default function EditTransfer() {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium mb-2">URL amigável (slug)</label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium mb-2">Descrição</label>
               <textarea
                 value={formData.description}
@@ -153,6 +170,27 @@ export default function EditTransfer() {
                 label="Descrição completa do transfer"
                 value={formData.longDescription}
                 onChange={(longDescription) => setFormData({ ...formData, longDescription })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Preço (opcional)</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Ordem de exibição</label>
+              <input
+                type="number"
+                min="0"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
               />
             </div>
             <div>

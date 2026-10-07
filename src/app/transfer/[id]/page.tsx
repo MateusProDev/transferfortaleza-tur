@@ -16,6 +16,7 @@ import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
 import RecommendedTransfers from "@/components/public/RecommendedTransfers";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
+import EditableHeading, { getHeadingLevel } from "@/components/public/EditableHeading";
 
 interface PageProps {
   params: { id: string };
@@ -139,7 +140,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
             href="/transfer"
             className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 font-medium transition-colors"
           >
-            ← Voltar para transfer
+            {settings?.pageCopy?.transferDetails?.backLink || "← Voltar para transfer"}
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -152,47 +153,47 @@ export default async function TransferDetailPage({ params }: PageProps) {
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                  Disponível para orçamento
+                  {settings?.pageCopy?.transferDetails?.availability || "Disponível para orçamento"}
                 </span>
                 {transfer.featuredOnHome && (
                   <span className="bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full">
-                    Destaque
+                    {settings?.pageCopy?.transferDetails?.featured || "Destaque"}
                   </span>
                 )}
               </div>
 
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-5 leading-tight">
+              <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "productName", "h1")} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-5 leading-tight">
                 {transfer.name.trim()}
-              </h1>
+              </EditableHeading>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
                 <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <Car size={22} className="text-primary-600" />
                   <div>
-                    <p className="text-xs text-gray-500">Veículo</p>
+                    <p className="text-xs text-gray-500">{settings?.pageCopy?.transferDetails?.vehicleLabel || "Veículo"}</p>
                     <p className="font-semibold text-gray-900">{transfer.vehicleType || "Consulte"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
                   <Users size={22} className="text-primary-600" />
                   <div>
-                    <p className="text-xs text-gray-500">Capacidade</p>
+                    <p className="text-xs text-gray-500">{settings?.pageCopy?.transferDetails?.capacityLabel || "Capacidade"}</p>
                     <p className="font-semibold text-gray-900">
-                      {transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} pessoas` : "Consulte"}
+                      {transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} ${settings?.pageCopy?.transferDetails?.capacitySuffix || "pessoas"}` : "Consulte"}
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="mb-7">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">Sobre este transfer</h2>
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "aboutTitle", "h2")} className="text-xl font-bold text-gray-900 mb-3">{settings?.pageCopy?.transferDetails?.aboutTitle || "Sobre este transfer"}</EditableHeading>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{transfer.description}</p>
               </div>
 
               {transfer.longDescription && (
                 <details className="group mb-7">
                   <summary className="cursor-pointer text-primary-600 font-semibold hover:text-primary-700 flex items-center gap-2">
-                    Ver roteiro e detalhes do transfer {transfer.name}
+                    {settings?.pageCopy?.transferDetails?.fullDescription || "Ver roteiro e detalhes do transfer"} {transfer.name}
                     <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
                   </summary>
                   <MarkdownDescription content={transfer.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
@@ -206,13 +207,13 @@ export default async function TransferDetailPage({ params }: PageProps) {
                   rel="noopener noreferrer"
                   className="flex-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center"
                 >
-                  Solicitar orçamento pelo WhatsApp
+                  {settings?.pageCopy?.transferDetails?.quoteButton || "Solicitar orçamento pelo WhatsApp"}
                 </WhatsAppConversionLink>
                 <Link
                   href="#contact"
                   className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center"
                 >
-                  Fale conosco
+                  {settings?.pageCopy?.transferDetails?.contactButton || "Fale conosco"}
                 </Link>
               </div>
             </div>
@@ -225,9 +226,9 @@ export default async function TransferDetailPage({ params }: PageProps) {
           <div className="container mx-auto grid grid-cols-1 gap-10 px-4 md:grid-cols-2">
             {includesItems.length > 0 && (
               <div>
-                <h2 className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
-                  <Check size={22} className="text-green-600" /> O que está incluído
-                </h2>
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "includesTitle", "h2")} className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
+                  <Check size={22} className="text-green-600" /> {settings?.pageCopy?.transferDetails?.includesTitle || "O que está incluído"}
+                </EditableHeading>
                 <ul className="space-y-3">
                   {includesItems.map((item, index) => (
                     <li key={`${item}-${index}`} className="flex items-start gap-3 text-gray-700">
@@ -240,9 +241,9 @@ export default async function TransferDetailPage({ params }: PageProps) {
             )}
             {excludesItems.length > 0 && (
               <div>
-                <h2 className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
-                  <X size={22} className="text-red-600" /> O que não está incluído
-                </h2>
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "excludesTitle", "h2")} className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
+                  <X size={22} className="text-red-600" /> {settings?.pageCopy?.transferDetails?.excludesTitle || "O que não está incluído"}
+                </EditableHeading>
                 <ul className="space-y-3">
                   {excludesItems.map((item, index) => (
                     <li key={`${item}-${index}`} className="flex items-start gap-3 text-gray-700">
@@ -260,7 +261,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
       {transferFaqs.length > 0 ? (
         <section className="bg-white py-12">
           <div className="container mx-auto px-4">
-            <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">Perguntas sobre este transfer</h2>
+            <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")} className="mb-8 text-center text-3xl font-bold text-gray-900">{settings?.pageCopy?.transferDetails?.faqTitle || "Perguntas sobre este transfer"}</EditableHeading>
             <div className="mx-auto max-w-3xl space-y-3">
               {transferFaqs.map((faq, index) => (
                 <details key={`${faq.question}-${index}`} className="group rounded-lg border border-gray-200">
@@ -277,10 +278,14 @@ export default async function TransferDetailPage({ params }: PageProps) {
           </div>
         </section>
       ) : (
-        <FAQ faqs={faqs} />
+        <FAQ
+          faqs={faqs}
+          title={settings?.pageCopy?.transferDetails?.faqTitle}
+          titleLevel={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")}
+        />
       )}
 
-      <RecommendedTransfers transfers={relatedTransfers} />
+      <RecommendedTransfers transfers={relatedTransfers} copy={settings?.pageCopy?.transferDetails} />
       <Footer />
     </main>
   );

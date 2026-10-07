@@ -16,8 +16,11 @@ export default function NewTransfer() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    slug: "",
     description: "",
     longDescription: "",
+    price: "",
+    order: "",
     capacity: "",
     vehicleType: "",
     active: true,
@@ -28,6 +31,7 @@ export default function NewTransfer() {
     includesItems: "",
     excludesItems: "",
     faqs: [] as TourFAQ[],
+    recommendedTransferIds: [] as string[],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,8 +44,11 @@ export default function NewTransfer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
+          slug: formData.slug,
           description: formData.description,
           longDescription: formData.longDescription,
+          price: formData.price ? Number(formData.price) : undefined,
+          order: formData.order ? Number(formData.order) : undefined,
           capacity: parseInt(formData.capacity),
           vehicleType: formData.vehicleType,
           imageUrl: formData.imageUrl,
@@ -52,6 +59,7 @@ export default function NewTransfer() {
           includesItems: formData.includesItems.split(",").map((item) => item.trim()).filter(Boolean),
           excludesItems: formData.excludesItems.split(",").map((item) => item.trim()).filter(Boolean),
           faqs: formData.faqs.filter((faq) => faq.question.trim() && faq.answer.trim()),
+          recommendedTransferIds: formData.recommendedTransferIds,
         }),
       });
 
@@ -92,6 +100,16 @@ export default function NewTransfer() {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium mb-2">URL amigável (slug)</label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="Ex: transfer-aeroporto"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium mb-2">Descrição</label>
               <textarea
                 value={formData.description}
@@ -108,6 +126,27 @@ export default function NewTransfer() {
                 onChange={(e) => setFormData({ ...formData, longDescription: e.target.value })}
                 className="w-full px-3 py-2 border rounded"
                 rows={6}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Preço (opcional)</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Ordem de exibição</label>
+              <input
+                type="number"
+                min="0"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
               />
             </div>
             <div>
@@ -208,6 +247,28 @@ export default function NewTransfer() {
               images={formData.galleryImages}
               onImagesChange={(galleryImages) => setFormData({ ...formData, galleryImages })}
             />
+            <div className="space-y-3 border-t pt-4">
+              <h2 className="text-lg font-semibold">Transfers recomendados</h2>
+              <div className="grid gap-2 md:grid-cols-2">
+                {(transfers || []).map((item) => (
+                  <label key={item.id} className="flex items-center gap-2 rounded border p-3 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={formData.recommendedTransferIds.includes(item.id)}
+                      disabled={!formData.recommendedTransferIds.includes(item.id) && formData.recommendedTransferIds.length >= 3}
+                      onChange={(e) => {
+                        const recommendedTransferIds = e.target.checked
+                          ? [...formData.recommendedTransferIds, item.id].slice(0, 3)
+                          : formData.recommendedTransferIds.filter((id) => id !== item.id);
+                        setFormData({ ...formData, recommendedTransferIds });
+                      }}
+                      className="w-4 h-4"
+                    />
+                    <span>{item.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

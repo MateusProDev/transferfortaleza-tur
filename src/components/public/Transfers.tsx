@@ -8,13 +8,16 @@ import WhatsAppConversionLink from './WhatsAppConversionLink';
 import RecommendedTransfers from './RecommendedTransfers';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 import type { Transfer } from '@/types';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from './EditableHeading';
 
 interface TransfersProps {
   transfers: Transfer[];
   whatsappNumber?: string;
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function Transfers({ transfers, whatsappNumber }: TransfersProps) {
+export default function Transfers({ transfers, whatsappNumber, copy }: TransfersProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3;
@@ -67,11 +70,11 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
     <section id="transfers" className="py-14 bg-[#0F3A4A]">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-left sm:text-center">
-          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">
-            Serviços de Transfer
-          </h2>
+          <EditableHeading level={getHeadingLevel(copy, 'transfersTitle', 'h2')} className="font-display text-3xl md:text-4xl text-white mb-4">
+            {copy?.transfersTitle || "Serviços de Transfer"}
+          </EditableHeading>
           <p className="max-w-2xl text-white/80 sm:mx-auto">
-            Conforto e segurança em seus deslocamentos com nossa frota moderna
+            {copy?.transfersIntro || "Conforto e segurança em seus deslocamentos com nossa frota moderna"}
           </p>
         </div>
 
@@ -108,7 +111,11 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
                 <article
                   className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 ease-out flex flex-col group"
                 >
-                <div className="relative h-40 mb-4 w-full">
+                <Link
+                  href={`/pacote/${transfer.slug || transfer.id}`}
+                  className="relative mb-4 block h-40 w-full"
+                  aria-label={`Ver transfer: ${transfer.name}`}
+                >
                   {transfer.imageUrl ? (
                     <Image
                       src={transfer.imageUrl}
@@ -119,29 +126,29 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                      <span className="text-gray-400">Sem imagem</span>
+                      <span className="text-gray-400">{copy?.transfersImagePlaceholder || "Sem imagem"}</span>
                     </div>
                   )}
-                </div>
+                </Link>
 
-                <h3>
+                <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
                   <Link
                     href={`/pacote/${transfer.slug || transfer.id}`}
                     className="block text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
                   >
                     {transfer.name}
                   </Link>
-                </h3>
+                </EditableHeading>
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{transfer.description}</p>
 
                 <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                   <div className="flex items-center space-x-1">
                     <Car size={16} />
-                    <span>{transfer.vehicleType || 'Consulte'}</span>
+                    <span>{transfer.vehicleType || copy?.transfersVehicleFallback || 'Consulte'}</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Users size={16} />
-                    <span>{transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} pessoas` : 'Consulte'}</span>
+                    <span>{transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} ${copy?.transfersCapacitySuffix || "pessoas"}` : copy?.transfersCapacityFallback || 'Consulte'}</span>
                   </div>
                 </div>
 
@@ -150,7 +157,7 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
                     href={`/pacote/${transfer.slug || transfer.id}`}
                     className="flex-1 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                   >
-                    Ver transfer
+                    {copy?.transferDetailsButton || "Ver transfer"}
                   </Link>
                   <WhatsAppConversionLink
                     href={`https://wa.me/${normalizeBrazilianPhone(whatsappNumber || "5585997314093")}?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre o transfer: ${transfer.name}`)}`}
@@ -160,8 +167,8 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
                     aria-label={`Consultar ${transfer.name} pelo WhatsApp`}
                   >
                     <MessageCircle size={18} />
-                    <span className="hidden sm:inline">WhatsApp</span>
-                    <span className="sm:hidden">WhatsApp</span>
+                    <span className="hidden sm:inline">{copy?.transferWhatsappButton || "WhatsApp"}</span>
+                    <span className="sm:hidden">{copy?.transferWhatsappButton || "WhatsApp"}</span>
                   </WhatsAppConversionLink>
                 </div>
                 </article>
@@ -193,13 +200,25 @@ export default function Transfers({ transfers, whatsappNumber }: TransfersProps)
             href="/transfer"
             className="inline-block bg-secondary-800 hover:bg-secondary-900 text-white px-8 py-3 rounded-lg transition-colors font-semibold"
           >
-            Ver Todos os Transfers
+            {copy?.transfersButton || "Ver Todos os Transfers"}
           </Link>
         </div>
       </div>
     </section>
     {otherTransfers.length > 0 && (
-      <RecommendedTransfers transfers={otherTransfers} />
+      <RecommendedTransfers
+        transfers={otherTransfers}
+        copy={{
+          relatedTitle: copy?.homeRelatedTitle || "Outros transfers recomendados",
+          relatedTitleHeadingLevel: copy?.homeRelatedTitleHeadingLevel || "h2",
+          relatedIntro: copy?.homeRelatedIntro || "Confira outras opções de transporte para sua viagem",
+          relatedSeeAll: copy?.homeRelatedSeeAll || "Ver todos",
+          relatedCardButton: copy?.homeRelatedCardButton || "Ver transfer",
+          vehicleFallback: copy?.transfersVehicleFallback || "Consulte",
+          capacityFallback: copy?.transfersCapacityFallback || "Consulte",
+          capacitySuffix: copy?.transfersCapacitySuffix || "pessoas",
+        }}
+      />
     )}
     </>
   );

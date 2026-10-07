@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { FAQJsonLd } from '@/components/seo/JsonLd';
+import EditableHeading from './EditableHeading';
 
 interface FAQ {
   id: string;
@@ -14,12 +15,16 @@ interface FAQProps {
   faqs: FAQ[];
   title?: string;
   subtitle?: string;
+  noItemsText?: string;
+  titleLevel?: string;
 }
 
 export default function FAQ({
   faqs,
   title = "Perguntas Frequentes",
   subtitle = "Tire suas dúvidas sobre nossos serviços",
+  noItemsText = "Nenhuma pergunta disponível no momento.",
+  titleLevel = "h2",
 }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -32,9 +37,9 @@ export default function FAQ({
       <section className="py-14 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{title}</h2>
+            <EditableHeading level={titleLevel} fallbackLevel="h2" className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{title}</EditableHeading>
           </div>
-          <p className="text-center text-gray-600">Nenhuma pergunta disponível no momento.</p>
+          <p className="text-center text-gray-600">{noItemsText}</p>
         </div>
       </section>
     );
@@ -46,7 +51,7 @@ export default function FAQ({
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{title}</h2>
+            <EditableHeading level={titleLevel} fallbackLevel="h2" className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{title}</EditableHeading>
             <p className="text-gray-600 max-w-2xl mx-auto">
               {subtitle}
             </p>

@@ -21,9 +21,12 @@ export default function EditTour() {
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    slug: "",
     description: "",
     longDescription: "",
     duration: "",
+    price: "",
+    order: "",
     active: true,
     featured: false,
     mainImageUrl: "",
@@ -50,9 +53,12 @@ export default function EditTour() {
         const tour = await response.json();
         setFormData({
           name: tour.name || "",
+          slug: tour.slug || "",
           description: tour.description || "",
           longDescription: tour.longDescription || "",
           duration: tour.duration || "",
+          price: tour.price !== undefined && tour.price !== null ? String(tour.price) : "",
+          order: tour.order !== undefined && tour.order !== null ? String(tour.order) : "",
           active: tour.active ?? true,
           featured: tour.featured ?? false,
           mainImageUrl: tour.mainImageUrl || "",
@@ -81,6 +87,8 @@ export default function EditTour() {
     try {
       const payload = {
         ...formData,
+        price: formData.price ? Number(formData.price) : undefined,
+        order: formData.order ? Number(formData.order) : undefined,
         includesItems: formData.includesItems
           .split(",")
           .map((item) => item.trim())
@@ -142,6 +150,15 @@ export default function EditTour() {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium mb-2">URL amigável (slug)</label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium mb-2">Descrição Curta</label>
               <textarea
                 value={formData.description}
@@ -168,6 +185,27 @@ export default function EditTour() {
                 required
                 className="w-full px-3 py-2 border rounded"
                 placeholder="Ex: 4 horas"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Preço (opcional)</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Ordem de exibição</label>
+              <input
+                type="number"
+                min="0"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
               />
             </div>
             <ImageUpload

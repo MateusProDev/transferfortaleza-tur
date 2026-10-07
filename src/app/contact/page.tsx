@@ -17,6 +17,7 @@ import { fetchSettingsCached } from "@/lib/settings-cache";
 import { defaultContactCopy } from "@/lib/site-copy";
 import { normalizeBrazilianPhone } from "@/lib/phone";
 import type { ContactPageCopy } from "@/types";
+import EditableHeading from "@/components/public/EditableHeading";
 
 interface ContactSettings {
   contactInfo?: {
@@ -130,9 +131,9 @@ export default function ContactPage() {
 
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <EditableHeading level={copy.titleHeadingLevel} fallbackLevel="h1" className="text-4xl md:text-5xl font-bold mb-4">
             {copy.title}
-          </h1>
+          </EditableHeading>
           <p className="text-xl max-w-2xl">
             {copy.introduction}
           </p>
@@ -142,9 +143,9 @@ export default function ContactPage() {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <EditableHeading level={copy.detailsTitleHeadingLevel} fallbackLevel="h2" className="text-2xl font-bold text-gray-900 mb-6">
               {copy.detailsTitle}
-            </h2>
+            </EditableHeading>
 
             <div className="space-y-6">
               {contactInfo.phone && (
@@ -153,9 +154,9 @@ export default function ContactPage() {
                     <Phone className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">
+                    <EditableHeading level={copy.phoneLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
                       {copy.phoneLabel}
-                    </h3>
+                    </EditableHeading>
                     <a className="text-gray-600 hover:text-primary-700" href={`tel:+${normalizeBrazilianPhone(contactInfo.phone)}`}>+{normalizeBrazilianPhone(contactInfo.phone)}</a>
                   </div>
                 </div>
@@ -167,9 +168,9 @@ export default function ContactPage() {
                     <MessageCircle className="text-green-600" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">
+                    <EditableHeading level={copy.whatsappLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
                       {copy.whatsappLabel}
-                    </h3>
+                    </EditableHeading>
                     <p className="text-gray-600">
                       {contactInfo.whatsapp || copy.whatsappFallback}
                     </p>
@@ -194,7 +195,7 @@ export default function ContactPage() {
                     <Mail className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{copy.emailLabel}</h3>
+                    <EditableHeading level={copy.emailLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">{copy.emailLabel}</EditableHeading>
                     <p className="text-gray-600">{contactInfo.email}</p>
                   </div>
                 </div>
@@ -206,9 +207,9 @@ export default function ContactPage() {
                     <MapPin className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">
+                    <EditableHeading level={copy.addressLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
                       {copy.addressLabel}
-                    </h3>
+                    </EditableHeading>
                     <p className="text-gray-600">{contactInfo.address}</p>
                   </div>
                 </div>
@@ -216,9 +217,9 @@ export default function ContactPage() {
             </div>
 
             <div className="mt-8 p-6 bg-gray-50 rounded-xl">
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <EditableHeading level={copy.hoursTitleHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-2">
                 {copy.hoursTitle}
-              </h3>
+              </EditableHeading>
               <p className="text-gray-600">
                 {copy.weekdayHours}
                 <br />
@@ -230,9 +231,9 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <EditableHeading level={copy.formTitleHeadingLevel} fallbackLevel="h2" className="text-2xl font-bold text-gray-900 mb-6">
               {copy.formTitle}
-            </h2>
+            </EditableHeading>
 
             {isSubmitted ? (
               <div className="space-y-5">

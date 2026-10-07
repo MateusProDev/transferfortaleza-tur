@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from './EditableHeading';
 
 interface Banner {
   id: string;
@@ -19,9 +21,10 @@ interface Banner {
 
 interface HeroProps {
   banners: Banner[];
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function Hero({ banners }: HeroProps) {
+export default function Hero({ banners, copy }: HeroProps) {
   const availableBanners = banners.filter((banner) => banner?.imageUrl);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -47,15 +50,15 @@ export default function Hero({ banners }: HeroProps) {
     return (
       <section className="relative flex h-[600px] items-center justify-start bg-gradient-to-r from-primary-600 to-secondary-600 sm:justify-center">
         <div className="px-4 text-left text-white sm:text-center">
-          <h1 className="font-display text-4xl md:text-6xl mb-4">Passeios e Transfers em Fortaleza e Região</h1>
-          <p className="text-xl md:text-2xl mb-8">Reserve experiências únicas com conforto, segurança e atendimento personalizado.</p>
+          <EditableHeading level={getHeadingLevel(copy, 'heroTitle', 'h1')} className="font-display text-4xl md:text-6xl mb-4">{copy?.heroTitle || 'Passeios e Transfers em Fortaleza e Região'}</EditableHeading>
+          <p className="text-xl md:text-2xl mb-8">{copy?.heroSubtitle || 'Reserve experiências únicas com conforto, segurança e atendimento personalizado.'}</p>
         </div>
       </section>
     );
   }
 
   const currentBanner = safeBanner;
-  const heroTitle = currentBanner.title?.trim() || 'Passeios e Transfers em Fortaleza e Região';
+  const heroTitle = currentBanner.title?.trim() || copy?.heroTitle || 'Passeios e Transfers em Fortaleza e Região';
 
   return (
     <section className="relative h-[600px] overflow-hidden" aria-label="Banner principal">
@@ -79,11 +82,11 @@ export default function Hero({ banners }: HeroProps) {
 
       <div className="relative flex h-full items-center justify-start px-4 text-white sm:justify-center sm:px-8 lg:px-16">
         <div className="max-w-4xl text-left sm:text-center">
-          <h1 className="font-display text-4xl md:text-6xl mb-4">
+          <EditableHeading level={getHeadingLevel(copy, 'heroTitle', 'h1')} className="font-display text-4xl md:text-6xl mb-4">
             {heroTitle}
-          </h1>
+          </EditableHeading>
           <p className="text-xl md:text-2xl mb-8">
-            {currentBanner.subtitle || currentBanner.description || 'Reserve experiências únicas em Fortaleza e região.'}
+            {currentBanner.subtitle || currentBanner.description || copy?.heroSubtitle || 'Reserve experiências únicas em Fortaleza e região.'}
           </p>
           {currentBanner.location && <p className="mb-4 text-sm text-white/80">{currentBanner.location}</p>}
           <div className="flex flex-wrap justify-start gap-3 sm:justify-center">

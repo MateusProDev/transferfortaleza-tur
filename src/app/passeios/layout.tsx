@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getCachedTours } from "@/lib/public-data-cache";
+import { getCachedSiteSettings, getCachedTours } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 
 const baseUrl = getSiteUrl();
@@ -13,11 +13,18 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Error fetching a tour image for listing metadata:", error);
   }
 
-  const title = "Passeios em Fortaleza e Ceará | Transfer Fortaleza Tur";
-  const description = "Encontre passeios turísticos em Fortaleza e no Ceará, com roteiros para praias, dunas e destinos inesquecíveis. Consulte disponibilidade e reserve pelo WhatsApp.";
+  let title = "Passeios em Fortaleza e Ceará | Transfer Fortaleza Tur";
+  let description = "Encontre passeios turísticos em Fortaleza e no Ceará, com roteiros para praias, dunas e destinos inesquecíveis. Consulte disponibilidade e reserve pelo WhatsApp.";
+  try {
+    const copy = (await getCachedSiteSettings())?.pageCopy?.tours;
+    title = copy?.seoTitle || title;
+    description = copy?.seoDescription || description;
+  } catch (error) {
+    console.error("Error fetching tours page copy for metadata:", error);
+  }
 
   return {
-    title: "Passeios em Fortaleza e Ceará",
+    title,
     description,
     alternates: { canonical: `${baseUrl}/passeios` },
     openGraph: {

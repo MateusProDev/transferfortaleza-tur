@@ -16,6 +16,7 @@ import DetailGallery from "@/components/public/DetailGallery";
 import * as Types from "@/types";
 import { getSiteUrl } from "@/lib/site-url";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
+import EditableHeading, { getHeadingLevel } from "@/components/public/EditableHeading";
 
 interface PageProps {
   params: { id: string };
@@ -183,7 +184,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
             className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6 font-medium transition-colors"
             aria-label="Voltar para lista de passeios"
           >
-            ← Voltar para passeios
+            {settings?.pageCopy?.tourDetails?.backLink || "← Voltar para passeios"}
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -202,19 +203,19 @@ export default async function PasseioDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-1">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  Disponível para reserva
+                  {settings?.pageCopy?.tourDetails?.availability || "Disponível para reserva"}
                 </span>
                 {tour.featured && (
                   <span className="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-1">
                     <Sparkles size={14} />
-                    Mais vendido
+                    {settings?.pageCopy?.tourDetails?.featured || "Mais vendido"}
                   </span>
                 )}
               </div>
 
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+              <EditableHeading level={getHeadingLevel(settings?.pageCopy?.tourDetails, "productName", "h1")} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                 {tour.name}
-              </h1>
+              </EditableHeading>
               
               {/* Informações rápidas */}
               <div className="flex flex-wrap items-center gap-4 mb-6 text-sm">
@@ -224,7 +225,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
                 </div>
                 <div className="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
                   <Users size={18} className="text-blue-600" />
-                  <span className="font-medium">Grupo pequeno</span>
+                  <span className="font-medium">{settings?.pageCopy?.tourDetails?.groupLabel || "Grupo pequeno"}</span>
                 </div>
               </div>
 
@@ -232,14 +233,14 @@ export default async function PasseioDetailPage({ params }: PageProps) {
               <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg mb-6 flex items-start gap-3">
                 <AlertCircle size={20} className="text-orange-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-orange-900 text-sm">Últimas vagas disponíveis</p>
-                  <p className="text-xs text-orange-700 mt-1">Reserve agora para garantir sua vaga neste passeio exclusivo.</p>
+                  <EditableHeading level={getHeadingLevel(settings?.pageCopy?.tourDetails, "urgencyTitle", "h3")} className="font-semibold text-orange-900 text-sm">{settings?.pageCopy?.tourDetails?.urgencyTitle || "Últimas vagas disponíveis"}</EditableHeading>
+                  <p className="text-xs text-orange-700 mt-1">{settings?.pageCopy?.tourDetails?.urgencyText || "Reserve agora para garantir sua vaga neste passeio exclusivo."}</p>
                 </div>
               </div>
 
               {/* Descrição */}
               <div className="mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-3">Sobre este passeio</h2>
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.tourDetails, "aboutTitle", "h2")} className="text-xl font-bold text-gray-900 mb-3">{settings?.pageCopy?.tourDetails?.aboutTitle || "Sobre este passeio"}</EditableHeading>
                 <p className="text-gray-600 leading-relaxed">{tour.description}</p>
               </div>
 
@@ -247,7 +248,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
                 <div className="mb-8">
                   <details className="group">
                     <summary className="cursor-pointer text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-2">
-                      Ler descrição completa
+                      {settings?.pageCopy?.tourDetails?.fullDescription || "Ler descrição completa"}
                       <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
                     </summary>
                     <MarkdownDescription content={tour.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
@@ -258,10 +259,10 @@ export default async function PasseioDetailPage({ params }: PageProps) {
               {/* O que está incluído */}
               {tour.includesItems && tour.includesItems.length > 0 && (
                 <div className="mb-8">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <EditableHeading level={getHeadingLevel(settings?.pageCopy?.tourDetails, "includesTitle", "h2")} className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <Check size={22} className="text-green-600" />
-                    O que está incluído
-                  </h2>
+                    {settings?.pageCopy?.tourDetails?.includesTitle || "O que está incluído"}
+                  </EditableHeading>
                   <ul className="space-y-3">
                     {tour.includesItems.map((item, index) => (
                       <li key={index} className="flex items-start gap-3 text-gray-600">
@@ -276,10 +277,10 @@ export default async function PasseioDetailPage({ params }: PageProps) {
               {/* O que não está incluído */}
               {tour.excludesItems && tour.excludesItems.length > 0 && (
                 <div className="mb-8">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <EditableHeading level={getHeadingLevel(settings?.pageCopy?.tourDetails, "excludesTitle", "h2")} className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <X size={22} className="text-red-600" />
-                    O que não está incluído
-                  </h2>
+                    {settings?.pageCopy?.tourDetails?.excludesTitle || "O que não está incluído"}
+                  </EditableHeading>
                   <ul className="space-y-3">
                     {tour.excludesItems.map((item, index) => (
                       <li key={index} className="flex items-start gap-3 text-gray-600">
@@ -296,13 +297,13 @@ export default async function PasseioDetailPage({ params }: PageProps) {
       </div>
 
       {/* Selos de Confiança */}
-      <TourTrustBadges />
+      <TourTrustBadges copy={settings?.pageCopy?.tourDetails} />
 
       {/* FAQ */}
-      <TourFAQ faqs={tour.faqs} />
+      <TourFAQ faqs={tour.faqs} title={settings?.pageCopy?.tourDetails?.faqTitle} titleLevel={getHeadingLevel(settings?.pageCopy?.tourDetails, "faqTitle", "h2")} />
 
       {/* Passeios Recomendados */}
-      <RecommendedTours tours={relatedTours} />
+      <RecommendedTours tours={relatedTours} copy={settings?.pageCopy?.tourDetails} />
 
       <Footer />
     </main>

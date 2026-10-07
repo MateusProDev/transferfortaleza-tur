@@ -5,13 +5,18 @@ import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
 import { getSiteUrl } from '@/lib/site-url';
-import { getCachedBlogPosts } from '@/lib/public-data-cache';
+import { getCachedBlogPosts, getCachedSiteSettings } from '@/lib/public-data-cache';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
+import EditableHeading, { getHeadingLevel } from '@/components/public/EditableHeading';
 
 export const revalidate = 300;
 
 export default async function BlogPage() {
-  const posts = await getCachedBlogPosts();
+  const [posts, settings] = await Promise.all([
+    getCachedBlogPosts(),
+    getCachedSiteSettings(),
+  ]);
+  const copy = settings?.pageCopy?.blog;
   
   const baseUrl = getSiteUrl();
   const breadcrumbItems = [
@@ -43,9 +48,9 @@ export default async function BlogPage() {
       {/* Header */}
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="font-display text-4xl md:text-5xl mb-4">Blog</h1>
+          <EditableHeading level={getHeadingLevel(copy, 'title', 'h1')} className="font-display text-4xl md:text-5xl mb-4">{copy?.title || "Blog"}</EditableHeading>
           <p className="text-xl max-w-2xl">
-            Dicas, guias e inspirações para suas próximas aventuras
+            {copy?.intro || "Dicas, guias e inspirações para suas próximas aventuras"}
           </p>
         </div>
       </div>
@@ -53,7 +58,7 @@ export default async function BlogPage() {
       <div className="container mx-auto px-4 py-12">
         {posts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">Nenhum post publicado ainda.</p>
+            <p className="text-gray-600 text-lg">{copy?.noPosts || "Nenhum post publicado ainda."}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -67,14 +72,14 @@ export default async function BlogPage() {
                     {post.imageUrl ? (
                       <Image
                         src={post.imageUrl}
-                        alt={post.imageAlt || post.title || 'Artigo sobre turismo em Fortaleza'}
+                        alt={post.imageAlt || post.title || copy?.emptyImageAlt || 'Artigo sobre turismo em Fortaleza'}
                         fill
                         className="object-cover"
                         unoptimized={!shouldOptimizeImage(post.imageUrl)}
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-r from-primary-600 to-secondary-600 flex items-center justify-center">
-                        <span className="text-white text-2xl font-bold">Transfer Fortaleza Tur</span>
+                        <span className="text-white text-2xl font-bold">{copy?.imagePlaceholder || "Transfer Fortaleza Tur"}</span>
                       </div>
                     )}
                   </div>
@@ -88,7 +93,7 @@ export default async function BlogPage() {
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock size={16} />
-                      <span>{readTime(post.content)} min de leitura</span>
+                      <span>{readTime(post.content)} {copy?.readTimeSuffix || "min de leitura"}</span>
                     </div>
                   </div>
 
@@ -104,7 +109,7 @@ export default async function BlogPage() {
                     href={`/blog/${post.slug}`}
                     className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mt-auto"
                   >
-                    Ler artigo sobre {post.title}
+                    {copy?.readArticlePrefix || "Ler artigo sobre"} {post.title}
                     <ArrowRight size={16} />
                   </Link>
                 </div>

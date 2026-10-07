@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/ui/ImageUpload";
-import { defaultContactCopy } from "@/lib/site-copy";
+import { defaultContactCopy, defaultPublicPageCopy } from "@/lib/site-copy";
 import type { ContactPageCopy } from "@/types";
 import { clearCachedSettings } from "@/lib/settings-cache";
 
@@ -44,15 +44,16 @@ const defaultAboutSection = {
 };
 
 const defaultMenuLinks = [
-  { id: "tours", label: "Passeios", url: "/passeios", order: 0, active: true },
-  { id: "transfers", label: "Transfer", url: "/transfer", order: 1, active: true },
-  { id: "blog", label: "Blog", url: "/blog", order: 2, active: true },
-  { id: "about", label: "Sobre", url: "/sobre", order: 3, active: true },
-  { id: "contact", label: "Contato", url: "/contato", order: 4, active: true },
+  { id: "packages", label: "Pacotes", url: "/pacotes", order: 0, active: true },
+  { id: "tours", label: "Passeios", url: "/passeios", order: 1, active: true },
+  { id: "transfers", label: "Transfer", url: "/transfer", order: 2, active: true },
+  { id: "blog", label: "Blog", url: "/blog", order: 3, active: true },
+  { id: "about", label: "Sobre", url: "/sobre", order: 4, active: true },
+  { id: "contact", label: "Contato", url: "/contato", order: 5, active: true },
 ];
 
 const defaultFooterLinks = [
-  { id: "packages", label: "Pacotes", url: "/passeios", active: true },
+  { id: "packages", label: "Pacotes", url: "/pacotes", active: true },
   { id: "blog", label: "Blog", url: "/blog", active: true },
   { id: "transfers", label: "Transfers", url: "/transfer", active: true },
   { id: "privacy", label: "Política", url: "/politica-de-privacidade", active: true },
@@ -99,6 +100,265 @@ const multilineContactCopy = new Set<keyof ContactPageCopy>([
   "whatsappGreeting",
   "submitError",
 ]);
+
+const contactHeadingDefaults: Partial<Record<keyof ContactPageCopy, string>> = {
+  title: "h1",
+  detailsTitle: "h2",
+  phoneLabel: "h3",
+  whatsappLabel: "h3",
+  emailLabel: "h3",
+  addressLabel: "h3",
+  hoursTitle: "h3",
+  formTitle: "h2",
+};
+
+const pageCopyGroups = [
+  {
+    key: "home",
+    title: "Página inicial",
+    description: "Textos das seções, chamadas e botões exibidos na página inicial.",
+    fields: [
+      ["heroTitle", "Título alternativo do banner", false],
+      ["heroSubtitle", "Texto alternativo do banner", true],
+      ["toursSectionTitle", "Título da seção principal de passeios", false],
+      ["destinationsBadge", "Rótulo acima do título principal", false],
+      ["toursSectionIntro", "Introdução da seção principal de passeios", true],
+      ["toursTitle", "Título da lista de passeios", false],
+      ["toursIntro", "Introdução da lista de passeios", true],
+      ["toursButton", "Botão para ver todos os passeios", false],
+      ["toursImagePlaceholder", "Texto sem imagem nos passeios", false],
+      ["toursDurationFallback", "Duração não informada nos passeios", false],
+      ["toursGroupLabel", "Texto do tamanho do grupo nos passeios", false],
+      ["tourFeaturedBadge", "Selo de passeio em destaque", false],
+      ["tourReserveButton", "Botão de reserva pelo WhatsApp", false],
+      ["tourDetailsButton", "Botão de detalhes do passeio", false],
+      ["moreToursTitle", "Título de mais passeios", false],
+      ["moreToursIntro", "Introdução de mais passeios", true],
+      ["transfersTitle", "Título dos transfers", false],
+      ["transfersIntro", "Introdução dos transfers", true],
+      ["transfersButton", "Botão para ver todos os transfers", false],
+      ["transfersImagePlaceholder", "Texto sem imagem nos transfers", false],
+      ["transfersVehicleFallback", "Veículo não informado nos transfers", false],
+      ["transfersCapacityFallback", "Capacidade não informada nos transfers", false],
+      ["transfersCapacitySuffix", "Unidade da capacidade nos transfers", false],
+      ["transferDetailsButton", "Botão de detalhes do transfer", false],
+      ["transferWhatsappButton", "Botão do WhatsApp no transfer", false],
+      ["homeRelatedTitle", "Título de transfers recomendados", false],
+      ["homeRelatedIntro", "Introdução de transfers recomendados", true],
+      ["homeRelatedSeeAll", "Link para todos os transfers recomendados", false],
+      ["homeRelatedCardButton", "Botão dos transfers recomendados", false],
+      ["blogTitle", "Título do blog", false],
+      ["blogIntro", "Introdução do blog", true],
+      ["blogButton", "Botão para ver todos os artigos", false],
+      ["testimonialsTitle", "Título dos depoimentos", false],
+      ["testimonialsIntro", "Introdução dos depoimentos", true],
+      ["faqTitle", "Título das perguntas frequentes", false],
+      ["faqIntro", "Introdução das perguntas frequentes", true],
+    ],
+  },
+  {
+    key: "tours",
+    title: "Página de passeios",
+    description: "Textos, filtros e SEO da listagem /passeios.",
+    fields: [
+      ["title", "Título da página", false], ["intro", "Introdução", true],
+      ["disabledTitle", "Título de seção desativada", false], ["disabledMessage", "Mensagem de seção desativada", true],
+      ["searchPlaceholder", "Campo de busca", false], ["filtersButton", "Botão de filtros", false],
+      ["durationFilterLabel", "Filtro de duração", false], ["anyDuration", "Todas as durações", false],
+      ["shortDuration", "Opção de duração curta", false], ["mediumDuration", "Opção de duração média", false],
+      ["longDuration", "Opção de duração longa", false], ["featuredOnly", "Filtro de destaques", false],
+      ["foundSingular", "Contagem singular", false], ["foundPlural", "Contagem plural", false],
+      ["loadError", "Erro ao carregar", true], ["noResults", "Nenhum resultado", true],
+      ["clearFilters", "Limpar filtros", false], ["imagePlaceholder", "Texto sem imagem", false],
+      ["durationFallback", "Duração não informada", false], ["groupLabel", "Texto do tamanho do grupo", false],
+      ["detailsButton", "Botão de detalhes", false], ["seoTitle", "Título SEO", false],
+      ["seoDescription", "Descrição SEO", true],
+    ],
+  },
+  {
+    key: "transfers",
+    title: "Página de transfers",
+    description: "Textos, mensagens e SEO da listagem /transfer.",
+    fields: [
+      ["title", "Título da página", false], ["intro", "Introdução", true],
+      ["searchPlaceholder", "Campo de busca", false], ["foundSingular", "Contagem singular", false],
+      ["foundPlural", "Contagem plural", false], ["loadError", "Erro ao carregar", true],
+      ["disabledMessage", "Mensagem de seção desativada", true],
+      ["noResults", "Nenhum resultado", true], ["clearFilters", "Limpar filtros", false],
+      ["imagePlaceholder", "Texto sem imagem", false], ["vehicleFallback", "Veículo não informado", false],
+      ["capacityFallback", "Capacidade não informada", false], ["detailsButton", "Botão de detalhes", false],
+      ["seoTitle", "Título SEO", false], ["seoDescription", "Descrição SEO", true],
+    ],
+  },
+  {
+    key: "packages",
+    title: "Página conjunta de passeios e transfers",
+    description: "Conteúdo e SEO da página /pacotes.",
+    fields: [
+      ["title", "Título da página", false], ["intro", "Introdução", true],
+      ["toursTitle", "Título da seção de passeios", false], ["toursIntro", "Introdução da seção de passeios", true],
+      ["transfersTitle", "Título da seção de transfers", false], ["transfersIntro", "Introdução da seção de transfers", true],
+      ["seeTours", "Link para todos os passeios", false], ["seeTransfers", "Link para todos os transfers", false],
+      ["noTours", "Mensagem sem passeios", false], ["noTransfers", "Mensagem sem transfers", false],
+      ["unavailable", "Mensagem de seções indisponíveis", true], ["loadError", "Erro ao carregar", true],
+      ["imagePlaceholder", "Texto sem imagem", false], ["durationFallback", "Duração não informada", false],
+      ["groupLabel", "Texto do tamanho do grupo", false], ["capacityFallback", "Capacidade não informada", false],
+      ["vehicleFallback", "Veículo não informado", false], ["capacitySuffix", "Unidade da capacidade", false],
+      ["seoTitle", "Título SEO", false], ["seoDescription", "Descrição SEO", true],
+    ],
+  },
+  {
+    key: "blog",
+    title: "Blog",
+    description: "Textos da listagem e SEO do blog.",
+    fields: [
+      ["title", "Título da página", false], ["intro", "Introdução", true],
+      ["noPosts", "Mensagem sem artigos", false], ["readArticlePrefix", "Texto do link de leitura", false],
+      ["readTimeSuffix", "Unidade do tempo de leitura", false], ["imagePlaceholder", "Texto sem imagem", false],
+      ["emptyImageAlt", "Texto alternativo da imagem vazia", false], ["seoTitle", "Título SEO", false],
+      ["seoDescription", "Descrição SEO", true],
+    ],
+  },
+  {
+    key: "testimonials",
+    title: "Depoimentos",
+    description: "Títulos e textos exibidos junto aos depoimentos.",
+    fields: [
+      ["title", "Título", false], ["intro", "Introdução", true],
+      ["imagePlaceholder", "Texto sem foto", false],
+    ],
+  },
+  {
+    key: "faq",
+    title: "Perguntas frequentes",
+    description: "Textos da seção de perguntas frequentes da página inicial.",
+    fields: [
+      ["title", "Título", false], ["intro", "Introdução", true], ["noItems", "Mensagem sem perguntas", false],
+    ],
+  },
+  {
+    key: "tourDetails",
+    title: "Detalhe de passeio",
+    description: "Rótulos e textos padrão usados nas páginas individuais dos passeios.",
+    fields: [
+      ["backLink", "Link de retorno", false], ["availability", "Selo de disponibilidade", false],
+      ["featured", "Selo de destaque", false], ["groupLabel", "Tamanho do grupo", false],
+      ["urgencyTitle", "Título do aviso de vagas", false], ["urgencyText", "Texto do aviso de vagas", true],
+      ["aboutTitle", "Título da descrição", false], ["fullDescription", "Link da descrição completa", false],
+      ["includesTitle", "Título dos itens incluídos", false], ["excludesTitle", "Título dos itens não incluídos", false],
+      ["faqTitle", "Título das perguntas", false],
+      ["trust1Title", "Selo 1 — título", false], ["trust1Description", "Selo 1 — descrição", true],
+      ["trust2Title", "Selo 2 — título", false], ["trust2Description", "Selo 2 — descrição", true],
+      ["trust3Title", "Selo 3 — título", false], ["trust3Description", "Selo 3 — descrição", true],
+      ["trust4Title", "Selo 4 — título", false], ["trust4Description", "Selo 4 — descrição", true],
+      ["relatedTitle", "Título dos passeios recomendados", false],
+      ["relatedIntro", "Introdução dos passeios recomendados", true],
+      ["relatedSeeAll", "Link para todos os passeios", false],
+      ["relatedCardButton", "Botão dos cards recomendados", false],
+      ["durationFallback", "Duração não informada", false],
+    ],
+  },
+  {
+    key: "transferDetails",
+    title: "Detalhe de transfer",
+    description: "Rótulos padrão usados nas páginas individuais dos transfers.",
+    fields: [
+      ["backLink", "Link de retorno", false], ["availability", "Selo de disponibilidade", false],
+      ["featured", "Selo de destaque", false], ["vehicleLabel", "Rótulo do veículo", false],
+      ["capacityLabel", "Rótulo da capacidade", false], ["capacitySuffix", "Unidade da capacidade", false],
+      ["aboutTitle", "Título da descrição", false], ["fullDescription", "Link da descrição completa", false],
+      ["quoteButton", "Botão de orçamento", false], ["contactButton", "Botão de contato", false],
+      ["includesTitle", "Título dos itens incluídos", false], ["excludesTitle", "Título dos itens não incluídos", false],
+      ["faqTitle", "Título das perguntas", false],
+      ["relatedTitle", "Título dos transfers recomendados", false],
+      ["relatedIntro", "Introdução dos transfers recomendados", true],
+      ["relatedSeeAll", "Link para todos os transfers", false],
+      ["relatedCardButton", "Botão dos cards recomendados", false],
+    ],
+  },
+  {
+    key: "privacy",
+    title: "Política de privacidade",
+    description: "Edite o texto publicado na página de privacidade. Confirme as informações legais antes de publicar.",
+    fields: [
+      ["brandLabel", "Nome exibido acima do título", false], ["title", "Título da página", false],
+      ["updatedLabel", "Rótulo da data de atualização", false], ["updatedDate", "Data de atualização", false],
+      ["section1Title", "Seção 1 — título", false], ["section1First", "Seção 1 — primeiro parágrafo", true],
+      ["section1Second", "Seção 1 — segundo parágrafo", true], ["section2Title", "Seção 2 — título", false],
+      ["section2Body", "Seção 2 — conteúdo", true], ["section3Title", "Seção 3 — título", false],
+      ["section3Body", "Seção 3 — conteúdo", true], ["section4Title", "Seção 4 — título", false],
+      ["section4Body", "Seção 4 — conteúdo", true], ["section5Title", "Seção 5 — título", false],
+      ["section5Body", "Seção 5 — conteúdo", true], ["seoTitle", "Título SEO", false],
+      ["seoDescription", "Descrição SEO", true],
+    ],
+  },
+  {
+    key: "cookie",
+    title: "Aviso de cookies e consentimento",
+    description: "Edite os textos do aviso sem alterar como a autorização é armazenada ou aplicada.",
+    fields: [
+      ["title", "Título do aviso", false], ["message", "Mensagem principal", true],
+      ["refusalMessage", "Texto sobre recusa", true], ["privacyLink", "Link para a política", false],
+      ["rejectButton", "Botão para recusar", false], ["acceptButton", "Botão para aceitar", false],
+    ],
+  },
+] as const;
+
+function getDefaultHeadingLevel(page: string, field: string) {
+  if (
+    field === "heroTitle" ||
+    field === "disabledTitle" ||
+    field === "productName" ||
+    (field === "title" && ["tours", "transfers", "packages", "blog", "privacy"].includes(page))
+  ) {
+    return "h1";
+  }
+  if (field === "toursTitle" || field === "urgencyTitle" || /^trust\dTitle$/.test(field)) {
+    return "h3";
+  }
+  return "h2";
+}
+
+const headingLevels = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;
+
+function HeadingLevelControl({
+  label,
+  value,
+  fallback,
+  onChange,
+}: {
+  label: string;
+  value?: string;
+  fallback: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="flex items-center gap-2 text-xs font-medium text-gray-600">
+      <span>{label}</span>
+      <select
+        value={value || fallback}
+        onChange={(event) => onChange(event.target.value)}
+        className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+      >
+        {headingLevels.map((level) => (
+          <option key={level} value={level}>{level.toUpperCase()}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+const cardHeadingControls: Record<string, Array<{ key: string; label: string; fallback: string }>> = {
+  home: [
+    { key: "tourCardTitleHeadingLevel", label: "Título dos cards de passeios", fallback: "h4" },
+    { key: "transferCardTitleHeadingLevel", label: "Título dos cards de transfers", fallback: "h3" },
+  ],
+  tours: [{ key: "cardTitleHeadingLevel", label: "Título dos cards de passeios", fallback: "h2" }],
+  transfers: [{ key: "cardTitleHeadingLevel", label: "Título dos cards de transfers", fallback: "h2" }],
+  packages: [{ key: "cardTitleHeadingLevel", label: "Título dos cards de passeios e transfers", fallback: "h3" }],
+  tourDetails: [{ key: "cardTitleHeadingLevel", label: "Título dos cards recomendados", fallback: "h3" }],
+  transferDetails: [{ key: "cardTitleHeadingLevel", label: "Título dos cards recomendados", fallback: "h3" }],
+};
 
 interface SiteSeo {
   title: string;
@@ -196,6 +456,12 @@ export default function SettingsAdmin() {
         pageCopy: {
           ...data?.pageCopy,
           contact: { ...defaultContactCopy, ...data?.pageCopy?.contact },
+          ...Object.fromEntries(
+            Object.entries(defaultPublicPageCopy).map(([key, defaults]) => [
+              key,
+              { ...defaults, ...data?.pageCopy?.[key] },
+            ]),
+          ),
         },
         menuLinks: data?.menuLinks?.length ? data.menuLinks : defaultMenuLinks,
         footerLinks: data?.footerLinks?.length ? data.footerLinks : defaultFooterLinks,
@@ -263,6 +529,7 @@ export default function SettingsAdmin() {
           ["#redes-sociais", "Redes sociais"],
           ["#textos-contato", "Textos da página Contato"],
           ["#inicio", "Página inicial"],
+          ["#textos-publicos", "Textos de todas as páginas"],
           ["#sobre-empresa", "Sobre a empresa"],
         ].map(([href, label]) => (
           <a
@@ -674,6 +941,48 @@ export default function SettingsAdmin() {
               />
             </div>
           </div>
+          <div className="space-y-3 rounded-md border p-4">
+            <h3 className="font-medium">Links externos de avaliações e segurança</h3>
+            <label className="block space-y-1 text-sm">
+              <span>Título da área</span>
+              <Input
+                value={settings?.footerTrustLinksTitle || "Avaliações e segurança"}
+                onChange={(e) => setSettings({ ...settings, footerTrustLinksTitle: e.target.value })}
+              />
+            </label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="block space-y-1 text-sm">
+                <span>Texto do TripAdvisor</span>
+                <Input
+                  value={settings?.footerTripadvisorLabel || "Avalie no TripAdvisor"}
+                  onChange={(e) => setSettings({ ...settings, footerTripadvisorLabel: e.target.value })}
+                />
+              </label>
+              <label className="block space-y-1 text-sm">
+                <span>Link do TripAdvisor</span>
+                <Input
+                  value={settings?.footerTripadvisorUrl || ""}
+                  onChange={(e) => setSettings({ ...settings, footerTripadvisorUrl: e.target.value })}
+                  placeholder="https://..."
+                />
+              </label>
+              <label className="block space-y-1 text-sm">
+                <span>Texto de verificação</span>
+                <Input
+                  value={settings?.footerGoogleSafeBrowsingLabel || "Verificação Google Safe Browsing"}
+                  onChange={(e) => setSettings({ ...settings, footerGoogleSafeBrowsingLabel: e.target.value })}
+                />
+              </label>
+              <label className="block space-y-1 text-sm">
+                <span>Link de verificação</span>
+                <Input
+                  value={settings?.footerGoogleSafeBrowsingUrl || ""}
+                  onChange={(e) => setSettings({ ...settings, footerGoogleSafeBrowsingUrl: e.target.value })}
+                  placeholder="https://..."
+                />
+              </label>
+            </div>
+          </div>
           {([
             ["footerCertificationImage", "footerCertificationAlt", "Selo Cadastur", "/cadastur.png", "Cadastur"],
             ["footerPaymentImage", "footerPaymentAlt", "Formas de pagamento", "/pagamentos.png", "Formas de pagamento"],
@@ -819,6 +1128,30 @@ export default function SettingsAdmin() {
                   })}
                 />
               )}
+              {contactHeadingDefaults[key] && (
+                <label className="flex items-center gap-2 text-xs font-medium text-gray-600">
+                  <span>Nível do título:</span>
+                  <select
+                    value={settings?.pageCopy?.contact?.[`${key}HeadingLevel`] || contactHeadingDefaults[key]}
+                    onChange={(event) => setSettings({
+                      ...settings,
+                      pageCopy: {
+                        ...settings.pageCopy,
+                        contact: {
+                          ...defaultContactCopy,
+                          ...settings.pageCopy?.contact,
+                          [`${key}HeadingLevel`]: event.target.value,
+                        },
+                      },
+                    })}
+                    className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                  >
+                    {["h1", "h2", "h3", "h4", "h5", "h6"].map((level) => (
+                      <option key={level} value={level}>{level.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
             </div>
           ))}
         </CardContent>
@@ -875,6 +1208,133 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
+      <Card id="textos-publicos" className="scroll-mt-6">
+        <CardHeader>
+          <CardTitle>Textos e detalhes das páginas públicas</CardTitle>
+          <CardDescription>
+            Edite títulos, descrições, rótulos, mensagens e SEO por página. Escolha H1–H6 para os títulos sem alterar o visual; por acessibilidade e SEO, use normalmente um H1 principal e H2/H3 nas seções. Campos vazios usam o texto padrão; os dados dos cards são editados nas áreas de Passeios, Transfers e Blog.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {pageCopyGroups.map((group) => {
+            const defaults = defaultPublicPageCopy[group.key];
+            const currentCopy = settings?.pageCopy?.[group.key] || {};
+            return (
+              <details
+                key={group.key}
+                open={group.key === "home"}
+                className="rounded-lg border border-gray-200"
+              >
+                <summary className="cursor-pointer px-4 py-3 font-semibold text-gray-900 hover:bg-gray-50">
+                  {group.title}
+                  <span className="mt-1 block text-sm font-normal text-gray-500">{group.description}</span>
+                </summary>
+                <div className="grid gap-4 border-t p-4 md:grid-cols-2">
+                  {group.fields.map(([fieldKey, label, multiline]) => {
+                    const isHeading = fieldKey !== "seoTitle" &&
+                      (fieldKey === "title" || fieldKey === "disabledTitle" || fieldKey.endsWith("Title"));
+                    const defaultLevel = getDefaultHeadingLevel(group.key, fieldKey);
+                    const value = currentCopy[fieldKey] ?? defaults[fieldKey];
+                    const updateCopy = (key: string, nextValue: string) =>
+                      setSettings({
+                        ...settings,
+                        pageCopy: {
+                          ...settings?.pageCopy,
+                          [group.key]: {
+                            ...currentCopy,
+                            [key]: nextValue,
+                          },
+                        },
+                      });
+
+                    return (
+                      <div key={fieldKey} className={multiline ? "md:col-span-2" : ""}>
+                        <label className="block space-y-1.5 text-sm font-medium text-gray-700">
+                          <span>{label}</span>
+                          {multiline ? (
+                            <textarea
+                              rows={3}
+                              value={value}
+                              onChange={(event) => updateCopy(fieldKey, event.target.value)}
+                              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-normal"
+                            />
+                          ) : (
+                            <Input
+                              value={value}
+                              onChange={(event) => updateCopy(fieldKey, event.target.value)}
+                            />
+                          )}
+                        </label>
+                        {isHeading && (
+                          <label className="mt-2 flex items-center gap-2 text-xs font-medium text-gray-600">
+                            <span>Nível do título:</span>
+                            <select
+                              value={currentCopy[`${fieldKey}HeadingLevel`] || defaultLevel}
+                              onChange={(event) => updateCopy(`${fieldKey}HeadingLevel`, event.target.value)}
+                              className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                            >
+                              {["h1", "h2", "h3", "h4", "h5", "h6"].map((level) => (
+                                <option key={level} value={level}>{level.toUpperCase()}</option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {cardHeadingControls[group.key] && (
+                    <div className="grid gap-3 rounded-md bg-gray-50 p-3 md:col-span-2 sm:grid-cols-2">
+                      {cardHeadingControls[group.key].map((control) => (
+                        <HeadingLevelControl
+                          key={control.key}
+                          label={control.label}
+                          fallback={control.fallback}
+                          value={currentCopy[control.key]}
+                          onChange={(value) =>
+                            setSettings({
+                              ...settings,
+                              pageCopy: {
+                                ...settings?.pageCopy,
+                                [group.key]: { ...currentCopy, [control.key]: value },
+                              },
+                            })
+                          }
+                        />
+                      ))}
+                    </div>
+                  )}
+                  {(group.key === "tourDetails" || group.key === "transferDetails") && (
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <span>Nível do título do {group.key === "tourDetails" ? "passeio" : "transfer"}:</span>
+                      <select
+                        value={currentCopy.productNameHeadingLevel || "h1"}
+                        onChange={(event) =>
+                          setSettings({
+                            ...settings,
+                            pageCopy: {
+                              ...settings?.pageCopy,
+                              [group.key]: {
+                                ...currentCopy,
+                                productNameHeadingLevel: event.target.value,
+                              },
+                            },
+                          })
+                        }
+                        className="rounded-md border border-input bg-background px-2 py-1 text-sm"
+                      >
+                        {["h1", "h2", "h3", "h4", "h5", "h6"].map((level) => (
+                          <option key={level} value={level}>{level.toUpperCase()}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                </div>
+              </details>
+            );
+          })}
+        </CardContent>
+      </Card>
+
       <Card id="sobre-empresa" className="scroll-mt-6">
         <CardHeader>
           <CardTitle>Conteúdo da página “Sobre a empresa”</CardTitle>
@@ -894,6 +1354,15 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings?.aboutSection, title: e.target.value },
                 })
               }
+            />
+            <HeadingLevelControl
+              label="Nível do título principal"
+              fallback="h1"
+              value={settings?.aboutSection?.titleHeadingLevel}
+              onChange={(value) => setSettings({
+                ...settings,
+                aboutSection: { ...settings?.aboutSection, titleHeadingLevel: value },
+              })}
             />
           </div>
           <div>
@@ -920,6 +1389,15 @@ export default function SettingsAdmin() {
                 })
               }
             />
+            <HeadingLevelControl
+              label="Nível do título da história"
+              fallback="h2"
+              value={settings?.aboutSection?.historyTitleHeadingLevel}
+              onChange={(value) => setSettings({
+                ...settings,
+                aboutSection: { ...settings?.aboutSection, historyTitleHeadingLevel: value },
+              })}
+            />
           </div>
           <div>
             <label className="text-sm font-medium">História da empresa</label>
@@ -936,11 +1414,10 @@ export default function SettingsAdmin() {
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {[0, 1, 2].map((index) => {
-              const stat = settings?.aboutSection?.stats?.[index] || defaultAboutSection.stats[index];
-              return (
-                <div key={index} className="space-y-2">
-                  <p className="text-sm font-medium">Indicador {index + 1}</p>
+          {(settings?.aboutSection?.stats || defaultAboutSection.stats).map((stat: { value: number; label: string }, index: number) => {
+            return (
+              <div key={index} className="space-y-2">
+                <p className="text-sm font-medium">Indicador {index + 1}</p>
                   <label className="block space-y-1 text-sm">
                     <span>Número</span>
                     <Input
@@ -967,9 +1444,34 @@ export default function SettingsAdmin() {
                       }}
                     />
                   </label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const stats = [...(settings?.aboutSection?.stats || defaultAboutSection.stats)];
+                      stats.splice(index, 1);
+                      setSettings({ ...settings, aboutSection: { ...settings?.aboutSection, stats } });
+                    }}
+                  >
+                    Remover indicador
+                  </Button>
                 </div>
               );
             })}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSettings({
+                ...settings,
+                aboutSection: {
+                  ...settings?.aboutSection,
+                  stats: [...(settings?.aboutSection?.stats || defaultAboutSection.stats), { value: 0, label: "" }],
+                },
+              })}
+            >
+              Adicionar indicador
+            </Button>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -979,6 +1481,15 @@ export default function SettingsAdmin() {
                 onChange={(e) => setSettings({
                   ...settings,
                   aboutSection: { ...settings.aboutSection, missionTitle: e.target.value },
+                })}
+              />
+              <HeadingLevelControl
+                label="Nível do título da missão"
+                fallback="h3"
+                value={settings?.aboutSection?.missionTitleHeadingLevel}
+                onChange={(value) => setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, missionTitleHeadingLevel: value },
                 })}
               />
               <label className="block text-sm font-medium">Texto da missão</label>
@@ -1000,6 +1511,15 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings.aboutSection, visionTitle: e.target.value },
                 })}
               />
+              <HeadingLevelControl
+                label="Nível do título da visão"
+                fallback="h3"
+                value={settings?.aboutSection?.visionTitleHeadingLevel}
+                onChange={(value) => setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, visionTitleHeadingLevel: value },
+                })}
+              />
               <label className="block text-sm font-medium">Texto da visão</label>
               <textarea
                 className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -1018,6 +1538,15 @@ export default function SettingsAdmin() {
               onChange={(e) => setSettings({
                 ...settings,
                 aboutSection: { ...settings.aboutSection, valuesTitle: e.target.value },
+              })}
+            />
+            <HeadingLevelControl
+              label="Nível do título dos valores"
+              fallback="h3"
+              value={settings?.aboutSection?.valuesTitleHeadingLevel}
+              onChange={(value) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, valuesTitleHeadingLevel: value },
               })}
             />
             <label className="text-sm font-medium">Valores (um por linha)</label>
@@ -1042,6 +1571,15 @@ export default function SettingsAdmin() {
                 aboutSection: { ...settings.aboutSection, statsTitle: e.target.value },
               })}
             />
+            <HeadingLevelControl
+              label="Nível do título dos números"
+              fallback="h2"
+              value={settings?.aboutSection?.statsTitleHeadingLevel}
+              onChange={(value) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, statsTitleHeadingLevel: value },
+              })}
+            />
           </div>
           <div>
             <label className="text-sm font-medium">Título da seção de diferenciais</label>
@@ -1050,6 +1588,15 @@ export default function SettingsAdmin() {
               onChange={(e) => setSettings({
                 ...settings,
                 aboutSection: { ...settings.aboutSection, whyChooseTitle: e.target.value },
+              })}
+            />
+            <HeadingLevelControl
+              label="Nível do título dos diferenciais"
+              fallback="h2"
+              value={settings?.aboutSection?.whyChooseTitleHeadingLevel}
+              onChange={(value) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, whyChooseTitleHeadingLevel: value },
               })}
             />
           </div>
@@ -1076,8 +1623,33 @@ export default function SettingsAdmin() {
                     setSettings({ ...settings, aboutSection: { ...settings.aboutSection, benefits } });
                   }}
                 />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const benefits = [...(settings?.aboutSection?.benefits || defaultAboutSection.benefits)];
+                    benefits.splice(index, 1);
+                    setSettings({ ...settings, aboutSection: { ...settings?.aboutSection, benefits } });
+                  }}
+                >
+                  Remover diferencial
+                </Button>
               </div>
             ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSettings({
+                ...settings,
+                aboutSection: {
+                  ...settings?.aboutSection,
+                  benefits: [...(settings?.aboutSection?.benefits || defaultAboutSection.benefits), { title: "", description: "" }],
+                },
+              })}
+            >
+              Adicionar diferencial
+            </Button>
           </div>
         </CardContent>
       </Card>

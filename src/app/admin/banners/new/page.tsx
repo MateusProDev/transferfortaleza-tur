@@ -15,10 +15,15 @@ export default function NewBanner() {
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
+    description: "",
+    location: "",
     imageUrl: "",
     imageAlt: "",
     buttonText: "",
     buttonLink: "",
+    secondaryButtonText: "",
+    secondaryButtonLink: "",
+    order: 0,
     active: true,
   });
 
@@ -78,6 +83,24 @@ export default function NewBanner() {
                 rows={4}
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Descrição alternativa</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+                rows={3}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Localização exibida</label>
+              <input
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
             <ImageUpload
               label="Imagem do Banner"
               currentImage={formData.imageUrl}
@@ -105,6 +128,35 @@ export default function NewBanner() {
                 required
                 className="w-full px-3 py-2 border rounded"
                 placeholder="https://..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Texto do segundo botão (opcional)</label>
+              <input
+                type="text"
+                value={formData.secondaryButtonText}
+                onChange={(e) => setFormData({ ...formData, secondaryButtonText: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Link do segundo botão (opcional)</label>
+              <input
+                type="text"
+                value={formData.secondaryButtonLink}
+                onChange={(e) => setFormData({ ...formData, secondaryButtonLink: e.target.value })}
+                className="w-full px-3 py-2 border rounded"
+                placeholder="/pacotes ou https://..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Ordem de exibição</label>
+              <input
+                type="number"
+                min="0"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: Number(e.target.value) })}
+                className="w-full px-3 py-2 border rounded"
               />
             </div>
             <div className="flex items-center gap-2">

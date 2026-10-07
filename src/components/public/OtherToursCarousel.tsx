@@ -7,6 +7,8 @@ import { ChevronLeft, ChevronRight, Clock, MessageCircle, Users } from 'lucide-r
 import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import { normalizeBrazilianPhone } from '@/lib/phone';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from './EditableHeading';
 
 interface Tour {
   id: string;
@@ -21,9 +23,10 @@ interface Tour {
 interface OtherToursCarouselProps {
   tours: Tour[];
   whatsappNumber?: string;
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function OtherToursCarousel({ tours, whatsappNumber }: OtherToursCarouselProps) {
+export default function OtherToursCarousel({ tours, whatsappNumber, copy }: OtherToursCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const itemsPerPage = 3;
@@ -97,7 +100,12 @@ export default function OtherToursCarousel({ tours, whatsappNumber }: OtherTours
               </>
             )}
             <article className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group">
-            <div className="relative aspect-square w-full overflow-hidden">
+            <Link
+              href={`/pacote/${tour.slug || tour.id}`}
+              className="relative block aspect-square w-full overflow-hidden"
+              onClick={() => handleTourClick(tour.name)}
+              aria-label={`Ver passeio: ${tour.name}`}
+            >
               {tour.mainImageUrl ? (
                 <Image
                   src={tour.mainImageUrl}
@@ -111,10 +119,10 @@ export default function OtherToursCarousel({ tours, whatsappNumber }: OtherTours
                   <span className="text-gray-400">Sem imagem</span>
                 </div>
               )}
-            </div>
+            </Link>
 
             <div className="p-6 flex flex-col flex-1">
-              <h3>
+              <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h3')}>
                 <Link
                   href={`/pacote/${tour.slug || tour.id}`}
                   className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
@@ -122,7 +130,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber }: OtherTours
                 >
                   {tour.name}
                 </Link>
-              </h3>
+              </EditableHeading>
               <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
 
               <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
@@ -145,14 +153,14 @@ export default function OtherToursCarousel({ tours, whatsappNumber }: OtherTours
                   aria-label={`Reservar ${tour.name} pelo WhatsApp`}
                 >
                   <MessageCircle size={18} />
-                  <span className="whitespace-nowrap">Reservar pelo WhatsApp</span>
+                  <span className="whitespace-nowrap">{copy?.tourReserveButton || "Reservar pelo WhatsApp"}</span>
                 </WhatsAppConversionLink>
                 <Link
                   href={`/pacote/${tour.slug || tour.id}`}
                   className="flex-shrink-0 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                   onClick={() => handleTourClick(tour.name)}
                 >
-                  Ver passeio
+                  {copy?.tourDetailsButton || "Ver passeio"}
                 </Link>
               </div>
             </div>

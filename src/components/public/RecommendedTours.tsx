@@ -3,12 +3,15 @@ import Image from 'next/image';
 import { Clock, Star, ArrowRight } from 'lucide-react';
 import { Tour } from '@/types';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
+import type { SitePageCopy } from '@/types';
+import EditableHeading, { getHeadingLevel } from './EditableHeading';
 
 interface RecommendedToursProps {
   tours: Tour[];
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function RecommendedTours({ tours }: RecommendedToursProps) {
+export default function RecommendedTours({ tours, copy }: RecommendedToursProps) {
   if (!tours || tours.length === 0) {
     return null;
   }
@@ -18,18 +21,18 @@ export default function RecommendedTours({ tours }: RecommendedToursProps) {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              Quem viu este passeio também gostou
-            </h2>
+            <EditableHeading level={getHeadingLevel(copy, 'relatedTitle', 'h2')} className="text-3xl font-bold text-gray-900 mb-2">
+              {copy?.relatedTitle || "Quem viu este passeio também gostou"}
+            </EditableHeading>
             <p className="text-gray-600">
-              Descubra mais experiências incríveis em Fortaleza e região
+              {copy?.relatedIntro || "Descubra mais experiências incríveis em Fortaleza e região"}
             </p>
           </div>
           <Link
             href="/passeios"
             className="hidden md:flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
           >
-            Ver todos
+            {copy?.relatedSeeAll || "Ver todos"}
             <ArrowRight size={20} />
           </Link>
         </div>
@@ -54,26 +57,26 @@ export default function RecommendedTours({ tours }: RecommendedToursProps) {
                 {tour.featured && (
                   <div className="absolute top-3 right-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                     <Star size={12} />
-                    Destaque
+                    {copy?.featured || "Destaque"}
                   </div>
                 )}
               </div>
 
               {/* Conteúdo */}
               <div className="p-5">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h3')} className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                   {tour.name}
-                </h3>
+                </EditableHeading>
 
                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
                   <Clock size={16} />
-                  <span>{tour.duration || 'Consulte'}</span>
+                  <span>{tour.duration || copy?.durationFallback || 'Consulte'}</span>
                 </div>
 
                 {/* CTA */}
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                   <span className="text-sm text-blue-600 font-semibold group-hover:text-blue-700">
-                    Ver passeio: {tour.name}
+                    {copy?.relatedCardButton || "Ver passeio"}: {tour.name}
                   </span>
                   <ArrowRight size={18} className="text-blue-600 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -87,7 +90,7 @@ export default function RecommendedTours({ tours }: RecommendedToursProps) {
             href="/passeios"
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
           >
-            Ver todos os passeios
+            {copy?.relatedSeeAll || "Ver todos os passeios"}
             <ArrowRight size={20} />
           </Link>
         </div>

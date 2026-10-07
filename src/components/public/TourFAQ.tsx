@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { TourFAQ as TourFAQItem } from '@/types';
+import EditableHeading from './EditableHeading';
 
 export const DEFAULT_TOUR_FAQS: TourFAQItem[] = [
   {
@@ -29,9 +30,11 @@ export const DEFAULT_TOUR_FAQS: TourFAQItem[] = [
 
 interface TourFAQProps {
   faqs?: TourFAQItem[];
+  title?: string;
+  titleLevel?: string;
 }
 
-export default function TourFAQ({ faqs }: TourFAQProps) {
+export default function TourFAQ({ faqs, title = "Perguntas Frequentes", titleLevel = "h2" }: TourFAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqList = faqs?.length ? faqs : DEFAULT_TOUR_FAQS;
@@ -43,9 +46,9 @@ export default function TourFAQ({ faqs }: TourFAQProps) {
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-          Perguntas Frequentes
-        </h2>
+        <EditableHeading level={titleLevel} fallbackLevel="h2" className="text-3xl font-bold text-gray-900 mb-8 text-center">
+          {title}
+        </EditableHeading>
         
         <div className="max-w-3xl mx-auto space-y-4">
           {faqList.map((faq, index) => (
