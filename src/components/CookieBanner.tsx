@@ -18,6 +18,7 @@ export default function CookieBanner() {
 
   const reject = () => {
     localStorage.setItem('lgpd_consent', 'false');
+    window.dispatchEvent(new Event('lgpd-consent-changed'));
     setVisible(false);
   };
 

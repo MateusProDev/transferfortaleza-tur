@@ -2,11 +2,13 @@
 
 import { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
+import CookieBanner from "@/components/CookieBanner";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
+      <CookieBanner />
       <Toaster
         position="top-right"
         reverseOrder={false}

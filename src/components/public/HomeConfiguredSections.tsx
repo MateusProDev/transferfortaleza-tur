@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 import type { SiteSettings } from "@/types";
 
 type ContentRecord = Record<string, unknown>;
@@ -40,7 +41,7 @@ function isActive(section: ContentRecord): boolean {
 }
 
 function whatsappHref(number: string, message: string): string {
-  const digits = number.replace(/\D/g, "");
+  const digits = normalizeBrazilianPhone(number);
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
@@ -141,7 +142,11 @@ export default function HomeConfiguredSections({
   const collage = asRecord(differentials.collageImages);
   const collageImages = Object.entries(collage)
     .sort(([first], [second]) => first.localeCompare(second))
-    .map(([id, value]) => ({ id, url: imageUrl(value), alt: text(asRecord(value).alt) }))
+    .map(([id, value]) => ({
+      id,
+      url: imageUrl(value),
+      alt: text(asRecord(value).alt) || "Experiência turística em Fortaleza e região",
+    }))
     .filter((image) => image.url);
 
   return (
@@ -182,7 +187,7 @@ export default function HomeConfiguredSections({
                           rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
                           className="font-semibold text-primary-800 hover:text-primary-950"
                         >
-                          {text(service.linkText) || "Saiba mais"}
+                          {text(service.linkText) || `Saiba mais sobre ${title}`}
                         </a>
                       )}
                     </div>

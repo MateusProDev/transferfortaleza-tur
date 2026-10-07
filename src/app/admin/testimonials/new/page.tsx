@@ -92,17 +92,10 @@ export default function NewTestimonial() {
             <ImageUpload
               label="Foto do Cliente"
               currentImage={formData.clientPhoto}
-              onImageUpload={(url) => setFormData({ ...formData, clientPhoto: url })}
+              currentAlt={formData.clientPhotoAlt}
+              onImageUpload={(url, alt) => setFormData((current) => ({ ...current, clientPhoto: url, clientPhotoAlt: alt || current.clientPhotoAlt }))}
+              onAltChange={(clientPhotoAlt) => setFormData((current) => ({ ...current, clientPhotoAlt }))}
             />
-            <div>
-              <label className="block text-sm font-medium mb-2">Alt da Foto</label>
-              <input
-                type="text"
-                value={formData.clientPhotoAlt}
-                onChange={(e) => setFormData({ ...formData, clientPhotoAlt: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

@@ -55,7 +55,7 @@ export default function Blog({ posts }: BlogProps) {
                 {post.imageUrl ? (
                   <Image
                     src={post.imageUrl}
-                    alt={post.imageAlt || post.title}
+                    alt={post.imageAlt || post.title || 'Artigo sobre turismo em Fortaleza'}
                     fill
                     unoptimized={!shouldOptimizeImage(post.imageUrl)}
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -80,7 +80,7 @@ export default function Blog({ posts }: BlogProps) {
                 <p className="text-gray-600 mb-4 line-clamp-3 flex-1">{post.summary}</p>
 
                 <span className="text-primary-900 hover:text-primary-950 font-medium inline-flex items-center">
-                  Ler mais
+                  Ler artigo sobre {post.title}
                 </span>
               </div>
             </Link>

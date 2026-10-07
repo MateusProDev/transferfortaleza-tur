@@ -95,23 +95,16 @@ export default function NewTour() {
             <ImageUpload
               label="Imagem Principal"
               currentImage={formData.mainImageUrl}
+              currentAlt={formData.mainImageAlt}
               banner
-              onImageUpload={(url) => setFormData({ ...formData, mainImageUrl: url })}
+              onImageUpload={(url, alt) => setFormData((current) => ({ ...current, mainImageUrl: url, mainImageAlt: alt || current.mainImageAlt }))}
+              onAltChange={(mainImageAlt) => setFormData((current) => ({ ...current, mainImageAlt }))}
             />
             <ImageGalleryUpload
               label="Imagens adicionais"
               images={formData.galleryImages}
               onImagesChange={(galleryImages) => setFormData({ ...formData, galleryImages })}
             />
-            <div>
-              <label className="block text-sm font-medium mb-2">Alt da Imagem</label>
-              <input
-                type="text"
-                value={formData.mainImageAlt}
-                onChange={(e) => setFormData({ ...formData, mainImageAlt: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"

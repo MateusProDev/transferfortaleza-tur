@@ -86,6 +86,24 @@ function isImageField(key: string, path: Array<string | number>): boolean {
     || (/^(url|src)$/i.test(key) && /photo|picture/i.test(parentPath));
 }
 
+function getAltFieldKey(imageFieldKey: string): string {
+  if (["image", "photo", "picture", "url", "src"].includes(imageFieldKey.toLowerCase())) {
+    return "alt";
+  }
+
+  return `${imageFieldKey.replace(/Url$/i, "")}Alt`;
+}
+
+function valueAtPath(source: unknown, path: Array<string | number>): unknown {
+  return path.reduce<unknown>((value, key) => {
+    if (Array.isArray(value) && typeof key === "number") return value[key];
+    if (value && typeof value === "object" && typeof key === "string") {
+      return (value as ContentValue)[key];
+    }
+    return undefined;
+  }, source);
+}
+
 function isLongTextField(key: string): boolean {
   return /(description|descricao|summary|content|subtitle|subtitulo|answer|text|observ)/i.test(key);
 }
@@ -282,12 +300,19 @@ export default function SiteContentAdminPage() {
 
     const textValue = typeof value === "string" ? value : value == null ? "" : String(value);
     if (isImageField(key, path)) {
+      const altPath = [...path.slice(0, -1), getAltFieldKey(key)];
+      const currentAlt = valueAtPath(draft, altPath);
       return (
         <ImageUpload
           key={path.join(".")}
           currentImage={textValue}
+          currentAlt={typeof currentAlt === "string" ? currentAlt : ""}
           label=""
-          onImageUpload={(url) => updateField(path, url)}
+          onImageUpload={(url, alt) => {
+            updateField(path, url);
+            if (alt) updateField(altPath, alt);
+          }}
+          onAltChange={(alt) => updateField(altPath, alt)}
         />
       );
     }

@@ -126,18 +126,9 @@ export default function EditTestimonial() {
               <label className="text-sm font-medium mb-2 block">Foto do Cliente</label>
               <ImageUpload
                 currentImage={formData.clientPhoto}
-                onImageUpload={(url) => setFormData({ ...formData, clientPhoto: url })}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Texto Alternativo da Foto</label>
-              <input
-                type="text"
-                value={formData.clientPhotoAlt}
-                onChange={(e) => setFormData({ ...formData, clientPhotoAlt: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
-                placeholder="Descrição da foto para acessibilidade"
+                currentAlt={formData.clientPhotoAlt}
+                onImageUpload={(url, alt) => setFormData((current) => ({ ...current, clientPhoto: url, clientPhotoAlt: alt || current.clientPhotoAlt }))}
+                onAltChange={(clientPhotoAlt) => setFormData((current) => ({ ...current, clientPhotoAlt }))}
               />
             </div>
           </CardContent>

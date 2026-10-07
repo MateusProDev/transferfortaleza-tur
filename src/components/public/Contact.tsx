@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, MessageCircle, Check } from "lucide-react";
 import { fetchSettingsCached } from "@/lib/settings-cache";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 
 declare global {
   interface Window {
@@ -27,7 +28,7 @@ interface ContactSettings {
 const FALLBACK_WHATSAPP = "5585997314093";
 
 function buildWhatsAppUrl(number: string, message: string) {
-  const digits = (number || FALLBACK_WHATSAPP).replace(/\D/g, "");
+  const digits = normalizeBrazilianPhone(number || FALLBACK_WHATSAPP);
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
@@ -122,7 +123,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Telefone</h3>
-                  <p className="text-gray-600">{contactInfo.phone}</p>
+                  <a className="text-gray-600 hover:text-primary-700" href={`tel:+${normalizeBrazilianPhone(contactInfo.phone)}`}>+{normalizeBrazilianPhone(contactInfo.phone)}</a>
                 </div>
               </div>
             )}

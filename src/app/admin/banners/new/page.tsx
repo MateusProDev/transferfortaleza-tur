@@ -81,17 +81,10 @@ export default function NewBanner() {
             <ImageUpload
               label="Imagem do Banner"
               currentImage={formData.imageUrl}
-              onImageUpload={(url) => setFormData({ ...formData, imageUrl: url })}
+              currentAlt={formData.imageAlt}
+              onImageUpload={(url, alt) => setFormData((current) => ({ ...current, imageUrl: url, imageAlt: alt || current.imageAlt }))}
+              onAltChange={(imageAlt) => setFormData((current) => ({ ...current, imageAlt }))}
             />
-            <div>
-              <label className="block text-sm font-medium mb-2">Alt da Imagem</label>
-              <input
-                type="text"
-                value={formData.imageAlt}
-                onChange={(e) => setFormData({ ...formData, imageAlt: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
             <div>
               <label className="block text-sm font-medium mb-2">Texto do Botão</label>
               <input

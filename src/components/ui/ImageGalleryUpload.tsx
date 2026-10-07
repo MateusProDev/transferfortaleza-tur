@@ -13,18 +13,25 @@ interface ImageGalleryUploadProps {
 export default function ImageGalleryUpload({ images, onImagesChange, label, maxImages = 2 }: ImageGalleryUploadProps) {
   const slots = Array.from({ length: maxImages }, (_, index) => images[index]);
 
-  const updateImage = (index: number, url: string) => {
+  const updateImage = (index: number, url: string, alt?: string) => {
     const nextImages = [...images];
     if (url) {
       nextImages[index] = {
         id: nextImages[index]?.id || `${Date.now()}-${index}`,
         url,
-        alt: nextImages[index]?.alt || "",
+        alt: alt ?? nextImages[index]?.alt ?? "",
         order: index,
       };
     } else {
       nextImages.splice(index, 1);
     }
+    onImagesChange(nextImages.slice(0, maxImages).map((image, imageIndex) => ({ ...image, order: imageIndex })));
+  };
+
+  const updateAlt = (index: number, alt: string) => {
+    const nextImages = [...images];
+    if (!nextImages[index]) return;
+    nextImages[index] = { ...nextImages[index], alt };
     onImagesChange(nextImages.slice(0, maxImages).map((image, imageIndex) => ({ ...image, order: imageIndex })));
   };
 
@@ -40,8 +47,10 @@ export default function ImageGalleryUpload({ images, onImagesChange, label, maxI
             key={image?.id || `gallery-slot-${index}`}
             label={`Imagem ${index + 1}`}
             currentImage={image?.url}
+            currentAlt={image?.alt || ""}
             banner
-            onImageUpload={(url) => updateImage(index, url)}
+            onImageUpload={(url, alt) => updateImage(index, url, alt)}
+            onAltChange={(alt) => updateAlt(index, alt)}
           />
         ))}
       </div>

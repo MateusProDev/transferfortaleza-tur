@@ -48,7 +48,7 @@ export function OrganizationJsonLd({ name, url, logo, description, contactInfo }
   return <JsonLd data={data} />;
 }
 
-export function LocalBusinessJsonLd({ name, url, logo, description, address, phone, email }: {
+export function LocalBusinessJsonLd({ name, url, logo, description, address, phone, email, areaServed }: {
   name: string;
   url: string;
   logo?: string;
@@ -63,6 +63,7 @@ export function LocalBusinessJsonLd({ name, url, logo, description, address, pho
   };
   phone?: string;
   email?: string;
+  areaServed?: string[];
 }) {
   const streetAddress = address
     ? [
@@ -91,6 +92,7 @@ export function LocalBusinessJsonLd({ name, url, logo, description, address, pho
     }),
     ...(phone && { telephone: phone }),
     ...(email && { email }),
+    ...(areaServed?.length && { areaServed }),
   };
 
   return <JsonLd data={data} />;

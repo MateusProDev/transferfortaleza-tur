@@ -133,7 +133,7 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError 
                       className="bg-secondary-600 hover:bg-secondary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
                       aria-label={`Ver detalhes de ${transfer.name}`}
                     >
-                      Ver Detalhes
+                      Ver transfer: {transfer.name}
                     </Link>
                   </div>
                 </div>

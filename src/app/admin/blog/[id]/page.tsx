@@ -194,18 +194,9 @@ export default function EditBlogPost() {
               <label className="text-sm font-medium mb-2 block">Imagem de Destaque</label>
               <ImageUpload
                 currentImage={formData.imageUrl}
-                onImageUpload={(url) => setFormData({ ...formData, imageUrl: url })}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Texto Alternativo da Imagem</label>
-              <input
-                type="text"
-                value={formData.imageAlt}
-                onChange={(e) => setFormData({ ...formData, imageAlt: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
-                placeholder="Descrição da imagem para acessibilidade"
+                currentAlt={formData.imageAlt}
+                onImageUpload={(url, alt) => setFormData((current) => ({ ...current, imageUrl: url, imageAlt: alt || current.imageAlt }))}
+                onAltChange={(imageAlt) => setFormData((current) => ({ ...current, imageAlt }))}
               />
             </div>
           </CardContent>

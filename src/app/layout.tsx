@@ -3,15 +3,23 @@ import { Providers } from "./providers";
 import "./globals.css";
 import "@uiw/react-md-editor/markdown-editor.css";
 import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
-import Script from "next/script";
+import Analytics from "@/components/seo/Analytics";
 import { getSiteUrl } from "@/lib/site-url";
 import { getCachedHomepageSeo } from "@/lib/public-data-cache";
 import { DM_Serif_Display, Manrope } from "next/font/google";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 
 const baseUrl = getSiteUrl();
 const shouldLoadAnalytics = process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true";
-const googleAdsTagId = `AW-${process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID || "11405399413"}`;
-const googleTagId = process.env.NEXT_PUBLIC_GA_ID || googleAdsTagId;
+const configuredGtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim() || "";
+const googleTagManagerId = /^GTM-[A-Z0-9]+$/.test(configuredGtmId) ? configuredGtmId : "";
+const configuredGaId = process.env.NEXT_PUBLIC_GA_ID?.trim() || "";
+const googleAnalyticsId = /^G-[A-Z0-9]+$/.test(configuredGaId) ? configuredGaId : "";
+const configuredAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID?.trim() || "";
+const googleAdsTagId = /^\d+$/.test(configuredAdsId) ? `AW-${configuredAdsId}` : "";
+const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || "";
+const shouldTrackAnalytics = shouldLoadAnalytics
+  && Boolean(googleTagManagerId || googleAnalyticsId || googleAdsTagId || metaPixelId);
 const manrope = Manrope({
   subsets: ["latin"],
   display: "swap",
@@ -59,6 +67,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const ogImage = typeof siteSeo?.ogImage === "string" && siteSeo.ogImage.trim()
     ? siteSeo.ogImage.trim()
     : `${baseUrl}/OG.png`;
+  const ogImageAlt = typeof siteSeo?.ogImageAlt === "string" && siteSeo.ogImageAlt.trim()
+    ? siteSeo.ogImageAlt.trim()
+    : title;
 
   return {
     metadataBase: new URL(baseUrl),
@@ -88,7 +99,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       siteName: "Transfer Fortaleza Tur",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: ogImageAlt }],
     },
     twitter: {
       card: "summary_large_image",
@@ -131,38 +142,13 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${manrope.variable} ${dmSerifDisplay.variable} font-sans antialiased`}>
-        {shouldLoadAnalytics && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-ads-tag" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){window.dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${googleTagId}');
-                ${googleTagId !== googleAdsTagId ? `gtag('config', '${googleAdsTagId}');` : ''}
-              `}
-            </Script>
-          </>
-        )}
-
-        {shouldLoadAnalytics && process.env.NEXT_PUBLIC_META_PIXEL_ID && (
-          <Script id="meta-pixel-queue" strategy="lazyOnload">
-            {`
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];
-              }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
-              fbq('track', 'PageView');
-            `}
-          </Script>
-        )}
+        <Analytics
+          enabled={shouldTrackAnalytics}
+          googleTagManagerId={googleTagManagerId}
+          googleAnalyticsId={googleAnalyticsId}
+          googleAdsTagId={googleAdsTagId}
+          metaPixelId={metaPixelId}
+        />
 
         <LocalBusinessJsonLd
           name="Transfer Fortaleza Tur"
@@ -176,8 +162,9 @@ export default function RootLayout({
             state: process.env.NEXT_PUBLIC_BUSINESS_STATE || "CE",
             zip: process.env.NEXT_PUBLIC_BUSINESS_ZIP || "61700-000",
           }}
-          phone={process.env.NEXT_PUBLIC_BUSINESS_PHONE || "+5585997314093"}
+          phone={normalizeBrazilianPhone(process.env.NEXT_PUBLIC_BUSINESS_PHONE || "+5585997314093")}
           email={process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "passeiolegalfortaleza@gmail.com"}
+          areaServed={["Fortaleza", "Ceará"]}
         />
         <WebSiteJsonLd
           name="Transfer Fortaleza Tur"

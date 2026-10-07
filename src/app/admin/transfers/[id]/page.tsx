@@ -243,23 +243,16 @@ export default function EditTransfer() {
             <ImageUpload
               label="Imagem do Veículo"
               currentImage={formData.imageUrl}
+              currentAlt={formData.imageAlt}
               banner
-              onImageUpload={(url) => setFormData({ ...formData, imageUrl: url })}
+              onImageUpload={(url, alt) => setFormData((current) => ({ ...current, imageUrl: url, imageAlt: alt || current.imageAlt }))}
+              onAltChange={(imageAlt) => setFormData((current) => ({ ...current, imageAlt }))}
             />
             <ImageGalleryUpload
               label="Imagens adicionais"
               images={formData.galleryImages}
               onImagesChange={(galleryImages) => setFormData({ ...formData, galleryImages })}
             />
-            <div>
-              <label className="block text-sm font-medium mb-2">Alt da Imagem</label>
-              <input
-                type="text"
-                value={formData.imageAlt}
-                onChange={(e) => setFormData({ ...formData, imageAlt: e.target.value })}
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
             <div className="space-y-3 border-t pt-4">
               <div>
                 <h2 className="text-lg font-semibold">Transfers recomendados</h2>

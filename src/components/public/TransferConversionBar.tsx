@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import WhatsAppConversionLink from "./WhatsAppConversionLink";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 
 interface TransferConversionBarProps {
   transferName: string;
@@ -24,7 +25,7 @@ export default function TransferConversionBar({
 
   if (!isScrolled) return null;
 
-  const href = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá! Gostaria de solicitar um orçamento para o transfer: ${transferName}`)}`;
+  const href = `https://wa.me/${normalizeBrazilianPhone(whatsappNumber)}?text=${encodeURIComponent(`Olá! Gostaria de solicitar um orçamento para o transfer: ${transferName}`)}`;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-lg">

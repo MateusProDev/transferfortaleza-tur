@@ -67,7 +67,7 @@ export default async function BlogPage() {
                     {post.imageUrl ? (
                       <Image
                         src={post.imageUrl}
-                        alt={post.imageAlt || post.title}
+                        alt={post.imageAlt || post.title || 'Artigo sobre turismo em Fortaleza'}
                         fill
                         className="object-cover"
                         unoptimized={!shouldOptimizeImage(post.imageUrl)}
@@ -104,7 +104,7 @@ export default async function BlogPage() {
                     href={`/blog/${post.slug}`}
                     className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mt-auto"
                   >
-                    Ler mais
+                    Ler artigo sobre {post.title}
                     <ArrowRight size={16} />
                   </Link>
                 </div>

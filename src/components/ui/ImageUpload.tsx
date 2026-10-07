@@ -1,19 +1,31 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { Upload, X, Loader2 } from "lucide-react";
 
 interface ImageUploadProps {
-  onImageUpload: (url: string) => void;
+  onImageUpload: (url: string, altSuggestion?: string) => void;
   currentImage?: string;
+  currentAlt?: string;
+  onAltChange?: (alt: string) => void;
   label?: string;
   compact?: boolean;
   banner?: boolean;
 }
 
-export default function ImageUpload({ onImageUpload, currentImage, label = "Imagem", compact = false, banner = false }: ImageUploadProps) {
+export default function ImageUpload({
+  onImageUpload,
+  currentImage,
+  currentAlt = "",
+  onAltChange,
+  label = "Imagem",
+  compact = false,
+  banner = false,
+}: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(currentImage || "");
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const id = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -40,7 +52,8 @@ export default function ImageUpload({ onImageUpload, currentImage, label = "Imag
 
       const data = await response.json();
       setPreview(data.url);
-      onImageUpload(data.url);
+      setUploadedFileName(data.fileName || "");
+      onImageUpload(data.url, data.altSuggestion);
     } catch (error) {
       console.error("Error uploading image:", error);
       alert("Erro ao fazer upload da imagem");
@@ -63,6 +76,8 @@ export default function ImageUpload({ onImageUpload, currentImage, label = "Imag
 
   const handleRemove = () => {
     setPreview("");
+    setUploadedFileName("");
+    onAltChange?.("");
     onImageUpload("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -90,19 +105,44 @@ export default function ImageUpload({ onImageUpload, currentImage, label = "Imag
       {label && <label className="block text-sm font-medium">{label}</label>}
       
       {preview ? (
-        <div className={previewContainerClass}>
-          <img
-            src={preview}
-            alt="Preview"
-            className={previewImageClass}
-          />
-          <button
-            type="button"
-            onClick={handleRemove}
-            className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
-          >
-            <X size={16} />
-          </button>
+        <div className="space-y-2">
+          <div className={previewContainerClass}>
+            <img
+              src={preview}
+              alt={currentAlt || "Pré-visualização da imagem"}
+              className={previewImageClass}
+            />
+            <button
+              type="button"
+              onClick={handleRemove}
+              aria-label="Remover imagem"
+              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <p className="break-all text-xs text-gray-500">
+            Arquivo SEO: {uploadedFileName || getFileName(preview)}
+          </p>
+          {onAltChange && (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" htmlFor={`image-alt-${id}`}>
+                Texto alternativo (ALT)
+              </label>
+              <input
+                id={`image-alt-${id}`}
+                type="text"
+                value={currentAlt}
+                onChange={(event) => onAltChange(event.target.value)}
+                maxLength={250}
+                placeholder="Descreva o que aparece na imagem"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              />
+              <p className="text-xs text-gray-500">
+                Descreva o conteúdo da imagem, não use apenas palavras-chave. A sugestão é preenchida pelo nome do arquivo e pode ser alterada.
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <div
@@ -145,4 +185,13 @@ export default function ImageUpload({ onImageUpload, currentImage, label = "Imag
       />
     </div>
   );
+}
+
+function getFileName(url: string): string {
+  try {
+    const name = new URL(url).pathname.split("/").pop();
+    return name ? decodeURIComponent(name) : "Imagem existente";
+  } catch {
+    return "Imagem existente";
+  }
 }

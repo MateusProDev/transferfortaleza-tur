@@ -73,7 +73,7 @@ export default function RecommendedTours({ tours }: RecommendedToursProps) {
                 {/* CTA */}
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                   <span className="text-sm text-blue-600 font-semibold group-hover:text-blue-700">
-                    Ver detalhes
+                    Ver passeio: {tour.name}
                   </span>
                   <ArrowRight size={18} className="text-blue-600 group-hover:translate-x-1 transition-transform" />
                 </div>

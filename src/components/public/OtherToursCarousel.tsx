@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Clock, MessageCircle, Users } from 'lucide-react';
 import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
+import { normalizeBrazilianPhone } from '@/lib/phone';
 
 interface Tour {
   id: string;
@@ -137,7 +138,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber }: OtherTours
 
               <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
                 <WhatsAppConversionLink
-                  href={`https://wa.me/${(whatsappNumber || "5585997314093").replace(/\D/g, "")}?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
+                  href={`https://wa.me/${normalizeBrazilianPhone(whatsappNumber || "5585997314093")}?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex min-w-0 flex-1 items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium whitespace-nowrap text-xs sm:text-sm"

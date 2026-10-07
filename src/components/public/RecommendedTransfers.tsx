@@ -48,7 +48,7 @@ export default function RecommendedTransfers({ transfers }: RecommendedTransfers
                   <span className="flex items-center gap-2"><Users size={16} />{transfer.capacity ? `${transfer.capacity} pessoas` : "Consulte"}</span>
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                  <span className="text-sm text-primary-600 font-semibold">Ver detalhes</span>
+                  <span className="text-sm text-primary-600 font-semibold">Ver transfer: {transfer.name}</span>
                   <ArrowRight size={18} className="text-primary-600 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>

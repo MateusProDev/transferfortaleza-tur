@@ -15,6 +15,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getSiteUrl } from "@/lib/site-url";
 import { fetchSettingsCached } from "@/lib/settings-cache";
 import { defaultContactCopy } from "@/lib/site-copy";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 import type { ContactPageCopy } from "@/types";
 
 interface ContactSettings {
@@ -39,7 +40,7 @@ const FALLBACK_WHATSAPP = "5585997314093";
 const baseUrl = getSiteUrl();
 
 function buildWhatsAppUrl(number: string, message: string) {
-  const digits = (number || FALLBACK_WHATSAPP).replace(/\D/g, "");
+  const digits = normalizeBrazilianPhone(number || FALLBACK_WHATSAPP);
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
@@ -155,7 +156,7 @@ export default function ContactPage() {
                     <h3 className="font-semibold text-gray-900 mb-1">
                       {copy.phoneLabel}
                     </h3>
-                    <p className="text-gray-600">{contactInfo.phone}</p>
+                    <a className="text-gray-600 hover:text-primary-700" href={`tel:+${normalizeBrazilianPhone(contactInfo.phone)}`}>+{normalizeBrazilianPhone(contactInfo.phone)}</a>
                   </div>
                 </div>
               )}

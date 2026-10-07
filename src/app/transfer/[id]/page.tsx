@@ -10,6 +10,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import * as Types from "@/types";
 import DetailGallery from "@/components/public/DetailGallery";
 import WhatsAppConversionLink from "@/components/public/WhatsAppConversionLink";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 import TransferConversionBar from "@/components/public/TransferConversionBar";
 import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
@@ -123,7 +124,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
         .filter((item): item is Types.Transfer => Boolean(item && item.id !== transfer.id))
         .slice(0, 3)
     : allTransfers.filter((item) => item.id !== transfer.id).slice(0, 3);
-  const whatsappNumber = (settings?.whatsappConfig?.number || "5585997314093").replace(/\D/g, "");
+  const whatsappNumber = normalizeBrazilianPhone(settings?.whatsappConfig?.number || "5585997314093");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
 
   return (
@@ -191,7 +192,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
               {transfer.longDescription && (
                 <details className="group mb-7">
                   <summary className="cursor-pointer text-primary-600 font-semibold hover:text-primary-700 flex items-center gap-2">
-                    Ver detalhes completos
+                    Ver roteiro e detalhes do transfer {transfer.name}
                     <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
                   </summary>
                   <MarkdownDescription content={transfer.longDescription} className="mt-4 text-gray-600 leading-relaxed" />

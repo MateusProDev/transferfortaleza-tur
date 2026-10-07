@@ -105,6 +105,7 @@ interface SiteSeo {
   description: string;
   keywords: string;
   ogImage: string;
+  ogImageAlt: string;
 }
 
 const defaultSiteSeo: SiteSeo = {
@@ -112,6 +113,7 @@ const defaultSiteSeo: SiteSeo = {
   description: "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!",
   keywords: "passeios fortaleza, tours fortaleza, transfer fortaleza, turismo ceará",
   ogImage: "",
+  ogImageAlt: "",
 };
 
 export default function SettingsAdmin() {
@@ -141,6 +143,7 @@ export default function SettingsAdmin() {
         description: data.description || defaultSiteSeo.description,
         keywords: Array.isArray(data.keywords) ? data.keywords.join(", ") : defaultSiteSeo.keywords,
         ogImage: data.ogImage || "",
+        ogImageAlt: data.ogImageAlt || "",
       });
     } catch (error) {
       console.error("Error fetching site SEO:", error);
@@ -284,48 +287,34 @@ export default function SettingsAdmin() {
             <label className="mb-2 block text-sm font-medium">Logo do cabeçalho</label>
             <ImageUpload
               currentImage={settings?.headerLogo}
+              currentAlt={settings?.headerLogoAlt || ""}
               label=""
               compact
-              onImageUpload={(url) =>
-                setSettings({
-                  ...settings,
-                  headerLogo: url,
-                })
-              }
+              onImageUpload={(url, alt) => setSettings((current: any) => ({
+                ...current,
+                headerLogo: url,
+                headerLogoAlt: alt || current?.headerLogoAlt || "",
+              }))}
+              onAltChange={(headerLogoAlt) => setSettings((current: any) => ({ ...current, headerLogoAlt }))}
             />
           </div>
           <div>
             <label className="mb-2 block text-sm font-medium">Logo do rodapé</label>
             <ImageUpload
               currentImage={settings?.footerLogo}
+              currentAlt={settings?.footerLogoAlt || ""}
               label=""
               compact
-              onImageUpload={(url) => setSettings({ ...settings, footerLogo: url })}
+              onImageUpload={(url, alt) => setSettings((current: any) => ({
+                ...current,
+                footerLogo: url,
+                footerLogoAlt: alt || current?.footerLogoAlt || "",
+              }))}
+              onAltChange={(footerLogoAlt) => setSettings((current: any) => ({ ...current, footerLogoAlt }))}
             />
             <p className="mt-1 text-xs text-muted-foreground">
               Se não houver uma logo própria para o rodapé, será usada a logo do cabeçalho.
             </p>
-          </div>
-          <div>
-            <label className="text-sm font-medium">Texto alternativo da logo do cabeçalho</label>
-            <Input
-              placeholder="Transfer Fortaleza Tur"
-              value={settings?.headerLogoAlt || ""}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  headerLogoAlt: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Texto alternativo da logo do rodapé</label>
-            <Input
-              placeholder="Transfer Fortaleza Tur"
-              value={settings?.footerLogoAlt || ""}
-              onChange={(e) => setSettings({ ...settings, footerLogoAlt: e.target.value })}
-            />
           </div>
         </CardContent>
       </Card>
@@ -388,10 +377,12 @@ export default function SettingsAdmin() {
                 <label className="block text-sm font-medium">Imagem para compartilhamento (Open Graph)</label>
                 <ImageUpload
                   currentImage={siteSeo.ogImage}
+                  currentAlt={siteSeo.ogImageAlt}
                   label=""
-                  onImageUpload={(url) => setSiteSeo({ ...siteSeo, ogImage: url })}
+                  onImageUpload={(url, alt) => setSiteSeo((current) => ({ ...current, ogImage: url, ogImageAlt: alt || current.ogImageAlt }))}
+                  onAltChange={(ogImageAlt) => setSiteSeo((current) => ({ ...current, ogImageAlt }))}
                 />
-                <p className="text-xs text-muted-foreground">Imagem horizontal recomendada: 1200 × 630 px. Na página inicial, a imagem do primeiro passeio com foto tem prioridade; esta imagem fica como alternativa.</p>
+                <p className="text-xs text-muted-foreground">Imagem horizontal recomendada: 1200 × 630 px. O texto ALT também será usado nos metadados de compartilhamento.</p>
               </div>
               <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-4">
                 <Button type="button" onClick={handleSaveSiteSeo} disabled={siteSeoSaving}>
@@ -693,16 +684,15 @@ export default function SettingsAdmin() {
                 <label className="mb-2 block text-sm font-medium">{label}</label>
                 <ImageUpload
                   currentImage={settings?.[imageKey] || fallbackImage}
+                  currentAlt={settings?.[altKey] || fallbackAlt}
                   label=""
                   compact
-                  onImageUpload={(url) => setSettings({ ...settings, [imageKey]: url })}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Texto alternativo</label>
-                <Input
-                  value={settings?.[altKey] || fallbackAlt}
-                  onChange={(e) => setSettings({ ...settings, [altKey]: e.target.value })}
+                  onImageUpload={(url, alt) => setSettings((current: any) => ({
+                    ...current,
+                    [imageKey]: url,
+                    [altKey]: alt || current?.[altKey] || fallbackAlt,
+                  }))}
+                  onAltChange={(alt) => setSettings((current: any) => ({ ...current, [altKey]: alt }))}
                 />
               </div>
             </div>

@@ -13,6 +13,7 @@ const defaultSeo = {
   description: "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!",
   keywords: ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará"],
   ogImage: "",
+  ogImageAlt: "",
 };
 
 function getDatabase() {
@@ -48,6 +49,7 @@ export async function GET(request: NextRequest) {
         description: typeof data?.description === "string" ? data.description : defaultSeo.description,
         keywords,
         ogImage: typeof data?.ogImage === "string" ? data.ogImage : defaultSeo.ogImage,
+        ogImageAlt: typeof data?.ogImageAlt === "string" ? data.ogImageAlt : defaultSeo.ogImageAlt,
       },
       { headers: responseHeaders },
     );
@@ -77,6 +79,7 @@ export async function PUT(request: NextRequest) {
     const title = typeof body.title === "string" ? body.title.trim() : "";
     const description = typeof body.description === "string" ? body.description.trim() : "";
     const ogImage = typeof body.ogImage === "string" ? body.ogImage.trim() : "";
+    const ogImageAlt = typeof body.ogImageAlt === "string" ? body.ogImageAlt.trim() : "";
     const keywords = Array.isArray(body.keywords)
       ? body.keywords
           .filter((keyword: unknown): keyword is string => typeof keyword === "string")
@@ -102,6 +105,12 @@ export async function PUT(request: NextRequest) {
         { status: 400, headers: responseHeaders },
       );
     }
+    if (ogImageAlt.length > 250) {
+      return NextResponse.json(
+        { error: "O texto alternativo da imagem deve ter até 250 caracteres." },
+        { status: 400, headers: responseHeaders },
+      );
+    }
     if (!keywords || keywords.length > 50 || keywords.some((keyword: string) => keyword.length > 80)) {
       return NextResponse.json(
         { error: "Informe até 50 palavras-chave, com no máximo 80 caracteres cada." },
@@ -110,7 +119,7 @@ export async function PUT(request: NextRequest) {
     }
 
     await document.set(
-      { title, description, keywords, ogImage, updatedAt: new Date() },
+      { title, description, keywords, ogImage, ogImageAlt, updatedAt: new Date() },
       { merge: true },
     );
 

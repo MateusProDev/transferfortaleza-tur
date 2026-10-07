@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import WhatsAppConversionLink, { isWhatsAppUrl } from './WhatsAppConversionLink';
 import { fetchSettingsCached } from '@/lib/settings-cache';
 import { replaceLegacyBrand } from '@/lib/brand';
+import { normalizeBrazilianPhone } from '@/lib/phone';
 
 interface SocialLink {
   icon: any;
@@ -39,8 +40,8 @@ export default function Footer() {
         : social.platform === 'instagram'
           ? Instagram
           : MessageCircle,
-      href: social.platform === 'whatsapp' && !/^https?:\/\//i.test(social.url)
-        ? `https://wa.me/${social.url.replace(/\D/g, '')}`
+      href: social.platform === 'whatsapp'
+        ? `https://wa.me/${normalizeBrazilianPhone(social.url)}`
         : social.url,
       label: social.platform[0].toUpperCase() + social.platform.slice(1),
     }));
@@ -48,7 +49,7 @@ export default function Footer() {
   if (!socialLinks.some((social) => social.label === 'WhatsApp') && settings?.contactInfo?.whatsapp) {
     socialLinks.push({
       icon: MessageCircle,
-      href: `https://wa.me/${settings.contactInfo.whatsapp.replace(/\D/g, '')}`,
+      href: `https://wa.me/${normalizeBrazilianPhone(settings.contactInfo.whatsapp)}`,
       label: 'WhatsApp',
     });
   }
@@ -158,7 +159,9 @@ export default function Footer() {
               {settings?.contactInfo?.phone && (
                 <li className="flex items-center space-x-3 text-gray-400 text-sm">
                   <Phone size={18} />
-                  <span>{settings.contactInfo.phone}</span>
+                  <a href={`tel:+${normalizeBrazilianPhone(settings.contactInfo.phone)}`} className="hover:text-white">
+                    +{normalizeBrazilianPhone(settings.contactInfo.phone)}
+                  </a>
                 </li>
               )}
               {settings?.contactInfo?.email && (
@@ -170,13 +173,19 @@ export default function Footer() {
               {settings?.contactInfo?.whatsapp && (
                 <li className="flex items-center space-x-3 text-gray-400 text-sm">
                   <MessageCircle size={18} />
-                  <span>{settings.contactInfo.whatsapp}</span>
+                  <span>+{normalizeBrazilianPhone(settings.contactInfo.whatsapp)}</span>
                 </li>
               )}
               {settings?.contactInfo?.address && (
                 <li className="flex items-center space-x-3 text-gray-400 text-sm">
                   <MapPin size={18} />
                   <span>{settings.contactInfo.address}</span>
+                </li>
+              )}
+              {!settings?.contactInfo?.address && (
+                <li className="flex items-center space-x-3 text-gray-400 text-sm">
+                  <MapPin size={18} />
+                  <span>Atendimento em Fortaleza e região</span>
                 </li>
               )}
             </ul>

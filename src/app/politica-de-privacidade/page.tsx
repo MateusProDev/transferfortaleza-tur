@@ -60,8 +60,10 @@ export default function PrivacyPolicyPage() {
             <h2 className="mb-2 text-xl font-semibold text-slate-900">3. Compartilhamento e armazenamento</h2>
             <p>
               Os dados podem ser processados pelos serviços necessários para funcionamento do site, registro dos leads,
-              atendimento e medição de campanhas, incluindo Google Ads e serviços de infraestrutura utilizados pela
-              Transfer Fortaleza Tur. Não vendemos esses dados.
+              atendimento e medição de campanhas, incluindo Google Ads, Google Analytics 4 via Google Tag Manager
+              ou gtag.js e, quando configurado, Meta Pixel. Essas ferramentas só são carregadas após o consentimento.
+              Também usamos serviços de infraestrutura necessários ao funcionamento da Transfer Fortaleza Tur. Não
+              vendemos esses dados.
             </p>
           </section>
 
