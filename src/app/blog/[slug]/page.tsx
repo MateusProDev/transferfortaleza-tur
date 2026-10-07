@@ -11,6 +11,7 @@ import MarkdownDescription from '@/components/public/MarkdownDescription';
 import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import { getSiteUrl } from '@/lib/site-url';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
+import { getHomepageOpenGraphImage, stripBrandSuffix, withBrandSuffix } from '@/lib/open-graph';
 
 interface PageProps {
   params: {
@@ -44,13 +45,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       };
     }
 
-    const seoTitle = typeof post.seo?.title === "string" && post.seo.title.trim()
+    const seoTitle = stripBrandSuffix(typeof post.seo?.title === "string" && post.seo.title.trim()
       ? post.seo.title
-      : post.title || "Post";
+      : post.title || "Post");
     const seoDescription = typeof post.seo?.description === "string" && post.seo.description.trim()
       ? post.seo.description
       : post.summary || `Leia o artigo completo no blog da Transfer Fortaleza Tur. Dicas de turismo em Fortaleza e região.`;
-    const image = post.imageUrl || `${baseUrl}/OG.png`;
+    const image = await getHomepageOpenGraphImage();
 
     return {
       title: seoTitle,
@@ -59,20 +60,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         type: "article",
         locale: "pt_BR",
         url: `${baseUrl}/blog/${params.slug}`,
-        title: seoTitle,
+        title: withBrandSuffix(seoTitle),
         description: seoDescription,
+        siteName: "Transfer Fortaleza Tur",
         images: [
           {
             url: image,
-            width: 1200,
-            height: 630,
-            alt: post.imageAlt || post.title,
+            alt: "Transfer Fortaleza Tur - Passeios e Transfers em Fortaleza",
           },
         ],
       },
       twitter: {
         card: "summary_large_image",
-        title: seoTitle,
+        title: withBrandSuffix(seoTitle),
         description: seoDescription,
         images: [image],
       },

@@ -17,6 +17,7 @@ import {
   getCachedTransfers,
 } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
+import { normalizeOpenGraphImage, stripBrandSuffix, withBrandSuffix } from "@/lib/open-graph";
 import { replaceLegacyBrand } from "@/lib/brand";
 
 const Tours = dynamicImport(() => import("@/components/public/Tours"), {
@@ -58,9 +59,9 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Error fetching homepage SEO content:", error);
   }
 
-  const title = typeof homeSeo?.title === "string" && homeSeo.title.trim()
+  const title = stripBrandSuffix(typeof homeSeo?.title === "string" && homeSeo.title.trim()
     ? replaceLegacyBrand(homeSeo.title)
-    : "Passeios e Transfers em Fortaleza e Região";
+    : "Passeios e Transfers em Fortaleza e Região");
   const description = typeof homeSeo?.description === "string" && homeSeo.description.trim()
     ? replaceLegacyBrand(homeSeo.description)
     : "Reserve passeios e transfers em Fortaleza com conforto e segurança. Praias, dunas, buggy e muito mais. Garanta sua vaga!";
@@ -69,9 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter((keyword): keyword is string => typeof keyword === "string")
         .map(replaceLegacyBrand)
     : ["passeios fortaleza", "tours fortaleza", "transfer fortaleza", "turismo ceará"];
-  const ogImage = typeof homeSeo?.ogImage === "string" && homeSeo.ogImage.trim()
-    ? homeSeo.ogImage.trim()
-    : `${baseUrl}/OG.png`;
+  const ogImage = normalizeOpenGraphImage(homeSeo?.ogImage);
   const ogImageAlt = typeof homeSeo?.ogImageAlt === "string" && homeSeo.ogImageAlt.trim()
     ? homeSeo.ogImageAlt.trim()
     : title;
@@ -84,9 +83,9 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "pt_BR",
       url: baseUrl,
-      title,
+      title: withBrandSuffix(title),
       description,
-      siteName: title,
+      siteName: "Transfer Fortaleza Tur",
       images: [
         {
           url: ogImage,
@@ -98,7 +97,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: withBrandSuffix(title),
       description,
       images: [ogImage],
     },

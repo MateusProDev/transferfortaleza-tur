@@ -15,6 +15,7 @@ import TourTracking from "@/components/public/TourTracking";
 import DetailGallery from "@/components/public/DetailGallery";
 import * as Types from "@/types";
 import { getSiteUrl } from "@/lib/site-url";
+import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 
@@ -74,7 +75,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "passeio fortaleza",
     "excursão fortaleza",
   ].join(", ");
-  const image = tour.mainImageUrl || `${baseUrl}/OG.png`;
+  const image = tour.mainImageUrl
+    ? normalizeOpenGraphImage(tour.mainImageUrl)
+    : await getHomepageOpenGraphImage();
 
   return {
     title,
@@ -95,19 +98,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "website",
       locale: "pt_BR",
       url: `${baseUrl}/pacote/${params.id}`,
-      title: tour.name,
+      title: withBrandSuffix(tour.name),
       description,
       siteName: "Transfer Fortaleza Tur",
       images: [{
         url: image,
-        width: 1200,
-        height: 630,
         alt: `${tour.name} - Passeio turístico em Fortaleza`,
       }],
     },
     twitter: {
       card: "summary_large_image",
-      title: tour.name,
+      title: withBrandSuffix(tour.name),
       description,
       images: [image],
     },

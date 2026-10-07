@@ -6,6 +6,7 @@ import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import Analytics from "@/components/seo/Analytics";
 import { getSiteUrl } from "@/lib/site-url";
 import { getCachedHomepageSeo } from "@/lib/public-data-cache";
+import { normalizeOpenGraphImage } from "@/lib/open-graph";
 import { DM_Serif_Display, Manrope } from "next/font/google";
 import { normalizeBrazilianPhone } from "@/lib/phone";
 
@@ -64,9 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const keywords = Array.isArray(siteSeo?.keywords)
     ? siteSeo.keywords.filter((keyword): keyword is string => typeof keyword === "string")
     : defaultSiteKeywords;
-  const ogImage = typeof siteSeo?.ogImage === "string" && siteSeo.ogImage.trim()
-    ? siteSeo.ogImage.trim()
-    : `${baseUrl}/OG.png`;
+  const ogImage = normalizeOpenGraphImage(siteSeo?.ogImage);
   const ogImageAlt = typeof siteSeo?.ogImageAlt === "string" && siteSeo.ogImageAlt.trim()
     ? siteSeo.ogImageAlt.trim()
     : title;

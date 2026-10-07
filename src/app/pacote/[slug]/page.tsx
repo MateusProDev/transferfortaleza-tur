@@ -4,6 +4,7 @@ import TourDetailPage from "@/app/passeios/[id]/page";
 import TransferDetailPage from "@/app/transfer/[id]/page";
 import { getCachedTours, getCachedTransfers } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
+import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
 
 interface PageProps {
   params: { slug: string };
@@ -55,7 +56,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = item.item.name;
   const description = item.item.description;
   const productImage = item.type === "tour" ? item.item.mainImageUrl : item.item.imageUrl;
-  const image = productImage || `${baseUrl}/OG.png`;
+  const image = productImage
+    ? normalizeOpenGraphImage(productImage)
+    : await getHomepageOpenGraphImage();
 
   return {
     title,
@@ -65,14 +68,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "website",
       locale: "pt_BR",
       url: canonical,
-      title,
+      title: withBrandSuffix(title),
       description,
       siteName: "Transfer Fortaleza Tur",
-      images: [{ url: image, width: 1200, height: 630, alt: title }],
+      images: [{ url: image, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: withBrandSuffix(title),
       description,
       images: [image],
     },

@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { getCachedSiteSettings, getCachedTours } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
+import { getHomepageOpenGraphImage, normalizeOpenGraphImage, stripBrandSuffix, withBrandSuffix } from "@/lib/open-graph";
 
 const baseUrl = getSiteUrl();
 
 export async function generateMetadata(): Promise<Metadata> {
-  let image = `${baseUrl}/OG.png`;
+  let image = "";
   try {
     const tours = await getCachedTours(true);
-    image = tours.find((tour) => tour.mainImageUrl)?.mainImageUrl || image;
+    image = tours.find((tour) => tour.mainImageUrl)?.mainImageUrl || "";
   } catch (error) {
     console.error("Error fetching a tour image for listing metadata:", error);
   }
 
-  let title = "Passeios em Fortaleza e Ceará | Transfer Fortaleza Tur";
+  let title = "Passeios em Fortaleza e Ceará";
   let description = "Encontre passeios turísticos em Fortaleza e no Ceará, com roteiros para praias, dunas e destinos inesquecíveis. Consulte disponibilidade e reserve pelo WhatsApp.";
   try {
     const copy = (await getCachedSiteSettings())?.pageCopy?.tours;
@@ -22,6 +23,9 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     console.error("Error fetching tours page copy for metadata:", error);
   }
+  title = stripBrandSuffix(title);
+  const fullTitle = withBrandSuffix(title);
+  const ogImage = image ? normalizeOpenGraphImage(image) : await getHomepageOpenGraphImage();
 
   return {
     title,
@@ -31,15 +35,15 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "pt_BR",
       url: `${baseUrl}/passeios`,
-      title,
+      title: fullTitle,
       description,
-      images: [{ url: image, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImage, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: fullTitle,
       description,
-      images: [image],
+      images: [ogImage],
     },
   };
 }

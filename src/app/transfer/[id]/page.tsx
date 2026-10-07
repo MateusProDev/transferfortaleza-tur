@@ -14,6 +14,7 @@ import { normalizeBrazilianPhone } from "@/lib/phone";
 import TransferConversionBar from "@/components/public/TransferConversionBar";
 import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
+import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
 import RecommendedTransfers from "@/components/public/RecommendedTransfers";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
@@ -56,7 +57,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const description = transfer.description || `Solicite um orçamento para ${transfer.name} com a Transfer Fortaleza Tur.`;
-  const image = transfer.imageUrl || `${baseUrl}/OG.png`;
+  const image = transfer.imageUrl
+    ? normalizeOpenGraphImage(transfer.imageUrl)
+    : await getHomepageOpenGraphImage();
 
   return {
     title: transfer.name,
@@ -65,19 +68,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "website",
       locale: "pt_BR",
       url: `${baseUrl}/pacote/${params.id}`,
-      title: transfer.name,
+      title: withBrandSuffix(transfer.name),
       description,
       siteName: "Transfer Fortaleza Tur",
       images: [{
         url: image,
-        width: 1200,
-        height: 630,
         alt: transfer.imageAlt || transfer.name,
       }],
     },
     twitter: {
       card: "summary_large_image",
-      title: transfer.name,
+      title: withBrandSuffix(transfer.name),
       description,
       images: [image],
     },

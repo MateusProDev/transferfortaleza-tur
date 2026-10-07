@@ -6,6 +6,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getCachedSiteSettings } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 import { replaceLegacyBrand } from "@/lib/brand";
+import { getHomepageOpenGraphImage, stripBrandSuffix, withBrandSuffix } from "@/lib/open-graph";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 
 const baseUrl = getSiteUrl();
@@ -13,26 +14,27 @@ const baseUrl = getSiteUrl();
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getCachedSiteSettings();
   const about = settings?.aboutSection;
-  const title = about?.title || "Sobre Nós";
+  const title = stripBrandSuffix(about?.title || "Sobre Nós");
   const description = about?.pageIntro || about?.description
     || "Conheça a Transfer Fortaleza Tur - oferecendo experiências únicas de turismo com conforto, segurança e profissionalismo.";
+  const image = await getHomepageOpenGraphImage();
 
   return {
     title,
     description,
     alternates: { canonical: `${baseUrl}/sobre` },
     openGraph: {
-      title: `${title} - Transfer Fortaleza Tur`,
+      title: withBrandSuffix(title),
       description,
       url: `${baseUrl}/sobre`,
       siteName: "Transfer Fortaleza Tur",
-      images: [{ url: `${baseUrl}/OG.png`, width: 1200, height: 630, alt: title }],
+      images: [{ url: image, alt: "Transfer Fortaleza Tur - Passeios e Transfers em Fortaleza" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} - Transfer Fortaleza Tur`,
+      title: withBrandSuffix(title),
       description,
-      images: [`${baseUrl}/OG.png`],
+      images: [image],
     },
   };
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getCachedSiteSettings } from '@/lib/public-data-cache';
 import { getSiteUrl } from '@/lib/site-url';
+import { getHomepageOpenGraphImage, stripBrandSuffix, withBrandSuffix } from '@/lib/open-graph';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
 const baseUrl = getSiteUrl();
@@ -10,8 +11,9 @@ export const revalidate = 300;
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getCachedSiteSettings();
   const copy = settings?.pageCopy?.privacy;
-  const title = copy?.seoTitle || 'Política de Privacidade | Transfer Fortaleza Tur';
+  const title = stripBrandSuffix(copy?.seoTitle || 'Política de Privacidade');
   const description = copy?.seoDescription || 'Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.';
+  const image = await getHomepageOpenGraphImage();
 
   return {
     title,
@@ -21,15 +23,16 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       locale: 'pt_BR',
       url: `${baseUrl}/politica-de-privacidade`,
-      title,
+      title: withBrandSuffix(title),
       description,
-      images: [{ url: `${baseUrl}/OG.png`, width: 1200, height: 630, alt: 'Transfer Fortaleza Tur' }],
+      siteName: "Transfer Fortaleza Tur",
+      images: [{ url: image, alt: 'Transfer Fortaleza Tur' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: withBrandSuffix(title),
       description,
-      images: [`${baseUrl}/OG.png`],
+      images: [image],
     },
   };
 }

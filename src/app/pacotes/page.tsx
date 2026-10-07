@@ -8,6 +8,7 @@ import Header from '@/components/public/Header';
 import { getCachedSiteSettings, getCachedTours, getCachedTransfers } from '@/lib/public-data-cache';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import { getSiteUrl } from '@/lib/site-url';
+import { getHomepageOpenGraphImage, normalizeOpenGraphImage, stripBrandSuffix, withBrandSuffix } from '@/lib/open-graph';
 import type { SitePageCopy, Tour, Transfer } from '@/types';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
@@ -17,14 +18,23 @@ const baseUrl = getSiteUrl();
 
 export async function generateMetadata(): Promise<Metadata> {
   let copy: Partial<SitePageCopy> | undefined;
+  let image = "";
   try {
-    const settings = await getCachedSiteSettings();
+    const [settings, tours, transfers] = await Promise.all([
+      getCachedSiteSettings(),
+      getCachedTours(true),
+      getCachedTransfers(true),
+    ]);
     copy = settings?.pageCopy?.packages;
+    image = tours.find((tour) => tour.mainImageUrl)?.mainImageUrl
+      || transfers.find((transfer) => transfer.imageUrl)?.imageUrl
+      || "";
   } catch (error) {
     console.error('Error fetching package page metadata:', error);
   }
-  const title = copy?.seoTitle || 'Passeios e Transfers em Fortaleza';
+  const title = stripBrandSuffix(copy?.seoTitle || 'Passeios e Transfers em Fortaleza');
   const description = copy?.seoDescription || 'Explore passeios e transfers em Fortaleza e região. Encontre experiências, transporte e reserve sua próxima viagem.';
+  const ogImage = image ? normalizeOpenGraphImage(image) : await getHomepageOpenGraphImage();
   return {
     title,
     description,
@@ -33,8 +43,16 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       locale: 'pt_BR',
       url: `${baseUrl}/pacotes`,
-      title: `${title} | Transfer Fortaleza Tur`,
+      siteName: "Transfer Fortaleza Tur",
+      title: withBrandSuffix(title),
       description,
+      images: [{ url: ogImage, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: withBrandSuffix(title),
+      description,
+      images: [ogImage],
     },
   };
 }
