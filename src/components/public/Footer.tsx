@@ -55,7 +55,7 @@ export default function Footer() {
   }
 
   const quickLinks = [
-    { label: 'Pacotes', href: '/passeios' },
+    { label: 'Pacotes', href: '/pacotes' },
     { label: 'Blog', href: '/blog' },
     { label: 'Transfers', href: '/transfer' },
     { label: 'Política', href: '/politica-de-privacidade' },

@@ -85,7 +85,7 @@ export default function Tours({ tours, whatsappNumber }: ToursProps) {
 
   const visibleTours = displayTours.length === 0
     ? []
-    : Array.from({ length: itemsPerPage }, (_, index) => {
+    : Array.from({ length: Math.min(itemsPerPage, displayTours.length) }, (_, index) => {
         const itemIndex = (currentIndex * itemsPerPage + index) % displayTours.length;
         return displayTours[itemIndex];
       });

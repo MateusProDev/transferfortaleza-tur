@@ -15,6 +15,7 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
+  { label: 'Pacotes', href: '/pacotes', icon: Map },
   { label: 'Passeios', href: '/passeios', icon: Map },
   { label: 'Transfer', href: '/transfer', icon: Map },
   { label: 'Blog', href: '/blog', icon: Newspaper },

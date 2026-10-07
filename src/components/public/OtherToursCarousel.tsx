@@ -52,7 +52,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber }: OtherTours
 
   const visibleTours = tours.length === 0
     ? []
-    : Array.from({ length: itemsPerPage }, (_, index) => {
+    : Array.from({ length: Math.min(itemsPerPage, tours.length) }, (_, index) => {
         const itemIndex = (currentIndex * itemsPerPage + index) % tours.length;
         return tours[itemIndex];
       });
