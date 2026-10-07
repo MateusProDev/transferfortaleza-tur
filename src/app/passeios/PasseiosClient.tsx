@@ -11,7 +11,7 @@ import { getSiteUrl } from '@/lib/site-url';
 import type { Tour } from '@/types';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from '@/components/public/EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
 interface PasseiosClientProps {
   tours: Tour[];
@@ -66,18 +66,17 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError, copy
       </main>
     );
   }
-
   return (
     <main className="min-h-screen bg-[#0F3A4A] pt-24">
       <Header />
       <BreadcrumbJsonLd items={breadcrumbItems} />
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <EditableHeading level={getHeadingLevel(copy, 'title', 'h1')} className="font-display text-4xl md:text-5xl mb-4">{copy?.title || "Nossos Passeios"}</EditableHeading>
-          <p className="text-xl max-w-2xl">{copy?.intro || "Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados"}</p>
+          {isCopyFieldEnabled(copy, "title") && <EditableHeading level={getHeadingLevel(copy, 'title', 'h1')} className="font-display text-4xl md:text-5xl mb-4">{copy?.title || "Nossos Passeios"}</EditableHeading>}
+          {isCopyFieldEnabled(copy, "intro") && <p className="text-xl max-w-2xl">{copy?.intro || "Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados"}</p>}
         </div>
       </div>
-      <div className="container mx-auto px-4 py-8">
+      {isCopyFieldEnabled(copy, "listingSection") && <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1 relative">
@@ -132,10 +131,10 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError, copy
                   {tour.featured && <span className="absolute top-4 right-4 bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-semibold">Destaque</span>}
                 </Link>
                 <div className="p-6 flex flex-col flex-1">
-                  <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h2')} className="text-xl font-bold text-gray-900 mb-2">
+                  {isCopyFieldEnabled(copy, "cardTitle") && <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h2')} className="text-xl font-bold text-gray-900 mb-2">
                     <Link href={`/pacote/${tour.slug || tour.id}`} className="hover:text-primary-600" aria-label={`Ver passeio: ${tour.name}`}>{tour.name}</Link>
-                  </EditableHeading>
-                  <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
+                  </EditableHeading>}
+                  {isCopyFieldEnabled(copy, "cardDescription") && <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>}
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1"><Clock size={16} /><span>{tour.duration || copy?.durationFallback || 'Consulte'}</span></div>
                     <div className="flex items-center space-x-1"><Users size={16} /><span>{copy?.groupLabel || "Grupos pequenos"}</span></div>
@@ -146,7 +145,7 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError, copy
             ))}
           </div>
         )}
-      </div>
+      </div>}
       <Footer />
     </main>
   );

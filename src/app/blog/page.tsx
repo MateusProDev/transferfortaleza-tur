@@ -7,7 +7,7 @@ import Footer from '@/components/public/Footer';
 import { getSiteUrl } from '@/lib/site-url';
 import { getCachedBlogPosts, getCachedSiteSettings } from '@/lib/public-data-cache';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
-import EditableHeading, { getHeadingLevel } from '@/components/public/EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
 export const revalidate = 300;
 
@@ -48,14 +48,14 @@ export default async function BlogPage() {
       {/* Header */}
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <EditableHeading level={getHeadingLevel(copy, 'title', 'h1')} className="font-display text-4xl md:text-5xl mb-4">{copy?.title || "Blog"}</EditableHeading>
-          <p className="text-xl max-w-2xl">
+          {isCopyFieldEnabled(copy, "title") && <EditableHeading level={getHeadingLevel(copy, 'title', 'h1')} className="font-display text-4xl md:text-5xl mb-4">{copy?.title || "Blog"}</EditableHeading>}
+          {isCopyFieldEnabled(copy, "intro") && <p className="text-xl max-w-2xl">
             {copy?.intro || "Dicas, guias e inspirações para suas próximas aventuras"}
-          </p>
+          </p>}
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      {isCopyFieldEnabled(copy, "listingSection") && <div className="container mx-auto px-4 py-12">
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">{copy?.noPosts || "Nenhum post publicado ainda."}</p>
@@ -97,13 +97,13 @@ export default async function BlogPage() {
                     </div>
                   </div>
 
-                  <Link href={`/blog/${post.slug}`}>
-                    <h2 className="font-display text-xl text-gray-900 mb-3 hover:text-primary-600 transition-colors cursor-pointer">
+                  {isCopyFieldEnabled(copy, "blogCardTitle") && <Link href={`/blog/${post.slug}`}>
+                    <EditableHeading level={getHeadingLevel(copy, "blogCardTitle", "h2")} className="font-display text-xl text-gray-900 mb-3 hover:text-primary-600 transition-colors cursor-pointer">
                       {post.title}
-                    </h2>
-                  </Link>
+                    </EditableHeading>
+                  </Link>}
 
-                  <p className="text-gray-600 mb-4 line-clamp-3 flex-1">{post.summary}</p>
+                  {isCopyFieldEnabled(copy, "blogCardDescription") && <p className="text-gray-600 mb-4 line-clamp-3 flex-1">{post.summary}</p>}
 
                   <Link
                     href={`/blog/${post.slug}`}
@@ -117,7 +117,7 @@ export default async function BlogPage() {
             ))}
           </div>
         )}
-      </div>
+      </div>}
       
       <Footer />
     </main>

@@ -4,7 +4,7 @@ import { Clock, Star, ArrowRight } from 'lucide-react';
 import { Tour } from '@/types';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface RecommendedToursProps {
   tours: Tour[];
@@ -21,12 +21,12 @@ export default function RecommendedTours({ tours, copy }: RecommendedToursProps)
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <EditableHeading level={getHeadingLevel(copy, 'relatedTitle', 'h2')} className="text-3xl font-bold text-gray-900 mb-2">
+            {isCopyFieldEnabled(copy, "relatedTitle") && <EditableHeading level={getHeadingLevel(copy, 'relatedTitle', 'h2')} className="text-3xl font-bold text-gray-900 mb-2">
               {copy?.relatedTitle || "Quem viu este passeio também gostou"}
-            </EditableHeading>
-            <p className="text-gray-600">
+            </EditableHeading>}
+            {isCopyFieldEnabled(copy, "relatedIntro") && <p className="text-gray-600">
               {copy?.relatedIntro || "Descubra mais experiências incríveis em Fortaleza e região"}
-            </p>
+            </p>}
           </div>
           <Link
             href="/passeios"
@@ -64,9 +64,9 @@ export default function RecommendedTours({ tours, copy }: RecommendedToursProps)
 
               {/* Conteúdo */}
               <div className="p-5">
-                <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h3')} className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                {isCopyFieldEnabled(copy, "cardTitle") && <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h3')} className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                   {tour.name}
-                </EditableHeading>
+                </EditableHeading>}
 
                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
                   <Clock size={16} />

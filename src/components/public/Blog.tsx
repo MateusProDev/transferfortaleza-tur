@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Calendar } from 'lucide-react';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface BlogPost {
   id: string;
@@ -23,6 +23,7 @@ interface BlogProps {
 
 export default function Blog({ posts, copy }: BlogProps) {
   const displayPosts = posts.filter(post => post.published).slice(0, 2);
+  if (!isCopyFieldEnabled(copy, "blogSection")) return null;
 
   const formatDate = (date: any) => {
     if (!date) return '';
@@ -38,12 +39,12 @@ export default function Blog({ posts, copy }: BlogProps) {
     <section id="blog" className="py-14 bg-gray-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <EditableHeading level={getHeadingLevel(copy, 'blogTitle', 'h2')} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          {isCopyFieldEnabled(copy, "blogTitle") && <EditableHeading level={getHeadingLevel(copy, 'blogTitle', 'h2')} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {copy?.blogTitle || "Nosso Blog"}
-          </EditableHeading>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "blogIntro") && <p className="text-gray-600 max-w-2xl mx-auto">
             {copy?.blogIntro || "Dicas de viagem, destinos e muito mais"}
-          </p>
+          </p>}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -77,10 +78,10 @@ export default function Blog({ posts, copy }: BlogProps) {
                   <span>{formatDate(post.createdAt)}</span>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+                {isCopyFieldEnabled(copy, "blogCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'blogCardTitle', 'h3')} className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
                   {post.title}
-                </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3 flex-1">{post.summary}</p>
+                </EditableHeading>}
+                {isCopyFieldEnabled(copy, "blogCardDescription") && <p className="text-gray-600 mb-4 line-clamp-3 flex-1">{post.summary}</p>}
 
                 <span className="text-primary-900 hover:text-primary-950 font-medium inline-flex items-center">
                   {copy?.blogReadArticlePrefix || "Ler artigo sobre"} {post.title}

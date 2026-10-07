@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Star } from 'lucide-react';
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface Testimonial {
   id: string;
@@ -37,7 +37,7 @@ export default function Testimonials({ testimonials, copy }: TestimonialsProps) 
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  if (testimonials.length === 0) {
+  if (!isCopyFieldEnabled(copy, "testimonialsSection") || testimonials.length === 0) {
     return null;
   }
 
@@ -47,12 +47,12 @@ export default function Testimonials({ testimonials, copy }: TestimonialsProps) 
     <section id="avaliacoes" className="py-14 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <EditableHeading level={getHeadingLevel(copy, 'testimonialsTitle', 'h2')} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          {isCopyFieldEnabled(copy, "testimonialsTitle") && <EditableHeading level={getHeadingLevel(copy, 'testimonialsTitle', 'h2')} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {copy?.testimonialsTitle || "O Que Nossos Clientes Dizem"}
-          </EditableHeading>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "testimonialsIntro") && <p className="text-gray-600 max-w-2xl mx-auto">
             {copy?.testimonialsIntro || "Histórias reais de experiências memoráveis"}
-          </p>
+          </p>}
         </div>
 
         <div className="max-w-3xl mx-auto">

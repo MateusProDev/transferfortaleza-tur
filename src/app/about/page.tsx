@@ -6,6 +6,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getCachedSiteSettings } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 import { replaceLegacyBrand } from "@/lib/brand";
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 
 const baseUrl = getSiteUrl();
 
@@ -74,10 +75,10 @@ export default async function AboutPage() {
       {/* Header */}
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{replaceLegacyBrand(aboutSection?.title || "Sobre a Transfer Fortaleza Tur")}</h1>
-          <p className="text-xl max-w-2xl">
+          {isCopyFieldEnabled(aboutSection, "title") && <EditableHeading level={getHeadingLevel(aboutSection, "title", "h1")} className="text-4xl md:text-5xl font-bold mb-4">{replaceLegacyBrand(aboutSection?.title || "Sobre a Transfer Fortaleza Tur")}</EditableHeading>}
+          {isCopyFieldEnabled(aboutSection, "pageIntro") && <p className="text-xl max-w-2xl">
             {replaceLegacyBrand(aboutSection?.pageIntro || "Conheça nossa história e compromisso com proporcionar experiências inesquecíveis")}
-          </p>
+          </p>}
         </div>
       </div>
 
@@ -85,41 +86,39 @@ export default async function AboutPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {isCopyFieldEnabled(aboutSection, "historySection") && <div className="text-center mb-12">
+              {isCopyFieldEnabled(aboutSection, "historyTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "historyTitle", "h2")} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {aboutSection?.historyTitle || "Nossa História"}
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed">
+              </EditableHeading>}
+              {isCopyFieldEnabled(aboutSection, "description") && <p className="text-gray-600 text-lg leading-relaxed">
                 {replaceLegacyBrand(aboutSection?.description || "A Transfer Fortaleza Tur nasceu com a missão de proporcionar momentos inesquecíveis para nossos clientes. Somos uma empresa referência em passeios e transfers, sempre focada na qualidade, segurança e satisfação de quem nos escolhe.")}
-              </p>
-            </div>
+              </p>}
+            </div>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.missionTitle || "Nossa Missão"}</h3>
-                <p className="text-gray-600">
+              {isCopyFieldEnabled(aboutSection, "missionSection") && <div className="bg-gray-50 p-6 rounded-xl">
+                {isCopyFieldEnabled(aboutSection, "missionTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "missionTitle", "h3")} className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.missionTitle || "Nossa Missão"}</EditableHeading>}
+                {isCopyFieldEnabled(aboutSection, "missionText") && <p className="text-gray-600">
                   {replaceLegacyBrand(aboutSection?.missionText || "Proporcionar experiências turísticas únicas e memoráveis, com segurança, conforto e profissionalismo, superando as expectativas de nossos clientes em cada jornada.")}
-                </p>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.visionTitle || "Nossa Visão"}</h3>
-                <p className="text-gray-600">
+                </p>}
+              </div>}
+              {isCopyFieldEnabled(aboutSection, "visionSection") && <div className="bg-gray-50 p-6 rounded-xl">
+                {isCopyFieldEnabled(aboutSection, "visionTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "visionTitle", "h3")} className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.visionTitle || "Nossa Visão"}</EditableHeading>}
+                {isCopyFieldEnabled(aboutSection, "visionText") && <p className="text-gray-600">
                   {replaceLegacyBrand(aboutSection?.visionText || "Ser reconhecidos como a melhor empresa de turismo da região, sinônimo de qualidade, confiança e experiências transformadoras.")}
-                </p>
-              </div>
+                </p>}
+              </div>}
             </div>
 
-            <div className="bg-gray-50 p-6 rounded-xl mb-12">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.valuesTitle || "Nossos Valores"}</h3>
+            {isCopyFieldEnabled(aboutSection, "valuesSection") && <div className="bg-gray-50 p-6 rounded-xl mb-12">
+              {isCopyFieldEnabled(aboutSection, "valuesTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "valuesTitle", "h3")} className="text-xl font-bold text-gray-900 mb-3">{aboutSection?.valuesTitle || "Nossos Valores"}</EditableHeading>}
               <ul className="space-y-2 text-gray-600">
                 {values.map((value, index) => <li key={`${value}-${index}`}>• {value}</li>)}
               </ul>
-            </div>
+            </div>}
 
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-              {aboutSection?.statsTitle || "Nossos Números"}
-              </h2>
+            {isCopyFieldEnabled(aboutSection, "statsSection") && <div className="text-center mb-12">
+              {isCopyFieldEnabled(aboutSection, "statsTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "statsTitle", "h2")} className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">{aboutSection?.statsTitle || "Nossos Números"}</EditableHeading>}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                 {aboutStats.map((stat) => (
                   <div className="text-center" key={stat.label}>
@@ -128,12 +127,12 @@ export default async function AboutPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div>}
 
-            <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {isCopyFieldEnabled(aboutSection, "benefitsSection") && <div className="text-center">
+              {isCopyFieldEnabled(aboutSection, "whyChooseTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "whyChooseTitle", "h2")} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {replaceLegacyBrand(aboutSection?.whyChooseTitle || "Por Que Escolher a Transfer Fortaleza Tur?")}
-              </h2>
+              </EditableHeading>}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 {benefits.map((benefit) => (
                   <div className="flex items-start gap-4" key={benefit.title}>
@@ -141,13 +140,13 @@ export default async function AboutPage() {
                     <span className="text-primary-600 text-xl">✓</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 mb-1">{replaceLegacyBrand(benefit.title)}</h3>
-                      <p className="text-gray-600 text-sm">{replaceLegacyBrand(benefit.description)}</p>
+                      {isCopyFieldEnabled(aboutSection, "benefitTitle") && <EditableHeading level={getHeadingLevel(aboutSection, "benefitTitle", "h3")} className="font-bold text-gray-900 mb-1">{replaceLegacyBrand(benefit.title)}</EditableHeading>}
+                      {isCopyFieldEnabled(aboutSection, "benefitDescription") && <p className="text-gray-600 text-sm">{replaceLegacyBrand(benefit.description)}</p>}
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </div>}
           </div>
         </div>
       </section>

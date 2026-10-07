@@ -19,6 +19,11 @@ export function getHeadingLevel(
     : fallbackLevel;
 }
 
+export function isCopyFieldEnabled(copy: object | undefined, field: string): boolean {
+  const value = copy ? Reflect.get(copy, `${field}Enabled`) : undefined;
+  return value !== false && value !== "false";
+}
+
 export default function EditableHeading({
   level,
   fallbackLevel = "h2",

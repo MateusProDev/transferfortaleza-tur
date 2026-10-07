@@ -4,7 +4,7 @@ import { ArrowRight, Car, Users } from "lucide-react";
 import { Transfer } from "@/types";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
 import type { SitePageCopy } from "@/types";
-import EditableHeading, { getHeadingLevel } from "./EditableHeading";
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "./EditableHeading";
 
 interface RecommendedTransfersProps {
   transfers: Transfer[];
@@ -19,8 +19,8 @@ export default function RecommendedTransfers({ transfers, copy }: RecommendedTra
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <EditableHeading level={getHeadingLevel(copy, "relatedTitle", "h2")} className="text-3xl font-bold text-gray-900 mb-2">{copy?.relatedTitle || "Outros transfers recomendados"}</EditableHeading>
-            <p className="text-gray-600">{copy?.relatedIntro || "Confira outras opções de transporte para sua viagem"}</p>
+            {isCopyFieldEnabled(copy, "relatedTitle") && <EditableHeading level={getHeadingLevel(copy, "relatedTitle", "h2")} className="text-3xl font-bold text-gray-900 mb-2">{copy?.relatedTitle || "Outros transfers recomendados"}</EditableHeading>}
+            {isCopyFieldEnabled(copy, "relatedIntro") && <p className="text-gray-600">{copy?.relatedIntro || "Confira outras opções de transporte para sua viagem"}</p>}
           </div>
           <Link href="/transfer" className="hidden md:flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold">
             {copy?.relatedSeeAll || "Ver todos"} <ArrowRight size={20} />
@@ -45,7 +45,7 @@ export default function RecommendedTransfers({ transfers, copy }: RecommendedTra
                 />
               </div>
               <div className="p-5">
-                <EditableHeading level={getHeadingLevel(copy, "cardTitle", "h3")} className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">{transfer.name}</EditableHeading>
+                {isCopyFieldEnabled(copy, "cardTitle") && <EditableHeading level={getHeadingLevel(copy, "cardTitle", "h3")} className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors">{transfer.name}</EditableHeading>}
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                   <span className="flex items-center gap-2"><Car size={16} />{transfer.vehicleType || copy?.vehicleFallback || "Consulte"}</span>
                   <span className="flex items-center gap-2"><Users size={16} />{transfer.capacity ? `${transfer.capacity} ${copy?.capacitySuffix || "pessoas"}` : copy?.capacityFallback || "Consulte"}</span>

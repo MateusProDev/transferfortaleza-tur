@@ -9,7 +9,7 @@ import { getCachedSiteSettings, getCachedTours, getCachedTransfers } from '@/lib
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import { getSiteUrl } from '@/lib/site-url';
 import type { SitePageCopy, Tour, Transfer } from '@/types';
-import EditableHeading, { getHeadingLevel } from '@/components/public/EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
 export const revalidate = 300;
 
@@ -67,6 +67,8 @@ export default async function PacotesPage() {
     { name: 'Início', url: baseUrl },
     { name: 'Passeios e Transfers', url: `${baseUrl}/pacotes` },
   ];
+  const showTours = toursEnabled && isCopyFieldEnabled(pageCopy, "toursSection");
+  const showTransfers = transfersEnabled && isCopyFieldEnabled(pageCopy, "transfersSection");
 
   return (
     <main className="min-h-screen bg-[#0F3A4A] pt-24">
@@ -75,17 +77,17 @@ export default async function PacotesPage() {
 
       <div className="bg-primary-600 py-16 text-white">
         <div className="container mx-auto px-4">
-          <EditableHeading level={getHeadingLevel(pageCopy, "title", "h1")} className="font-display mb-4 text-4xl md:text-5xl">{pageCopy?.title || "Passeios e Transfers"}</EditableHeading>
-          <p className="max-w-2xl text-xl">
+          {isCopyFieldEnabled(pageCopy, "title") && <EditableHeading level={getHeadingLevel(pageCopy, "title", "h1")} className="font-display mb-4 text-4xl md:text-5xl">{pageCopy?.title || "Passeios e Transfers"}</EditableHeading>}
+          {isCopyFieldEnabled(pageCopy, "intro") && <p className="max-w-2xl text-xl">
             {pageCopy?.intro || "Encontre passeios para conhecer Fortaleza e região, além de transfers para viajar com conforto."}
-          </p>
+          </p>}
           <nav aria-label="Categorias" className="mt-8 flex flex-wrap gap-3">
-            {toursEnabled && (
+            {showTours && (
               <a href="#passeios" className="rounded-lg bg-white px-5 py-3 font-semibold text-primary-700 transition hover:bg-gray-100">
                 Ver passeios
               </a>
             )}
-            {transfersEnabled && (
+            {showTransfers && (
               <a href="#transfers" className="rounded-lg border border-white px-5 py-3 font-semibold text-white transition hover:bg-white/10">
                 Ver transfers
               </a>
@@ -101,18 +103,18 @@ export default async function PacotesPage() {
           </p>
         )}
 
-        {!toursEnabled && !transfersEnabled ? (
+        {!showTours && !showTransfers ? (
           <p className="rounded-lg bg-white p-8 text-center text-gray-700">
             {pageCopy?.unavailable || "Os passeios e transfers estão temporariamente indisponíveis."}
           </p>
         ) : (
           <>
-            {toursEnabled && (
+            {showTours && (
               <section id="passeios" aria-labelledby="passeios-heading">
                 <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <EditableHeading level={getHeadingLevel(pageCopy, "toursTitle", "h2")} id="passeios-heading" className="font-display text-3xl text-white">{pageCopy?.toursTitle || "Passeios"}</EditableHeading>
-                    <p className="mt-2 text-white/80">{pageCopy?.toursIntro || "Experiências para descobrir Fortaleza e os destinos do Ceará."}</p>
+                    {isCopyFieldEnabled(pageCopy, "toursTitle") && <EditableHeading level={getHeadingLevel(pageCopy, "toursTitle", "h2")} id="passeios-heading" className="font-display text-3xl text-white">{pageCopy?.toursTitle || "Passeios"}</EditableHeading>}
+                    {isCopyFieldEnabled(pageCopy, "toursIntro") && <p className="mt-2 text-white/80">{pageCopy?.toursIntro || "Experiências para descobrir Fortaleza e os destinos do Ceará."}</p>}
                   </div>
                   <Link href="/passeios" className="font-semibold text-cyan-200 underline underline-offset-4 hover:text-white">
                     {pageCopy?.seeTours || "Ver todos os passeios"}
@@ -139,10 +141,10 @@ export default async function PacotesPage() {
                           )}
                         </Link>
                         <div className="flex flex-1 flex-col p-6">
-                          <EditableHeading level={getHeadingLevel(pageCopy, "cardTitle", "h3")} className="mb-2 text-xl font-bold text-gray-900">
+                          {isCopyFieldEnabled(pageCopy, "cardTitle") && <EditableHeading level={getHeadingLevel(pageCopy, "cardTitle", "h3")} className="mb-2 text-xl font-bold text-gray-900">
                             <Link href={`/pacote/${tour.slug || tour.id}`} className="hover:text-primary-600" aria-label={`Ver passeio: ${tour.name}`}>{tour.name}</Link>
-                          </EditableHeading>
-                          <p className="mb-4 line-clamp-2 flex-1 text-gray-600">{tour.description}</p>
+                          </EditableHeading>}
+                          {isCopyFieldEnabled(pageCopy, "cardDescription") && <p className="mb-4 line-clamp-2 flex-1 text-gray-600">{tour.description}</p>}
                           <div className="mb-5 flex items-center gap-2 text-sm text-gray-500">
                             <Clock size={16} aria-hidden="true" />
                             <span>{tour.duration || pageCopy?.durationFallback || 'Consulte'}</span>
@@ -163,12 +165,12 @@ export default async function PacotesPage() {
               </section>
             )}
 
-            {transfersEnabled && (
+            {showTransfers && (
               <section id="transfers" aria-labelledby="transfers-heading">
                 <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <EditableHeading level={getHeadingLevel(pageCopy, "transfersTitle", "h2")} id="transfers-heading" className="font-display text-3xl text-white">{pageCopy?.transfersTitle || "Transfers"}</EditableHeading>
-                    <p className="mt-2 text-white/80">{pageCopy?.transfersIntro || "Transporte confortável para seus deslocamentos em Fortaleza e região."}</p>
+                    {isCopyFieldEnabled(pageCopy, "transfersTitle") && <EditableHeading level={getHeadingLevel(pageCopy, "transfersTitle", "h2")} id="transfers-heading" className="font-display text-3xl text-white">{pageCopy?.transfersTitle || "Transfers"}</EditableHeading>}
+                    {isCopyFieldEnabled(pageCopy, "transfersIntro") && <p className="mt-2 text-white/80">{pageCopy?.transfersIntro || "Transporte confortável para seus deslocamentos em Fortaleza e região."}</p>}
                   </div>
                   <Link href="/transfer" className="font-semibold text-cyan-200 underline underline-offset-4 hover:text-white">
                     {pageCopy?.seeTransfers || "Ver todos os transfers"}
@@ -195,10 +197,10 @@ export default async function PacotesPage() {
                           )}
                         </Link>
                         <div className="flex flex-1 flex-col p-6">
-                          <EditableHeading level={getHeadingLevel(pageCopy, "cardTitle", "h3")} className="mb-2 text-xl font-bold text-gray-900">
+                          {isCopyFieldEnabled(pageCopy, "cardTitle") && <EditableHeading level={getHeadingLevel(pageCopy, "cardTitle", "h3")} className="mb-2 text-xl font-bold text-gray-900">
                             <Link href={`/pacote/${transfer.slug || transfer.id}`} className="hover:text-primary-600" aria-label={`Ver transfer: ${transfer.name}`}>{transfer.name}</Link>
-                          </EditableHeading>
-                          <p className="mb-4 line-clamp-2 flex-1 text-gray-600">{transfer.description}</p>
+                          </EditableHeading>}
+                          {isCopyFieldEnabled(pageCopy, "cardDescription") && <p className="mb-4 line-clamp-2 flex-1 text-gray-600">{transfer.description}</p>}
                           <div className="mb-5 flex items-center gap-2 text-sm text-gray-500">
                             <Car size={16} aria-hidden="true" />
                             <span>{transfer.vehicleType || pageCopy?.vehicleFallback || 'Consulte'}</span>

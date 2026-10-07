@@ -112,6 +112,11 @@ const contactHeadingDefaults: Partial<Record<keyof ContactPageCopy, string>> = {
   formTitle: "h2",
 };
 
+const contactVisibilityFields = new Set<keyof ContactPageCopy>([
+  "title", "introduction", "detailsTitle", "phoneLabel", "whatsappLabel", "emailLabel",
+  "addressLabel", "hoursTitle", "formTitle", "successInstructions", "successPopupHint",
+]);
+
 const pageCopyGroups = [
   {
     key: "home",
@@ -348,16 +353,129 @@ function HeadingLevelControl({
   );
 }
 
+function VisibilityControl({
+  label,
+  enabled,
+  onChange,
+}: {
+  label: string;
+  enabled?: string | boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <label className="flex items-center gap-2 text-xs font-medium text-gray-600">
+      <input
+        type="checkbox"
+        checked={enabled !== false && enabled !== "false"}
+        onChange={(event) => onChange(event.target.checked)}
+        className="h-4 w-4 rounded border-gray-300 text-primary-600"
+      />
+      {label}
+    </label>
+  );
+}
+
+function isVisibilityEditableField(field: string, multiline: boolean): boolean {
+  if (field === "seoTitle" || field === "seoDescription") return false;
+  return field === "title" || field === "disabledTitle" || field === "heroTitle" ||
+    field.endsWith("Title") ||
+    (multiline && /(intro|subtitle|description|body|first|second|text|message)$/i.test(field));
+}
+
 const cardHeadingControls: Record<string, Array<{ key: string; label: string; fallback: string }>> = {
   home: [
     { key: "tourCardTitleHeadingLevel", label: "Título dos cards de passeios", fallback: "h4" },
     { key: "transferCardTitleHeadingLevel", label: "Título dos cards de transfers", fallback: "h3" },
+    { key: "blogCardTitleHeadingLevel", label: "Título dos cards de artigos", fallback: "h3" },
   ],
-  tours: [{ key: "cardTitleHeadingLevel", label: "Título dos cards de passeios", fallback: "h2" }],
-  transfers: [{ key: "cardTitleHeadingLevel", label: "Título dos cards de transfers", fallback: "h2" }],
-  packages: [{ key: "cardTitleHeadingLevel", label: "Título dos cards de passeios e transfers", fallback: "h3" }],
-  tourDetails: [{ key: "cardTitleHeadingLevel", label: "Título dos cards recomendados", fallback: "h3" }],
-  transferDetails: [{ key: "cardTitleHeadingLevel", label: "Título dos cards recomendados", fallback: "h3" }],
+  tours: [
+    { key: "cardTitleHeadingLevel", label: "Título dos cards de passeios", fallback: "h2" },
+  ],
+  transfers: [
+    { key: "cardTitleHeadingLevel", label: "Título dos cards de transfers", fallback: "h2" },
+  ],
+  blog: [
+    { key: "blogCardTitleHeadingLevel", label: "Título dos cards de artigos", fallback: "h2" },
+  ],
+  packages: [
+    { key: "cardTitleHeadingLevel", label: "Título dos cards de passeios e transfers", fallback: "h3" },
+  ],
+  tourDetails: [
+    { key: "cardTitleHeadingLevel", label: "Título dos cards recomendados", fallback: "h3" },
+  ],
+  transferDetails: [
+    { key: "cardTitleHeadingLevel", label: "Título dos cards recomendados", fallback: "h3" },
+  ],
+};
+
+const cardVisibilityControls: Record<string, Array<{ key: string; label: string }>> = {
+  home: [
+    { key: "tourCardTitleEnabled", label: "Títulos dos cards de passeios" },
+    { key: "tourCardDescriptionEnabled", label: "Descrições dos cards de passeios" },
+    { key: "transferCardTitleEnabled", label: "Títulos dos cards de transfers" },
+    { key: "transferCardDescriptionEnabled", label: "Descrições dos cards de transfers" },
+    { key: "blogCardTitleEnabled", label: "Títulos dos cards de artigos" },
+    { key: "blogCardDescriptionEnabled", label: "Descrições dos cards de artigos" },
+  ],
+  tours: [
+    { key: "cardTitleEnabled", label: "Títulos dos cards" },
+    { key: "cardDescriptionEnabled", label: "Descrições dos cards" },
+  ],
+  transfers: [
+    { key: "cardTitleEnabled", label: "Títulos dos cards" },
+    { key: "cardDescriptionEnabled", label: "Descrições dos cards" },
+  ],
+  blog: [
+    { key: "blogCardTitleEnabled", label: "Títulos dos cards de artigos" },
+    { key: "blogCardDescriptionEnabled", label: "Descrições dos cards de artigos" },
+  ],
+  packages: [
+    { key: "cardTitleEnabled", label: "Títulos dos cards" },
+    { key: "cardDescriptionEnabled", label: "Descrições dos cards" },
+  ],
+  tourDetails: [{ key: "cardTitleEnabled", label: "Títulos dos cards recomendados" }],
+  transferDetails: [{ key: "cardTitleEnabled", label: "Títulos dos cards recomendados" }],
+};
+
+const sectionVisibilityControls: Record<string, Array<{ key: string; label: string }>> = {
+  home: [
+    { key: "heroSectionEnabled", label: "Banner principal" },
+    { key: "toursSectionEnabled", label: "Seção principal de passeios" },
+    { key: "moreToursSectionEnabled", label: "Seção de mais passeios" },
+    { key: "transfersSectionEnabled", label: "Seção de transfers" },
+    { key: "homeRelatedSectionEnabled", label: "Transfers recomendados" },
+    { key: "blogSectionEnabled", label: "Seção do blog" },
+    { key: "testimonialsSectionEnabled", label: "Seção de depoimentos" },
+    { key: "faqSectionEnabled", label: "Seção de perguntas frequentes" },
+  ],
+  packages: [
+    { key: "toursSectionEnabled", label: "Seção de passeios" },
+    { key: "transfersSectionEnabled", label: "Seção de transfers" },
+  ],
+  tours: [{ key: "listingSectionEnabled", label: "Lista de passeios" }],
+  transfers: [{ key: "listingSectionEnabled", label: "Lista de transfers" }],
+  blog: [{ key: "listingSectionEnabled", label: "Lista de artigos" }],
+  privacy: [
+    { key: "section1SectionEnabled", label: "Seção 1 da política" },
+    { key: "section2SectionEnabled", label: "Seção 2 da política" },
+    { key: "section3SectionEnabled", label: "Seção 3 da política" },
+    { key: "section4SectionEnabled", label: "Seção 4 da política" },
+    { key: "section5SectionEnabled", label: "Seção 5 da política" },
+  ],
+  tourDetails: [
+    { key: "aboutSectionEnabled", label: "Descrição do passeio" },
+    { key: "includesSectionEnabled", label: "Itens incluídos" },
+    { key: "excludesSectionEnabled", label: "Itens não incluídos" },
+    { key: "faqSectionEnabled", label: "Perguntas frequentes" },
+    { key: "relatedSectionEnabled", label: "Passeios recomendados" },
+  ],
+  transferDetails: [
+    { key: "aboutSectionEnabled", label: "Descrição do transfer" },
+    { key: "includesSectionEnabled", label: "Itens incluídos" },
+    { key: "excludesSectionEnabled", label: "Itens não incluídos" },
+    { key: "faqSectionEnabled", label: "Perguntas frequentes" },
+    { key: "relatedSectionEnabled", label: "Transfers recomendados" },
+  ],
 };
 
 interface SiteSeo {
@@ -1128,6 +1246,23 @@ export default function SettingsAdmin() {
                   })}
                 />
               )}
+              {contactVisibilityFields.has(key) && (
+                <VisibilityControl
+                  label={`Exibir ${key === "introduction" || key === "successInstructions" || key === "successPopupHint" ? "texto" : "título"}`}
+                  enabled={settings?.pageCopy?.contact?.[`${key}Enabled`]}
+                  onChange={(enabled) => setSettings({
+                    ...settings,
+                    pageCopy: {
+                      ...settings.pageCopy,
+                      contact: {
+                        ...defaultContactCopy,
+                        ...settings.pageCopy?.contact,
+                        [`${key}Enabled`]: String(enabled),
+                      },
+                    },
+                  })}
+                />
+              )}
               {contactHeadingDefaults[key] && (
                 <label className="flex items-center gap-2 text-xs font-medium text-gray-600">
                   <span>Nível do título:</span>
@@ -1149,6 +1284,33 @@ export default function SettingsAdmin() {
                     {["h1", "h2", "h3", "h4", "h5", "h6"].map((level) => (
                       <option key={level} value={level}>{level.toUpperCase()}</option>
                     ))}
+                    <fieldset className="space-y-3 rounded-md border p-3 sm:col-span-2">
+                      <legend className="px-1 text-sm font-semibold text-gray-700">Exibição das áreas de contato</legend>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {[
+                          ["detailsSectionEnabled", "Informações de contato"],
+                          ["hoursSectionEnabled", "Horários de atendimento"],
+                          ["formSectionEnabled", "Formulário"],
+                        ].map(([key, label]) => (
+                          <VisibilityControl
+                            key={key}
+                            label={`Exibir ${label.toLowerCase()}`}
+                            enabled={settings?.pageCopy?.contact?.[key]}
+                            onChange={(enabled) => setSettings({
+                              ...settings,
+                              pageCopy: {
+                                ...settings.pageCopy,
+                                contact: {
+                                  ...defaultContactCopy,
+                                  ...settings.pageCopy?.contact,
+                                  [key]: String(enabled),
+                                },
+                              },
+                            })}
+                          />
+                        ))}
+                      </div>
+                    </fieldset>
                   </select>
                 </label>
               )}
@@ -1233,6 +1395,7 @@ export default function SettingsAdmin() {
                   {group.fields.map(([fieldKey, label, multiline]) => {
                     const isHeading = fieldKey !== "seoTitle" &&
                       (fieldKey === "title" || fieldKey === "disabledTitle" || fieldKey.endsWith("Title"));
+                    const isVisibilityEditable = isVisibilityEditableField(fieldKey, multiline);
                     const defaultLevel = getDefaultHeadingLevel(group.key, fieldKey);
                     const value = currentCopy[fieldKey] ?? defaults[fieldKey];
                     const updateCopy = (key: string, nextValue: string) =>
@@ -1279,6 +1442,13 @@ export default function SettingsAdmin() {
                             </select>
                           </label>
                         )}
+                        {isVisibilityEditable && (
+                          <VisibilityControl
+                            label={`Exibir ${isHeading ? "título" : "texto"}`}
+                            enabled={currentCopy[`${fieldKey}Enabled`]}
+                            onChange={(enabled) => updateCopy(`${fieldKey}Enabled`, String(enabled))}
+                          />
+                        )}
                       </div>
                     );
                   })}
@@ -1303,30 +1473,89 @@ export default function SettingsAdmin() {
                       ))}
                     </div>
                   )}
+                  {cardVisibilityControls[group.key] && (
+                    <fieldset className="space-y-3 rounded-md border p-3 md:col-span-2">
+                      <legend className="px-1 text-sm font-semibold text-gray-700">Exibição dos títulos e descrições dos cards</legend>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {cardVisibilityControls[group.key].map((control) => (
+                          <VisibilityControl
+                            key={control.key}
+                            label={`Exibir ${control.label.toLowerCase()}`}
+                            enabled={currentCopy[control.key]}
+                            onChange={(enabled) =>
+                              setSettings({
+                                ...settings,
+                                pageCopy: {
+                                  ...settings?.pageCopy,
+                                  [group.key]: { ...currentCopy, [control.key]: String(enabled) },
+                                },
+                              })
+                            }
+                          />
+                        ))}
+                      </div>
+                    </fieldset>
+                  )}
+                  {sectionVisibilityControls[group.key] && (
+                    <fieldset className="space-y-3 rounded-md border p-3 md:col-span-2">
+                      <legend className="px-1 text-sm font-semibold text-gray-700">Exibição de seções e listas</legend>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {sectionVisibilityControls[group.key].map((control) => (
+                          <VisibilityControl
+                            key={control.key}
+                            label={`Exibir ${control.label.toLowerCase()}`}
+                            enabled={currentCopy[control.key]}
+                            onChange={(enabled) =>
+                              setSettings({
+                                ...settings,
+                                pageCopy: {
+                                  ...settings?.pageCopy,
+                                  [group.key]: { ...currentCopy, [control.key]: String(enabled) },
+                                },
+                              })
+                            }
+                          />
+                        ))}
+                      </div>
+                    </fieldset>
+                  )}
                   {(group.key === "tourDetails" || group.key === "transferDetails") && (
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                      <span>Nível do título do {group.key === "tourDetails" ? "passeio" : "transfer"}:</span>
-                      <select
-                        value={currentCopy.productNameHeadingLevel || "h1"}
-                        onChange={(event) =>
+                    <div className="grid gap-3 rounded-md bg-gray-50 p-3 md:col-span-2 sm:grid-cols-2">
+                      <HeadingLevelControl
+                        label={`Nível do título do ${group.key === "tourDetails" ? "passeio" : "transfer"}`}
+                        fallback="h1"
+                        value={currentCopy.productNameHeadingLevel}
+                        onChange={(value) =>
                           setSettings({
                             ...settings,
                             pageCopy: {
                               ...settings?.pageCopy,
-                              [group.key]: {
-                                ...currentCopy,
-                                productNameHeadingLevel: event.target.value,
-                              },
+                              [group.key]: { ...currentCopy, productNameHeadingLevel: value },
                             },
                           })
                         }
-                        className="rounded-md border border-input bg-background px-2 py-1 text-sm"
-                      >
-                        {["h1", "h2", "h3", "h4", "h5", "h6"].map((level) => (
-                          <option key={level} value={level}>{level.toUpperCase()}</option>
-                        ))}
-                      </select>
-                    </label>
+                      />
+                      {[
+                        ["productNameEnabled", "título do produto"],
+                        ["productDescriptionEnabled", "descrição do produto"],
+                        ["productLongDescriptionEnabled", "descrição completa do produto"],
+                      ].map(([key, label]) => (
+                        <VisibilityControl
+                          key={key}
+                          label={`Exibir ${label}`}
+                          enabled={currentCopy[key]}
+                          onChange={(enabled) =>
+                            setSettings({
+                              ...settings,
+                              pageCopy: {
+                                ...settings?.pageCopy,
+                                [group.key]: { ...currentCopy, [key]: String(enabled) },
+                              },
+                            })
+                          }
+                        />
+                      ))}
+                    </div>
                   )}
                 </div>
               </details>
@@ -1364,6 +1593,14 @@ export default function SettingsAdmin() {
                 aboutSection: { ...settings?.aboutSection, titleHeadingLevel: value },
               })}
             />
+            <VisibilityControl
+              label="Exibir título principal"
+              enabled={settings?.aboutSection?.titleEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings?.aboutSection, titleEnabled: String(enabled) },
+              })}
+            />
           </div>
           <div>
             <label className="text-sm font-medium">Texto de apresentação</label>
@@ -1376,6 +1613,14 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings.aboutSection, pageIntro: e.target.value },
                 })
               }
+            />
+            <VisibilityControl
+              label="Exibir texto de apresentação"
+              enabled={settings?.aboutSection?.pageIntroEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, pageIntroEnabled: String(enabled) },
+              })}
             />
           </div>
           <div>
@@ -1398,6 +1643,22 @@ export default function SettingsAdmin() {
                 aboutSection: { ...settings?.aboutSection, historyTitleHeadingLevel: value },
               })}
             />
+            <VisibilityControl
+              label="Exibir seção de história"
+              enabled={settings?.aboutSection?.historySectionEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings?.aboutSection, historySectionEnabled: String(enabled) },
+              })}
+            />
+            <VisibilityControl
+              label="Exibir título da história"
+              enabled={settings?.aboutSection?.historyTitleEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, historyTitleEnabled: String(enabled) },
+              })}
+            />
           </div>
           <div>
             <label className="text-sm font-medium">História da empresa</label>
@@ -1411,6 +1672,14 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings?.aboutSection, description: e.target.value },
                 })
               }
+            />
+            <VisibilityControl
+              label="Exibir descrição da história"
+              enabled={settings?.aboutSection?.descriptionEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings?.aboutSection, descriptionEnabled: String(enabled) },
+              })}
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -1492,6 +1761,14 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings.aboutSection, missionTitleHeadingLevel: value },
                 })}
               />
+              <VisibilityControl
+                label="Exibir seção da missão"
+                enabled={settings?.aboutSection?.missionSectionEnabled}
+                onChange={(enabled) => setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, missionSectionEnabled: String(enabled) },
+                })}
+              />
               <label className="block text-sm font-medium">Texto da missão</label>
               <textarea
                 className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -1499,6 +1776,14 @@ export default function SettingsAdmin() {
                 onChange={(e) => setSettings({
                   ...settings,
                   aboutSection: { ...settings.aboutSection, missionText: e.target.value },
+                })}
+              />
+              <VisibilityControl
+                label="Exibir texto da missão"
+                enabled={settings?.aboutSection?.missionTextEnabled}
+                onChange={(enabled) => setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, missionTextEnabled: String(enabled) },
                 })}
               />
             </div>
@@ -1520,6 +1805,14 @@ export default function SettingsAdmin() {
                   aboutSection: { ...settings.aboutSection, visionTitleHeadingLevel: value },
                 })}
               />
+              <VisibilityControl
+                label="Exibir seção da visão"
+                enabled={settings?.aboutSection?.visionSectionEnabled}
+                onChange={(enabled) => setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, visionSectionEnabled: String(enabled) },
+                })}
+              />
               <label className="block text-sm font-medium">Texto da visão</label>
               <textarea
                 className="w-full min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -1527,6 +1820,14 @@ export default function SettingsAdmin() {
                 onChange={(e) => setSettings({
                   ...settings,
                   aboutSection: { ...settings.aboutSection, visionText: e.target.value },
+                })}
+              />
+              <VisibilityControl
+                label="Exibir texto da visão"
+                enabled={settings?.aboutSection?.visionTextEnabled}
+                onChange={(enabled) => setSettings({
+                  ...settings,
+                  aboutSection: { ...settings.aboutSection, visionTextEnabled: String(enabled) },
                 })}
               />
             </div>
@@ -1547,6 +1848,22 @@ export default function SettingsAdmin() {
               onChange={(value) => setSettings({
                 ...settings,
                 aboutSection: { ...settings.aboutSection, valuesTitleHeadingLevel: value },
+              })}
+            />
+            <VisibilityControl
+              label="Exibir título dos valores"
+              enabled={settings?.aboutSection?.valuesTitleEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, valuesTitleEnabled: String(enabled) },
+              })}
+            />
+            <VisibilityControl
+              label="Exibir seção de valores"
+              enabled={settings?.aboutSection?.valuesSectionEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, valuesSectionEnabled: String(enabled) },
               })}
             />
             <label className="text-sm font-medium">Valores (um por linha)</label>
@@ -1580,6 +1897,22 @@ export default function SettingsAdmin() {
                 aboutSection: { ...settings.aboutSection, statsTitleHeadingLevel: value },
               })}
             />
+            <VisibilityControl
+              label="Exibir título dos números"
+              enabled={settings?.aboutSection?.statsTitleEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, statsTitleEnabled: String(enabled) },
+              })}
+            />
+            <VisibilityControl
+              label="Exibir seção de números"
+              enabled={settings?.aboutSection?.statsSectionEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, statsSectionEnabled: String(enabled) },
+              })}
+            />
           </div>
           <div>
             <label className="text-sm font-medium">Título da seção de diferenciais</label>
@@ -1599,8 +1932,40 @@ export default function SettingsAdmin() {
                 aboutSection: { ...settings.aboutSection, whyChooseTitleHeadingLevel: value },
               })}
             />
+            <VisibilityControl
+              label="Exibir título dos diferenciais"
+              enabled={settings?.aboutSection?.whyChooseTitleEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, whyChooseTitleEnabled: String(enabled) },
+              })}
+            />
+            <VisibilityControl
+              label="Exibir seção de diferenciais"
+              enabled={settings?.aboutSection?.benefitsSectionEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, benefitsSectionEnabled: String(enabled) },
+              })}
+            />
           </div>
           <div className="grid gap-4 md:grid-cols-2">
+            <VisibilityControl
+              label="Exibir títulos dos diferenciais"
+              enabled={settings?.aboutSection?.benefitTitleEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, benefitTitleEnabled: String(enabled) },
+              })}
+            />
+            <VisibilityControl
+              label="Exibir descrições dos diferenciais"
+              enabled={settings?.aboutSection?.benefitDescriptionEnabled}
+              onChange={(enabled) => setSettings({
+                ...settings,
+                aboutSection: { ...settings.aboutSection, benefitDescriptionEnabled: String(enabled) },
+              })}
+            />
             {(settings?.aboutSection?.benefits || defaultAboutSection.benefits).map((benefit: any, index: number) => (
               <div key={index} className="space-y-2 rounded-md border p-3">
                 <p className="text-sm font-medium">Diferencial {index + 1}</p>

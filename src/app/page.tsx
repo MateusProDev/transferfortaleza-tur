@@ -1,6 +1,7 @@
 import dynamicImport from "next/dynamic";
 import { Metadata } from "next";
 import Header from "@/components/public/Header";
+import { isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import Hero from "@/components/public/Hero";
 import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
 import {
@@ -169,9 +170,9 @@ export default async function Home() {
       
       <Hero banners={banners} copy={homeCopy} />
 
-      {toursEnabled && <Tours tours={tours} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
+      {toursEnabled && isCopyFieldEnabled(homeCopy, "toursSection") && <Tours tours={tours} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
       
-      {transfersEnabled && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
+      {transfersEnabled && isCopyFieldEnabled(homeCopy, "transfersSection") && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
 
       <HomeConfiguredSections
         services={homeSections.services}
@@ -181,9 +182,9 @@ export default async function Home() {
         settings={settings}
       />
 
-      <Blog posts={blogPosts} copy={homeCopy} />
+      {isCopyFieldEnabled(homeCopy, "blogSection") && <Blog posts={blogPosts} copy={homeCopy} />}
 
-      <Testimonials testimonials={testimonials} copy={homeCopy} />
+      {isCopyFieldEnabled(homeCopy, "testimonialsSection") && <Testimonials testimonials={testimonials} copy={homeCopy} />}
 
       <GoogleReviews content={googleReviews} />
       
@@ -193,6 +194,9 @@ export default async function Home() {
         subtitle={faqContent.subtitle || homeCopy?.faqIntro || undefined}
         noItemsText={settings?.pageCopy?.faq?.noItems}
         titleLevel={settings?.pageCopy?.faq?.titleHeadingLevel || homeCopy?.faqTitleHeadingLevel || "h2"}
+        titleEnabled={isCopyFieldEnabled(settings?.pageCopy?.faq, "title") && isCopyFieldEnabled(homeCopy, "faqTitle")}
+        subtitleEnabled={isCopyFieldEnabled(settings?.pageCopy?.faq, "intro") && isCopyFieldEnabled(homeCopy, "faqIntro")}
+        sectionEnabled={isCopyFieldEnabled(homeCopy, "faqSection") && isCopyFieldEnabled(settings?.pageCopy?.faq, "section")}
       />
       
       <Footer />

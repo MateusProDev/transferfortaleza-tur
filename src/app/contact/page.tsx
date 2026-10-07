@@ -17,7 +17,7 @@ import { fetchSettingsCached } from "@/lib/settings-cache";
 import { defaultContactCopy } from "@/lib/site-copy";
 import { normalizeBrazilianPhone } from "@/lib/phone";
 import type { ContactPageCopy } from "@/types";
-import EditableHeading from "@/components/public/EditableHeading";
+import EditableHeading, { isCopyFieldEnabled } from "@/components/public/EditableHeading";
 
 interface ContactSettings {
   contactInfo?: {
@@ -131,32 +131,32 @@ export default function ContactPage() {
 
       <div className="bg-primary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <EditableHeading level={copy.titleHeadingLevel} fallbackLevel="h1" className="text-4xl md:text-5xl font-bold mb-4">
+          {isCopyFieldEnabled(copy, "title") && <EditableHeading level={copy.titleHeadingLevel} fallbackLevel="h1" className="text-4xl md:text-5xl font-bold mb-4">
             {copy.title}
-          </EditableHeading>
-          <p className="text-xl max-w-2xl">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "introduction") && <p className="text-xl max-w-2xl">
             {copy.introduction}
-          </p>
+          </p>}
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
-            <EditableHeading level={copy.detailsTitleHeadingLevel} fallbackLevel="h2" className="text-2xl font-bold text-gray-900 mb-6">
+            {isCopyFieldEnabled(copy, "detailsSection") && isCopyFieldEnabled(copy, "detailsTitle") && <EditableHeading level={copy.detailsTitleHeadingLevel} fallbackLevel="h2" className="text-2xl font-bold text-gray-900 mb-6">
               {copy.detailsTitle}
-            </EditableHeading>
+            </EditableHeading>}
 
-            <div className="space-y-6">
+            {isCopyFieldEnabled(copy, "detailsSection") && <div className="space-y-6">
               {contactInfo.phone && (
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <Phone className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <EditableHeading level={copy.phoneLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
+                    {isCopyFieldEnabled(copy, "phoneLabel") && <EditableHeading level={copy.phoneLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
                       {copy.phoneLabel}
-                    </EditableHeading>
+                    </EditableHeading>}
                     <a className="text-gray-600 hover:text-primary-700" href={`tel:+${normalizeBrazilianPhone(contactInfo.phone)}`}>+{normalizeBrazilianPhone(contactInfo.phone)}</a>
                   </div>
                 </div>
@@ -168,9 +168,9 @@ export default function ContactPage() {
                     <MessageCircle className="text-green-600" size={24} />
                   </div>
                   <div>
-                    <EditableHeading level={copy.whatsappLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
+                    {isCopyFieldEnabled(copy, "whatsappLabel") && <EditableHeading level={copy.whatsappLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
                       {copy.whatsappLabel}
-                    </EditableHeading>
+                    </EditableHeading>}
                     <p className="text-gray-600">
                       {contactInfo.whatsapp || copy.whatsappFallback}
                     </p>
@@ -195,7 +195,7 @@ export default function ContactPage() {
                     <Mail className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <EditableHeading level={copy.emailLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">{copy.emailLabel}</EditableHeading>
+                    {isCopyFieldEnabled(copy, "emailLabel") && <EditableHeading level={copy.emailLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">{copy.emailLabel}</EditableHeading>}
                     <p className="text-gray-600">{contactInfo.email}</p>
                   </div>
                 </div>
@@ -207,19 +207,19 @@ export default function ContactPage() {
                     <MapPin className="text-primary-600" size={24} />
                   </div>
                   <div>
-                    <EditableHeading level={copy.addressLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
+                    {isCopyFieldEnabled(copy, "addressLabel") && <EditableHeading level={copy.addressLabelHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-1">
                       {copy.addressLabel}
-                    </EditableHeading>
+                    </EditableHeading>}
                     <p className="text-gray-600">{contactInfo.address}</p>
                   </div>
                 </div>
               )}
-            </div>
+            </div>}
 
-            <div className="mt-8 p-6 bg-gray-50 rounded-xl">
-              <EditableHeading level={copy.hoursTitleHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-2">
+            {isCopyFieldEnabled(copy, "hoursSection") && <div className="mt-8 p-6 bg-gray-50 rounded-xl">
+              {isCopyFieldEnabled(copy, "hoursTitle") && <EditableHeading level={copy.hoursTitleHeadingLevel} fallbackLevel="h3" className="font-semibold text-gray-900 mb-2">
                 {copy.hoursTitle}
-              </EditableHeading>
+              </EditableHeading>}
               <p className="text-gray-600">
                 {copy.weekdayHours}
                 <br />
@@ -227,15 +227,15 @@ export default function ContactPage() {
                 <br />
                 {copy.sundayHours}
               </p>
-            </div>
+            </div>}
           </div>
 
           <div>
-            <EditableHeading level={copy.formTitleHeadingLevel} fallbackLevel="h2" className="text-2xl font-bold text-gray-900 mb-6">
+            {isCopyFieldEnabled(copy, "formSection") && isCopyFieldEnabled(copy, "formTitle") && <EditableHeading level={copy.formTitleHeadingLevel} fallbackLevel="h2" className="text-2xl font-bold text-gray-900 mb-6">
               {copy.formTitle}
-            </EditableHeading>
+            </EditableHeading>}
 
-            {isSubmitted ? (
+            {isCopyFieldEnabled(copy, "formSection") && (isSubmitted ? (
               <div className="space-y-5">
                 <div className="flex items-center gap-3 text-green-700">
                   <span className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
@@ -357,7 +357,7 @@ export default function ContactPage() {
                   )}
                 </button>
               </form>
-            )}
+            ))}
           </div>
         </div>
       </div>

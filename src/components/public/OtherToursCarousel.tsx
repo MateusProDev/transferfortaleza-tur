@@ -8,7 +8,7 @@ import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface Tour {
   id: string;
@@ -122,7 +122,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
             </Link>
 
             <div className="p-6 flex flex-col flex-1">
-              <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h3')}>
+              {isCopyFieldEnabled(copy, "tourCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h3')}>
                 <Link
                   href={`/pacote/${tour.slug || tour.id}`}
                   className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
@@ -130,8 +130,8 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
                 >
                   {tour.name}
                 </Link>
-              </EditableHeading>
-              <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
+              </EditableHeading>}
+              {isCopyFieldEnabled(copy, "tourCardDescription") && <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>}
 
               <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                 <div className="flex items-center space-x-1">

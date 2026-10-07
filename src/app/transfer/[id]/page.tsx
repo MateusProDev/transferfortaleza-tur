@@ -16,7 +16,7 @@ import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
 import RecommendedTransfers from "@/components/public/RecommendedTransfers";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
-import EditableHeading, { getHeadingLevel } from "@/components/public/EditableHeading";
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 
 interface PageProps {
   params: { id: string };
@@ -162,9 +162,9 @@ export default async function TransferDetailPage({ params }: PageProps) {
                 )}
               </div>
 
-              <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "productName", "h1")} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-5 leading-tight">
+              {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productName") && <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "productName", "h1")} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-5 leading-tight">
                 {transfer.name.trim()}
-              </EditableHeading>
+              </EditableHeading>}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
                 <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -185,12 +185,12 @@ export default async function TransferDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="mb-7">
+              {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "aboutSection") && <div className="mb-7">
                 <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "aboutTitle", "h2")} className="text-xl font-bold text-gray-900 mb-3">{settings?.pageCopy?.transferDetails?.aboutTitle || "Sobre este transfer"}</EditableHeading>
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line">{transfer.description}</p>
-              </div>
+                {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productDescription") && <p className="text-gray-600 leading-relaxed whitespace-pre-line">{transfer.description}</p>}
+              </div>}
 
-              {transfer.longDescription && (
+              {transfer.longDescription && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productLongDescription") && (
                 <details className="group mb-7">
                   <summary className="cursor-pointer text-primary-600 font-semibold hover:text-primary-700 flex items-center gap-2">
                     {settings?.pageCopy?.transferDetails?.fullDescription || "Ver roteiro e detalhes do transfer"} {transfer.name}
@@ -221,10 +221,11 @@ export default async function TransferDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {(includesItems.length > 0 || excludesItems.length > 0) && (
+      {((includesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "includesSection")) ||
+        (excludesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "excludesSection"))) && (
         <section className="border-y border-gray-200 bg-gray-50 py-12">
           <div className="container mx-auto grid grid-cols-1 gap-10 px-4 md:grid-cols-2">
-            {includesItems.length > 0 && (
+            {includesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "includesSection") && (
               <div>
                 <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "includesTitle", "h2")} className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
                   <Check size={22} className="text-green-600" /> {settings?.pageCopy?.transferDetails?.includesTitle || "O que está incluído"}
@@ -239,7 +240,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
                 </ul>
               </div>
             )}
-            {excludesItems.length > 0 && (
+            {excludesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "excludesSection") && (
               <div>
                 <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "excludesTitle", "h2")} className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
                   <X size={22} className="text-red-600" /> {settings?.pageCopy?.transferDetails?.excludesTitle || "O que não está incluído"}
@@ -258,10 +259,10 @@ export default async function TransferDetailPage({ params }: PageProps) {
         </section>
       )}
 
-      {transferFaqs.length > 0 ? (
+      {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqSection") && (transferFaqs.length > 0 ? (
         <section className="bg-white py-12">
           <div className="container mx-auto px-4">
-            <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")} className="mb-8 text-center text-3xl font-bold text-gray-900">{settings?.pageCopy?.transferDetails?.faqTitle || "Perguntas sobre este transfer"}</EditableHeading>
+            {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqTitle") && <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")} className="mb-8 text-center text-3xl font-bold text-gray-900">{settings?.pageCopy?.transferDetails?.faqTitle || "Perguntas sobre este transfer"}</EditableHeading>}
             <div className="mx-auto max-w-3xl space-y-3">
               {transferFaqs.map((faq, index) => (
                 <details key={`${faq.question}-${index}`} className="group rounded-lg border border-gray-200">
@@ -282,10 +283,11 @@ export default async function TransferDetailPage({ params }: PageProps) {
           faqs={faqs}
           title={settings?.pageCopy?.transferDetails?.faqTitle}
           titleLevel={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")}
+          titleEnabled={isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqTitle")}
         />
-      )}
+      ))}
 
-      <RecommendedTransfers transfers={relatedTransfers} copy={settings?.pageCopy?.transferDetails} />
+      {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "relatedSection") && <RecommendedTransfers transfers={relatedTransfers} copy={settings?.pageCopy?.transferDetails} />}
       <Footer />
     </main>
   );

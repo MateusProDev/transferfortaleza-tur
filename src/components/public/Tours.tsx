@@ -11,7 +11,7 @@ import OtherToursCarousel from './OtherToursCarousel';
 import { ProductJsonLd } from '@/components/seo/JsonLd';
 import { BRAND_URL } from '@/lib/brand';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface Tour {
   id: string;
@@ -74,6 +74,8 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
     return () => clearInterval(timer);
   }, [displayTours.length, itemsPerPage, isPaused, totalGroups]);
 
+  if (!isCopyFieldEnabled(copy, "toursSection")) return null;
+
   const goToSlide = (index: number) => {
     setCurrentIndex(((index % totalGroups) + totalGroups) % totalGroups);
   };
@@ -97,25 +99,25 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
     <section id="tours" className="py-14 bg-[#0F3A4A]">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-left sm:text-center">
-          <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-cyan-200">
+          {isCopyFieldEnabled(copy, "destinationsBadge") && <p className="mb-3 inline-flex items-center gap-2 font-semibold uppercase tracking-wide text-cyan-200">
             <MapPin size={18} aria-hidden="true" />
             {copy?.destinationsBadge || "Destinos em Destaque"}
-          </p>
-          <EditableHeading level={getHeadingLevel(copy, 'toursSectionTitle', 'h2')} className="font-display text-3xl md:text-4xl text-white mb-4">
+          </p>}
+          {isCopyFieldEnabled(copy, "toursSectionTitle") && <EditableHeading level={getHeadingLevel(copy, 'toursSectionTitle', 'h2')} className="font-display text-3xl md:text-4xl text-white mb-4">
             {copy?.toursSectionTitle || "Transfers e Passeios mais procurados"}
-          </EditableHeading>
-          <p className="max-w-3xl text-white/80 sm:mx-auto">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "toursSectionIntro") && <p className="max-w-3xl text-white/80 sm:mx-auto">
             {copy?.toursSectionIntro || "Transfers e Passeios saindo de Fortaleza exclusivos e organizados por categoria para transformar sua viagem em uma experiência única."}
-          </p>
+          </p>}
         </div>
 
         <div className="mb-8 text-left sm:text-center">
-          <EditableHeading level={getHeadingLevel(copy, 'toursTitle', 'h3')} className="font-display mb-3 text-2xl text-white md:text-3xl">
+          {isCopyFieldEnabled(copy, "toursTitle") && <EditableHeading level={getHeadingLevel(copy, 'toursTitle', 'h3')} className="font-display mb-3 text-2xl text-white md:text-3xl">
             {copy?.toursTitle || "Nossos Passeios"}
-          </EditableHeading>
-          <p className="max-w-2xl text-white/80 sm:mx-auto">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "toursIntro") && <p className="max-w-2xl text-white/80 sm:mx-auto">
             {copy?.toursIntro || "Descubra experiências únicas e memoráveis com nossos passeios cuidadosamente selecionados"}
-          </p>
+          </p>}
         </div>
 
         <div className="relative">
@@ -188,7 +190,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                 </Link>
 
                 <div className="p-6 flex flex-col flex-1">
-                  <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h4')}>
+                  {isCopyFieldEnabled(copy, "tourCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h4')}>
                     <Link
                       href={`/pacote/${tour.slug || tour.id}`}
                       className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
@@ -196,8 +198,8 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                     >
                       {tour.name}
                     </Link>
-                  </EditableHeading>
-                  <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>
+                  </EditableHeading>}
+                  {isCopyFieldEnabled(copy, "tourCardDescription") && <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>}
 
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1">
@@ -264,15 +266,15 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
           </Link>
         </div>
 
-        {otherTours.length > 0 && (
+        {otherTours.length > 0 && isCopyFieldEnabled(copy, "moreToursSection") && (
           <div className="mt-16 border-t border-gray-200 pt-14">
             <div className="text-center mb-10">
-              <EditableHeading level={getHeadingLevel(copy, 'moreToursTitle', 'h2')} className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
+              {isCopyFieldEnabled(copy, "moreToursTitle") && <EditableHeading level={getHeadingLevel(copy, 'moreToursTitle', 'h2')} className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
                 {copy?.moreToursTitle || "Mais Passeios"}
-              </EditableHeading>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              </EditableHeading>}
+              {isCopyFieldEnabled(copy, "moreToursIntro") && <p className="text-gray-600 max-w-2xl mx-auto">
                 {copy?.moreToursIntro || "Explore outros roteiros para encontrar a experiência ideal para sua viagem"}
-              </p>
+              </p>}
             </div>
             <OtherToursCarousel tours={otherTours} whatsappNumber={whatsappNumber} copy={copy} />
           </div>

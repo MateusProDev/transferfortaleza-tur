@@ -32,9 +32,10 @@ interface TourFAQProps {
   faqs?: TourFAQItem[];
   title?: string;
   titleLevel?: string;
+  titleEnabled?: boolean;
 }
 
-export default function TourFAQ({ faqs, title = "Perguntas Frequentes", titleLevel = "h2" }: TourFAQProps) {
+export default function TourFAQ({ faqs, title = "Perguntas Frequentes", titleLevel = "h2", titleEnabled = true }: TourFAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqList = faqs?.length ? faqs : DEFAULT_TOUR_FAQS;
@@ -46,9 +47,9 @@ export default function TourFAQ({ faqs, title = "Perguntas Frequentes", titleLev
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
-        <EditableHeading level={titleLevel} fallbackLevel="h2" className="text-3xl font-bold text-gray-900 mb-8 text-center">
+        {titleEnabled && <EditableHeading level={titleLevel} fallbackLevel="h2" className="text-3xl font-bold text-gray-900 mb-8 text-center">
           {title}
-        </EditableHeading>
+        </EditableHeading>}
         
         <div className="max-w-3xl mx-auto space-y-4">
           {faqList.map((faq, index) => (

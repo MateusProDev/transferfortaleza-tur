@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface Banner {
   id: string;
@@ -46,12 +46,14 @@ export default function Hero({ banners, copy }: HeroProps) {
 
   const safeBanner = availableBanners[currentIndex] || null;
 
+  if (!isCopyFieldEnabled(copy, "heroSection")) return null;
+
   if (!safeBanner) {
     return (
       <section className="relative flex h-[600px] items-center justify-start bg-gradient-to-r from-primary-600 to-secondary-600 sm:justify-center">
         <div className="px-4 text-left text-white sm:text-center">
-          <EditableHeading level={getHeadingLevel(copy, 'heroTitle', 'h1')} className="font-display text-4xl md:text-6xl mb-4">{copy?.heroTitle || 'Passeios e Transfers em Fortaleza e Região'}</EditableHeading>
-          <p className="text-xl md:text-2xl mb-8">{copy?.heroSubtitle || 'Reserve experiências únicas com conforto, segurança e atendimento personalizado.'}</p>
+          {isCopyFieldEnabled(copy, "heroTitle") && <EditableHeading level={getHeadingLevel(copy, 'heroTitle', 'h1')} className="font-display text-4xl md:text-6xl mb-4">{copy?.heroTitle || 'Passeios e Transfers em Fortaleza e Região'}</EditableHeading>}
+          {isCopyFieldEnabled(copy, "heroSubtitle") && <p className="text-xl md:text-2xl mb-8">{copy?.heroSubtitle || 'Reserve experiências únicas com conforto, segurança e atendimento personalizado.'}</p>}
         </div>
       </section>
     );
@@ -82,12 +84,12 @@ export default function Hero({ banners, copy }: HeroProps) {
 
       <div className="relative flex h-full items-center justify-start px-4 text-white sm:justify-center sm:px-8 lg:px-16">
         <div className="max-w-4xl text-left sm:text-center">
-          <EditableHeading level={getHeadingLevel(copy, 'heroTitle', 'h1')} className="font-display text-4xl md:text-6xl mb-4">
+          {isCopyFieldEnabled(copy, "heroTitle") && <EditableHeading level={getHeadingLevel(copy, 'heroTitle', 'h1')} className="font-display text-4xl md:text-6xl mb-4">
             {heroTitle}
-          </EditableHeading>
-          <p className="text-xl md:text-2xl mb-8">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "heroSubtitle") && <p className="text-xl md:text-2xl mb-8">
             {currentBanner.subtitle || currentBanner.description || copy?.heroSubtitle || 'Reserve experiências únicas em Fortaleza e região.'}
-          </p>
+          </p>}
           {currentBanner.location && <p className="mb-4 text-sm text-white/80">{currentBanner.location}</p>}
           <div className="flex flex-wrap justify-start gap-3 sm:justify-center">
             {currentBanner.buttonText && currentBanner.buttonLink && (

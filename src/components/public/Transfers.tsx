@@ -9,7 +9,7 @@ import RecommendedTransfers from './RecommendedTransfers';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 import type { Transfer } from '@/types';
 import type { SitePageCopy } from '@/types';
-import EditableHeading, { getHeadingLevel } from './EditableHeading';
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface TransfersProps {
   transfers: Transfer[];
@@ -50,6 +50,8 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
     return () => clearInterval(timer);
   }, [displayTransfers.length, itemsPerPage, isPaused, totalGroups]);
 
+  if (!isCopyFieldEnabled(copy, "transfersSection")) return null;
+
   const goToSlide = (index: number) => {
     setCurrentIndex(((index % totalGroups) + totalGroups) % totalGroups);
   };
@@ -70,12 +72,12 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
     <section id="transfers" className="py-14 bg-[#0F3A4A]">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-left sm:text-center">
-          <EditableHeading level={getHeadingLevel(copy, 'transfersTitle', 'h2')} className="font-display text-3xl md:text-4xl text-white mb-4">
+          {isCopyFieldEnabled(copy, "transfersTitle") && <EditableHeading level={getHeadingLevel(copy, 'transfersTitle', 'h2')} className="font-display text-3xl md:text-4xl text-white mb-4">
             {copy?.transfersTitle || "Serviços de Transfer"}
-          </EditableHeading>
-          <p className="max-w-2xl text-white/80 sm:mx-auto">
+          </EditableHeading>}
+          {isCopyFieldEnabled(copy, "transfersIntro") && <p className="max-w-2xl text-white/80 sm:mx-auto">
             {copy?.transfersIntro || "Conforto e segurança em seus deslocamentos com nossa frota moderna"}
-          </p>
+          </p>}
         </div>
 
         <div className="relative">
@@ -131,15 +133,15 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
                   )}
                 </Link>
 
-                <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
+                {isCopyFieldEnabled(copy, "transferCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
                   <Link
                     href={`/pacote/${transfer.slug || transfer.id}`}
                     className="block text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
                   >
                     {transfer.name}
                   </Link>
-                </EditableHeading>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{transfer.description}</p>
+                </EditableHeading>}
+                {isCopyFieldEnabled(copy, "transferCardDescription") && <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{transfer.description}</p>}
 
                 <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                   <div className="flex items-center space-x-1">
@@ -205,13 +207,16 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
         </div>
       </div>
     </section>
-    {otherTransfers.length > 0 && (
+    {otherTransfers.length > 0 && isCopyFieldEnabled(copy, "homeRelatedSection") && (
       <RecommendedTransfers
         transfers={otherTransfers}
         copy={{
           relatedTitle: copy?.homeRelatedTitle || "Outros transfers recomendados",
           relatedTitleHeadingLevel: copy?.homeRelatedTitleHeadingLevel || "h2",
+          relatedTitleEnabled: copy?.homeRelatedTitleEnabled,
           relatedIntro: copy?.homeRelatedIntro || "Confira outras opções de transporte para sua viagem",
+          relatedIntroEnabled: copy?.homeRelatedIntroEnabled,
+          cardTitleEnabled: copy?.transferCardTitleEnabled,
           relatedSeeAll: copy?.homeRelatedSeeAll || "Ver todos",
           relatedCardButton: copy?.homeRelatedCardButton || "Ver transfer",
           vehicleFallback: copy?.transfersVehicleFallback || "Consulte",
