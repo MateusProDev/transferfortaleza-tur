@@ -5,6 +5,15 @@ import { getAdminFirestore, getAdminProjectId } from "@/lib/firebase-admin";
 
 type SettingsPayload = Record<string, unknown>;
 
+class SettingsSaveError extends Error {
+  constructor(
+    readonly operation: string,
+    readonly originalError: unknown,
+  ) {
+    super(`Settings save failed while ${operation}.`);
+  }
+}
+
 function getSettingsDatabase() {
   const db = getAdminFirestore();
   if (!db) return { error: "O acesso administrativo ao Firestore não está configurado." };
@@ -24,6 +33,8 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
   if ("error" in database) throw new Error(database.error);
 
   const { db } = database;
+  let operation = "consultar a coleção de configurações";
+  try {
   const settingsCollection = db.collection("settings");
   const settingsSnapshot = await settingsCollection.get();
   const siteSettings = settingsSnapshot.docs.find((document) => document.id !== "whatsapp");
@@ -42,6 +53,7 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
   if (typeof data.headerLogo === "string") headerPatch.logoUrl = data.headerLogo;
   if (typeof data.headerLogoAlt === "string") headerPatch.logoAlt = data.headerLogoAlt;
   if (Object.keys(headerPatch).length > 0) {
+    operation = "consultar o conteúdo do cabeçalho";
     const headerRef = db.collection("content").doc("header");
     const headerSnapshot = await headerRef.get();
     if (headerSnapshot.exists) {
@@ -84,6 +96,7 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
     });
   }
   const footerRef = db.collection("content").doc("footer");
+  operation = "consultar o conteúdo do rodapé";
   const footerSnapshot = await footerRef.get();
   if (data.contactInfo && typeof data.contactInfo === "object") {
     const contactInfo = data.contactInfo as SettingsPayload;
@@ -99,7 +112,14 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
   if (Array.isArray(data.socialLinks)) {
     footerPatch.social = Object.fromEntries(data.socialLinks.map((value) => {
       const link = value && typeof value === "object" ? value as SettingsPayload : {};
-      return [String(link.platform || ""), { link: link.url, icon: link.icon }];
+      const platform = String(link.platform || "");
+      return [
+        platform,
+        {
+          ...(typeof link.url === "string" ? { link: link.url } : {}),
+          ...(typeof link.icon === "string" ? { icon: link.icon } : {}),
+        },
+      ];
     }).filter(([platform]) => platform));
   }
   if (Object.keys(footerPatch).length > 0) {
@@ -123,7 +143,11 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
     }
   }
 
+  operation = "gravar as alterações no Firestore";
   await batch.commit();
+  } catch (error) {
+    throw new SettingsSaveError(operation, error);
+  }
 }
 
 function unavailableDatabaseResponse(database: ReturnType<typeof getSettingsDatabase>) {
@@ -133,20 +157,33 @@ function unavailableDatabaseResponse(database: ReturnType<typeof getSettingsData
 
 function settingsWriteError(error: unknown): NextResponse {
   console.error("Error updating settings:", error);
-  const code = error && typeof error === "object" && "code" in error
-    ? String(error.code)
+  const saveError = error instanceof SettingsSaveError ? error : null;
+  const originalError = saveError?.originalError ?? error;
+  const codeValue = originalError && typeof originalError === "object" && "code" in originalError
+    ? String(originalError.code)
     : "";
-  if (code === "7" || code === "permission-denied") {
+  const code = codeValue.replace(/^firestore\//, "");
+  const message = originalError instanceof Error ? originalError.message : String(originalError);
+  const diagnosticCode = code || "unknown";
+
+  if (code === "7" || code === "permission-denied" || /PERMISSION_DENIED|permission-denied/i.test(message)) {
     return NextResponse.json(
-      { error: "A conta de serviço do Firebase não tem permissão para gravar as configurações no Firestore. Verifique a função Cloud Datastore User no Google Cloud IAM." },
+      {
+        error: "A conta de serviço do Firebase Admin não tem permissão para gravar no Firestore. No Google Cloud IAM, conceda a função Cloud Datastore User à conta de serviço configurada no Vercel e tente novamente.",
+        code: diagnosticCode,
+        operation: saveError?.operation,
+      },
       { status: 503 },
     );
   }
-  if (error instanceof Error && error.message.includes("projeto Firebase diferente")) {
-    return NextResponse.json({ error: error.message }, { status: 503 });
+  if (originalError instanceof Error && originalError.message.includes("projeto Firebase diferente")) {
+    return NextResponse.json({ error: originalError.message }, { status: 503 });
   }
   return NextResponse.json(
-    { error: "Não foi possível salvar as configurações do site." },
+    {
+      error: `Não foi possível salvar as configurações do site${saveError ? ` durante a etapa: ${saveError.operation}` : ""}.`,
+      code: diagnosticCode,
+    },
     { status: 500 },
   );
 }

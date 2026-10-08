@@ -745,7 +745,10 @@ export default function SettingsAdmin() {
 
       const result = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error(result?.error || "Não foi possível salvar as configurações.");
+        const detail = typeof result?.code === "string" && result.code !== "unknown"
+          ? ` (código: ${result.code})`
+          : "";
+        throw new Error(`${result?.error || "Não foi possível salvar as configurações."}${detail}`);
       }
 
       clearCachedSettings();

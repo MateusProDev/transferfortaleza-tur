@@ -149,6 +149,10 @@ copy fields; the fallback fields are labeled and collapsed where appropriate.
 4. Configure Firebase Admin service-account credentials as described in
    [FIREBASE_SETUP.md](./FIREBASE_SETUP.md). Admin API writes are disabled when
    either the allowlist or server credentials are missing.
+5. In Google Cloud IAM for the same Firebase project, grant the Firebase Admin
+   service account the **Cloud Datastore User** role so admin routes can write
+   Firestore data. Firestore security rules do not grant IAM permissions to the
+   Admin SDK.
 
 Use the admin panel's **Conteúdo do site** page to edit existing documents in
 the Firestore `content` collection. Existing catalog, banner, blog, FAQ,
