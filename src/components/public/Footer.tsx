@@ -69,6 +69,7 @@ export default function Footer() {
     .map((link: { label: string; url: string }) => ({ label: link.label, href: link.url }));
   const hasConfiguredQuickLinks = Boolean(settings?.footerLinks?.length);
   const visibleQuickLinks = hasConfiguredQuickLinks ? configuredQuickLinks || [] : quickLinks;
+  const homeCopy = settings?.pageCopy?.home;
 
   return (
     <footer className="bg-gray-900 text-white" role="contentinfo">
@@ -102,7 +103,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Links Rápidos</h2>
+            <h2 className="text-lg font-semibold mb-4">{homeCopy?.footerQuickLinksTitle || "Links Rápidos"}</h2>
             <ul className="space-y-2">
               {visibleQuickLinks.map((link) => (
                 <li key={link.href}>
@@ -163,7 +164,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Contato</h2>
+            <h2 className="text-lg font-semibold mb-4">{homeCopy?.footerContactTitle || "Contato"}</h2>
             <ul className="space-y-3">
               {settings?.contactInfo?.phone && (
                 <li className="flex items-center space-x-3 text-gray-400 text-sm">
@@ -194,7 +195,7 @@ export default function Footer() {
               {!settings?.contactInfo?.address && (
                 <li className="flex items-center space-x-3 text-gray-400 text-sm">
                   <MapPin size={18} />
-                  <span>Atendimento em Fortaleza e região</span>
+                  <span>{homeCopy?.footerAddressFallback || "Atendimento em Fortaleza e região"}</span>
                 </li>
               )}
             </ul>
@@ -202,7 +203,7 @@ export default function Footer() {
 
           {/* Social Links */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Redes Sociais</h2>
+            <h2 className="text-lg font-semibold mb-4">{homeCopy?.footerSocialTitle || "Redes Sociais"}</h2>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
                 isWhatsAppUrl(social.href) ? (
@@ -257,7 +258,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8 pb-4 text-center text-gray-400 text-sm">
           <p>&copy; {currentYear} {settings?.companyName || "Transfer Fortaleza Tur"}. {settings?.footerCopyright || "Todos os direitos reservados."}</p>
           {(settings?.footerCnpj || "64.042.188/0001-13") && (
-            <p className="mt-1">CNPJ: {settings?.footerCnpj || "64.042.188/0001-13"}</p>
+            <p className="mt-1">{homeCopy?.footerCnpjLabel || "CNPJ:"} {settings?.footerCnpj || "64.042.188/0001-13"}</p>
           )}
           <a
             href={settings?.footerDeveloperUrl || "https://turvia.com.br"}
@@ -265,7 +266,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="inline-block mt-2 hover:text-white transition-colors"
           >
-            Desenvolvido por {settings?.footerDeveloperName || "TURVIA"}
+            {homeCopy?.footerDeveloperPrefix || "Desenvolvido por"} {settings?.footerDeveloperName || "TURVIA"}
           </a>
           <div className="mt-2 mx-auto w-[60%] max-w-[240px] sm:relative sm:h-20 sm:w-44">
             <Image

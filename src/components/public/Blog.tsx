@@ -67,7 +67,7 @@ export default function Blog({ posts, copy }: BlogProps) {
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">Sem imagem</span>
+                    <span className="text-gray-400">{copy?.blogImagePlaceholder || "Sem imagem"}</span>
                   </div>
                 )}
               </div>

@@ -157,11 +157,13 @@ async function getPageData() {
 }
 
 export default async function Home() {
-  const { banners, tours, transfers, testimonials, googleReviews, homeSections, blogPosts, faqs, faqContent, settings } = await getPageData();
+  const { banners, tours, transfers, testimonials, googleReviews, homeSections, blogPosts, faqs, settings } = await getPageData();
   
   const toursEnabled = settings?.sections?.toursEnabled ?? true;
   const transfersEnabled = settings?.sections?.transfersEnabled ?? true;
   const homeCopy = settings?.pageCopy?.home;
+  const testimonialsCopy = settings?.pageCopy?.testimonials;
+  const faqCopy = settings?.pageCopy?.faq;
 
   return (
     <main className="min-h-screen pt-20 sm:pt-24">
@@ -179,23 +181,24 @@ export default async function Home() {
         imageCarousel={homeSections.imageCarousel}
         transferBeberibe={homeSections.transferBeberibe}
         settings={settings}
+        copy={homeCopy}
       />
 
       {isCopyFieldEnabled(homeCopy, "blogSection") && <Blog posts={blogPosts} copy={homeCopy} />}
 
-      {isCopyFieldEnabled(homeCopy, "testimonialsSection") && <Testimonials testimonials={testimonials} copy={homeCopy} />}
+      {isCopyFieldEnabled(testimonialsCopy, "section") && <Testimonials testimonials={testimonials} copy={testimonialsCopy} />}
 
-      <GoogleReviews content={googleReviews} />
+      <GoogleReviews content={googleReviews} copy={homeCopy} />
       
       <FAQ
         faqs={faqs}
-        title={faqContent.title || homeCopy?.faqTitle || undefined}
-        subtitle={faqContent.subtitle || homeCopy?.faqIntro || undefined}
-        noItemsText={settings?.pageCopy?.faq?.noItems}
-        titleLevel={settings?.pageCopy?.faq?.titleHeadingLevel || homeCopy?.faqTitleHeadingLevel || "h2"}
-        titleEnabled={isCopyFieldEnabled(settings?.pageCopy?.faq, "title") && isCopyFieldEnabled(homeCopy, "faqTitle")}
-        subtitleEnabled={isCopyFieldEnabled(settings?.pageCopy?.faq, "intro") && isCopyFieldEnabled(homeCopy, "faqIntro")}
-        sectionEnabled={isCopyFieldEnabled(homeCopy, "faqSection") && isCopyFieldEnabled(settings?.pageCopy?.faq, "section")}
+        title={faqCopy?.title}
+        subtitle={faqCopy?.intro}
+        noItemsText={faqCopy?.noItems}
+        titleLevel={faqCopy?.titleHeadingLevel || "h2"}
+        titleEnabled={isCopyFieldEnabled(faqCopy, "title")}
+        subtitleEnabled={isCopyFieldEnabled(faqCopy, "intro")}
+        sectionEnabled={isCopyFieldEnabled(homeCopy, "faqSection")}
       />
       
       <Footer />

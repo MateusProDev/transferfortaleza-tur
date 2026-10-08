@@ -46,6 +46,17 @@ export default function FAQAdmin() {
         </Button>
       </div>
 
+      <Card>
+        <CardContent className="flex flex-col gap-2 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-muted-foreground">
+            Esta tela gerencia as perguntas e respostas. Para editar o título, a introdução ou a exibição do bloco de FAQ na Home, use Configurações do site.
+          </p>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/admin/settings#copy-faq">Editar textos do FAQ na Home</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4">
         {!faqs || faqs.length === 0 ? (
           <Card>

@@ -129,8 +129,11 @@ Additional home content is read from `content/homeSeo`, `content/header`,
 `content/footer`, `content/servicesSection`, `content/differentialsSection`,
 `content/imageCarouselSection`, `content/transferBeberibe`,
 `content/homeFAQ`, and `content/googleReviews`; WhatsApp configuration is read
-from `settings/whatsapp`. Testimonials and blog posts are read from
-`avaliacoes` and `blogPosts`.
+from `settings/whatsapp`. Manage page copy, identity, navigation, contact,
+header/footer fields, and SEO in the corresponding Settings sections; manage
+FAQ entries and catalog records in their dedicated admin sections. The generic
+site-content editor is limited to the home sections without dedicated editors.
+Testimonials and blog posts are read from `avaliacoes` and `blogPosts`.
 
 ### 7. Configure admin access
 

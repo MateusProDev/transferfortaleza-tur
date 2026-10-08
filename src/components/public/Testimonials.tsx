@@ -37,7 +37,7 @@ export default function Testimonials({ testimonials, copy }: TestimonialsProps) 
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  if (!isCopyFieldEnabled(copy, "testimonialsSection") || testimonials.length === 0) {
+  if (!isCopyFieldEnabled(copy, "section") || testimonials.length === 0) {
     return null;
   }
 
@@ -47,11 +47,11 @@ export default function Testimonials({ testimonials, copy }: TestimonialsProps) 
     <section id="avaliacoes" className="py-14 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          {isCopyFieldEnabled(copy, "testimonialsTitle") && <EditableHeading level={getHeadingLevel(copy, 'testimonialsTitle', 'h2')} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {copy?.testimonialsTitle || "O Que Nossos Clientes Dizem"}
+          {isCopyFieldEnabled(copy, "title") && <EditableHeading level={getHeadingLevel(copy, 'title', 'h2')} className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {copy?.title || "O Que Nossos Clientes Dizem"}
           </EditableHeading>}
-          {isCopyFieldEnabled(copy, "testimonialsIntro") && <p className="text-gray-600 max-w-2xl mx-auto">
-            {copy?.testimonialsIntro || "Histórias reais de experiências memoráveis"}
+          {isCopyFieldEnabled(copy, "intro") && <p className="text-gray-600 max-w-2xl mx-auto">
+            {copy?.intro || "Histórias reais de experiências memoráveis"}
           </p>}
         </div>
 
@@ -91,7 +91,7 @@ export default function Testimonials({ testimonials, copy }: TestimonialsProps) 
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-gray-400 text-sm">{copy?.testimonialsImagePlaceholder || "Sem foto"}</span>
+                    <span className="text-gray-400 text-sm">{copy?.imagePlaceholder || "Sem foto"}</span>
                   </div>
                 )}
               </div>

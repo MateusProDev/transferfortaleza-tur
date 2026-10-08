@@ -4,13 +4,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
-import type { GoogleReviewsContent as GoogleReviewsContentType } from "@/types";
+import type { GoogleReviewsContent as GoogleReviewsContentType, SitePageCopy } from "@/types";
 
 interface GoogleReviewsProps {
   content: GoogleReviewsContentType | null;
+  copy?: Partial<SitePageCopy>;
 }
 
-export default function GoogleReviews({ content }: GoogleReviewsProps) {
+export default function GoogleReviews({ content, copy }: GoogleReviewsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const reviews = content?.reviews ?? [];
 
@@ -110,7 +111,7 @@ export default function GoogleReviews({ content }: GoogleReviewsProps) {
               rel="noopener noreferrer"
               className="mt-6 inline-block font-semibold text-primary-800 hover:text-primary-950"
             >
-              Ver avaliações no Google
+              {copy?.googleReviewsLinkText || "Ver avaliações no Google"}
             </a>
           )}
         </div>

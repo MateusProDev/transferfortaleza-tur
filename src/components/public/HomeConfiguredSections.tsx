@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
 import { normalizeBrazilianPhone } from "@/lib/phone";
-import type { SiteSettings } from "@/types";
+import type { SitePageCopy, SiteSettings } from "@/types";
 
 type ContentRecord = Record<string, unknown>;
 
@@ -11,6 +11,7 @@ interface HomeConfiguredSectionsProps {
   imageCarousel: unknown;
   transferBeberibe: unknown;
   settings: SiteSettings | null;
+  copy?: Partial<SitePageCopy>;
 }
 
 function asRecord(value: unknown): ContentRecord {
@@ -48,9 +49,11 @@ function whatsappHref(number: string, message: string): string {
 function TransferBeberibeSection({
   value,
   whatsappNumber,
+  copy,
 }: {
   value: unknown;
   whatsappNumber: string;
+  copy?: Partial<SitePageCopy>;
 }) {
   const section = asRecord(value);
   if (Object.keys(section).length === 0 || !isActive(section)) return null;
@@ -58,7 +61,9 @@ function TransferBeberibeSection({
   const blocks = items(section.blocks ?? section.sections);
   const title = text(section.title, section.titulo, section.heading);
   const description = text(section.description, section.descricao, section.subtitle, section.subtitulo);
-  const buttonText = text(section.whatsappButtonText, section.botaoWhatsappTexto) || "Consultar pelo WhatsApp";
+  const buttonText = text(section.whatsappButtonText, section.botaoWhatsappTexto)
+    || copy?.transferBeberibeButtonFallback
+    || "Consultar pelo WhatsApp";
   const number = text(section.whatsappNumber, whatsappNumber);
   const tripadvisorLink = text(section.tripadvisorLink);
   const contentBlocks = blocks.length > 0
@@ -88,7 +93,11 @@ function TransferBeberibeSection({
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             {number && (
               <a
-                href={whatsappHref(number, "Olá! Gostaria de saber mais sobre o Transfer Beberibe.")}
+                href={whatsappHref(
+                  number,
+                  text(copy?.transferBeberibeWhatsappMessage)
+                    || "Olá! Gostaria de saber mais sobre o Transfer Beberibe.",
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-lg bg-green-700 px-6 py-3 font-semibold text-white hover:bg-green-800"
@@ -103,7 +112,7 @@ function TransferBeberibeSection({
                 rel="noopener noreferrer"
                 className="rounded-lg border border-gray-400 px-6 py-3 font-semibold text-gray-800 hover:bg-white"
               >
-                Ver no TripAdvisor
+                {copy?.transferBeberibeTripadvisorText || "Ver no TripAdvisor"}
               </a>
             )}
           </div>
@@ -119,6 +128,7 @@ export default function HomeConfiguredSections({
   imageCarousel: imageCarouselValue,
   transferBeberibe,
   settings,
+  copy,
 }: HomeConfiguredSectionsProps) {
   const services = asRecord(servicesValue);
   const differentials = asRecord(differentialsValue);
@@ -157,7 +167,7 @@ export default function HomeConfiguredSections({
             <div className="mb-10 text-center">
               {text(services.badge) && <p className="mb-2 font-semibold uppercase text-primary-700">{text(services.badge)}</p>}
               <h2 className="mb-3 text-3xl font-bold text-gray-900 md:text-4xl">
-                {text(services.title) || "Nossos serviços"}
+                {text(services.title, copy?.servicesTitleFallback) || "Nossos serviços"}
               </h2>
               {text(services.subtitle) && <p className="mx-auto max-w-2xl text-gray-600">{text(services.subtitle)}</p>}
             </div>
@@ -187,7 +197,8 @@ export default function HomeConfiguredSections({
                           rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
                           className="font-semibold text-primary-800 hover:text-primary-950"
                         >
-                          {text(service.linkText) || `Saiba mais sobre ${title}`}
+                          {text(service.linkText)
+                            || `${text(copy?.serviceLinkTextPrefix) || "Saiba mais sobre"} ${title}`}
                         </a>
                       )}
                     </div>
@@ -205,7 +216,7 @@ export default function HomeConfiguredSections({
             <div>
               {text(differentials.badge) && <p className="mb-2 font-semibold uppercase text-primary-700">{text(differentials.badge)}</p>}
               <h2 className="mb-3 text-3xl font-bold text-gray-900 md:text-4xl">
-                {text(differentials.title) || "Diferenciais da Transfer Fortaleza Tur"}
+                {text(differentials.title, copy?.differentialsTitleFallback) || "Diferenciais da Transfer Fortaleza Tur"}
               </h2>
               {text(differentials.description) && <p className="mb-7 text-gray-600">{text(differentials.description)}</p>}
               <div className="grid gap-5 sm:grid-cols-2">
@@ -231,7 +242,10 @@ export default function HomeConfiguredSections({
       )}
 
       {isActive(imageCarousel) && gallery.length > 0 && (
-        <section className="overflow-hidden bg-[var(--color-home-orange-bg)] py-12 sm:py-16" aria-label="Galeria de passeios">
+        <section
+          className="overflow-hidden bg-[var(--color-home-orange-bg)] py-12 sm:py-16"
+          aria-label={text(copy?.imageCarouselLabel) || "Galeria de passeios"}
+        >
           <div className="mb-8 px-4 text-center">
             {text(imageCarousel.badge) && (
               <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-primary-700">
@@ -239,7 +253,7 @@ export default function HomeConfiguredSections({
               </p>
             )}
             <h2 className="text-3xl font-bold text-[var(--color-text-primary)] md:text-4xl">
-              {text(imageCarousel.title) || "Experiências em imagens"}
+              {text(imageCarousel.title, copy?.imageCarouselTitleFallback) || "Experiências em imagens"}
             </h2>
             {text(imageCarousel.subtitle) && (
               <p className="mx-auto mt-3 max-w-2xl text-[var(--color-text-secondary)]">
@@ -295,7 +309,7 @@ export default function HomeConfiguredSections({
         </section>
       )}
 
-      <TransferBeberibeSection value={transferBeberibe} whatsappNumber={whatsappNumber} />
+      <TransferBeberibeSection value={transferBeberibe} whatsappNumber={whatsappNumber} copy={copy} />
     </>
   );
 }

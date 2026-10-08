@@ -121,10 +121,10 @@ const pageCopyGroups = [
   {
     key: "home",
     title: "Página inicial",
-    description: "Textos das seções, chamadas e botões exibidos na página inicial.",
+    description: "Textos que aparecem na Home, organizados abaixo na mesma ordem das seções públicas. Passeios, banners e outros registros têm atalhos para seus cadastros próprios.",
     fields: [
-      ["heroTitle", "Título alternativo do banner", false],
-      ["heroSubtitle", "Texto alternativo do banner", true],
+      ["heroTitle", "Título de fallback do banner", false],
+      ["heroSubtitle", "Texto de fallback do banner", true],
       ["toursSectionTitle", "Título da seção principal de passeios", false],
       ["destinationsBadge", "Rótulo acima do título principal", false],
       ["toursSectionIntro", "Introdução da seção principal de passeios", true],
@@ -155,16 +155,29 @@ const pageCopyGroups = [
       ["blogTitle", "Título do blog", false],
       ["blogIntro", "Introdução do blog", true],
       ["blogButton", "Botão para ver todos os artigos", false],
-      ["testimonialsTitle", "Título dos depoimentos", false],
-      ["testimonialsIntro", "Introdução dos depoimentos", true],
-      ["faqTitle", "Título das perguntas frequentes", false],
-      ["faqIntro", "Introdução das perguntas frequentes", true],
+      ["blogReadArticlePrefix", "Texto do link de leitura do artigo", false],
+      ["blogImagePlaceholder", "Texto quando um artigo não tem imagem", false],
+      ["servicesTitleFallback", "Título padrão da seção de serviços", false],
+      ["serviceLinkTextPrefix", "Texto padrão dos links de serviços", false],
+      ["differentialsTitleFallback", "Título padrão da seção de diferenciais", false],
+      ["imageCarouselTitleFallback", "Título padrão da galeria de imagens", false],
+      ["imageCarouselLabel", "Texto acessível da galeria de imagens", false],
+      ["googleReviewsLinkText", "Link para avaliações do Google", false],
+      ["transferBeberibeButtonFallback", "Botão padrão do transfer para Beberibe", false],
+      ["transferBeberibeWhatsappMessage", "Mensagem inicial do WhatsApp para Beberibe", true],
+      ["transferBeberibeTripadvisorText", "Link para TripAdvisor na seção Beberibe", false],
+      ["footerQuickLinksTitle", "Título dos links rápidos no rodapé", false],
+      ["footerContactTitle", "Título de contato no rodapé", false],
+      ["footerSocialTitle", "Título das redes sociais no rodapé", false],
+      ["footerAddressFallback", "Texto quando não há endereço no rodapé", false],
+      ["footerCnpjLabel", "Rótulo do CNPJ no rodapé", false],
+      ["footerDeveloperPrefix", "Texto antes do crédito de desenvolvimento", false],
     ],
   },
   {
     key: "tours",
     title: "Página de passeios",
-    description: "Textos, filtros e SEO da listagem /passeios.",
+    description: "Textos, filtros e SEO exclusivos de /passeios. O SEO desta página fica nos campos “Título SEO” e “Descrição SEO” abaixo.",
     fields: [
       ["title", "Título da página", false], ["intro", "Introdução", true],
       ["disabledTitle", "Título de seção desativada", false], ["disabledMessage", "Mensagem de seção desativada", true],
@@ -183,7 +196,7 @@ const pageCopyGroups = [
   {
     key: "transfers",
     title: "Página de transfers",
-    description: "Textos, mensagens e SEO da listagem /transfer.",
+    description: "Textos, mensagens e SEO exclusivos de /transfer. O SEO desta página fica nos campos “Título SEO” e “Descrição SEO” abaixo.",
     fields: [
       ["title", "Título da página", false], ["intro", "Introdução", true],
       ["searchPlaceholder", "Campo de busca", false], ["foundSingular", "Contagem singular", false],
@@ -198,7 +211,7 @@ const pageCopyGroups = [
   {
     key: "packages",
     title: "Página conjunta de passeios e transfers",
-    description: "Conteúdo e SEO da página /pacotes.",
+    description: "Conteúdo e SEO exclusivos de /pacotes. O SEO desta página fica nos campos “Título SEO” e “Descrição SEO” abaixo.",
     fields: [
       ["title", "Título da página", false], ["intro", "Introdução", true],
       ["toursTitle", "Título da seção de passeios", false], ["toursIntro", "Introdução da seção de passeios", true],
@@ -215,7 +228,7 @@ const pageCopyGroups = [
   {
     key: "blog",
     title: "Blog",
-    description: "Textos da listagem e SEO do blog.",
+    description: "Textos da listagem e SEO de /blog. O SEO dos artigos individuais fica no cadastro de cada artigo.",
     fields: [
       ["title", "Título da página", false], ["intro", "Introdução", true],
       ["noPosts", "Mensagem sem artigos", false], ["readArticlePrefix", "Texto do link de leitura", false],
@@ -227,7 +240,7 @@ const pageCopyGroups = [
   {
     key: "testimonials",
     title: "Depoimentos",
-    description: "Títulos e textos exibidos junto aos depoimentos.",
+    description: "Edite aqui título, introdução e visibilidade da seção. Os depoimentos, nomes, avaliações e fotos são gerenciados em Depoimentos.",
     fields: [
       ["title", "Título", false], ["intro", "Introdução", true],
       ["imagePlaceholder", "Texto sem foto", false],
@@ -236,7 +249,7 @@ const pageCopyGroups = [
   {
     key: "faq",
     title: "Perguntas frequentes",
-    description: "Textos da seção de perguntas frequentes da página inicial.",
+    description: "Edite aqui título, introdução e visibilidade do bloco na Home. Perguntas e respostas são gerenciadas na área FAQ.",
     fields: [
       ["title", "Título", false], ["intro", "Introdução", true], ["noItems", "Mensagem sem perguntas", false],
     ],
@@ -307,6 +320,19 @@ const pageCopyGroups = [
       ["rejectButton", "Botão para recusar", false], ["acceptButton", "Botão para aceitar", false],
     ],
   },
+] as const;
+
+const homeFieldSections = [
+  { id: "home-hero", title: "02 · Hero", start: 0, end: 2 },
+  { id: "home-passeios", title: "03 · Passeios e pacotes", start: 2, end: 16 },
+  { id: "home-transfers", title: "04 · Transfers", start: 16, end: 29 },
+  { id: "home-services", title: "05 · Serviços", start: 34, end: 36 },
+  { id: "home-differentials", title: "06 · Diferenciais", start: 36, end: 37 },
+  { id: "home-gallery", title: "07 · Galeria de imagens", start: 37, end: 39 },
+  { id: "home-beberibe", title: "08 · Transfer para Beberibe", start: 40, end: 43 },
+  { id: "home-blog", title: "09 · Blog", start: 29, end: 34 },
+  { id: "home-google-reviews", title: "11 · Avaliações do Google", start: 39, end: 40 },
+  { id: "home-footer", title: "12 · Rodapé", start: 43, end: 49 },
 ] as const;
 
 function getDefaultHeadingLevel(page: string, field: string) {
@@ -445,9 +471,9 @@ const sectionVisibilityControls: Record<string, Array<{ key: string; label: stri
     { key: "transfersSectionEnabled", label: "Seção de transfers" },
     { key: "homeRelatedSectionEnabled", label: "Transfers recomendados" },
     { key: "blogSectionEnabled", label: "Seção do blog" },
-    { key: "testimonialsSectionEnabled", label: "Seção de depoimentos" },
     { key: "faqSectionEnabled", label: "Seção de perguntas frequentes" },
   ],
+  testimonials: [{ key: "sectionEnabled", label: "Seção de depoimentos" }],
   packages: [
     { key: "toursSectionEnabled", label: "Seção de passeios" },
     { key: "transfersSectionEnabled", label: "Seção de transfers" },
@@ -502,6 +528,25 @@ export default function SettingsAdmin() {
   const [siteSeoLoading, setSiteSeoLoading] = useState(true);
   const [siteSeoSaving, setSiteSeoSaving] = useState(false);
   const [siteSeoError, setSiteSeoError] = useState("");
+
+  useEffect(() => {
+    if (loading) return;
+
+    const openHashTarget = () => {
+      const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+      if (!target) return;
+
+      const details = target instanceof HTMLDetailsElement
+        ? target
+        : target.closest("details");
+      if (details) details.open = true;
+      target.scrollIntoView({ block: "start" });
+    };
+
+    if (window.location.hash) window.requestAnimationFrame(openHashTarget);
+    window.addEventListener("hashchange", openHashTarget);
+    return () => window.removeEventListener("hashchange", openHashTarget);
+  }, [loading]);
 
   useEffect(() => {
     fetchSettings();
@@ -562,6 +607,25 @@ export default function SettingsAdmin() {
       const response = await fetch("/api/settings");
       if (!response.ok) throw new Error("Failed to fetch settings");
       const data = await response.json();
+      const savedPageCopy = data?.pageCopy || {};
+      const savedHomeCopy = savedPageCopy.home || {};
+      const savedTestimonialsCopy = savedPageCopy.testimonials || {};
+      const testimonialCopy = {
+        ...defaultPublicPageCopy.testimonials,
+        title: savedTestimonialsCopy.title ?? savedHomeCopy.testimonialsTitle,
+        intro: savedTestimonialsCopy.intro ?? savedHomeCopy.testimonialsIntro,
+        imagePlaceholder: savedTestimonialsCopy.imagePlaceholder
+          ?? savedHomeCopy.testimonialsImagePlaceholder,
+        titleHeadingLevel: savedTestimonialsCopy.titleHeadingLevel
+          ?? savedHomeCopy.testimonialsTitleHeadingLevel,
+        titleEnabled: savedTestimonialsCopy.titleEnabled
+          ?? savedHomeCopy.testimonialsTitleEnabled,
+        introEnabled: savedTestimonialsCopy.introEnabled
+          ?? savedHomeCopy.testimonialsIntroEnabled,
+        sectionEnabled: savedTestimonialsCopy.sectionEnabled
+          ?? savedHomeCopy.testimonialsSectionEnabled,
+        ...savedTestimonialsCopy,
+      };
       setSettings({
         ...data,
         aboutSection: {
@@ -577,7 +641,10 @@ export default function SettingsAdmin() {
           ...Object.fromEntries(
             Object.entries(defaultPublicPageCopy).map(([key, defaults]) => [
               key,
-              { ...defaults, ...data?.pageCopy?.[key] },
+              {
+                ...defaults,
+                ...(key === "testimonials" ? testimonialCopy : savedPageCopy[key]),
+              },
             ]),
           ),
         },
@@ -637,17 +704,80 @@ export default function SettingsAdmin() {
         </p>
       </div>
 
+      <nav
+        aria-label="Áreas principais do painel"
+        className="grid gap-2 rounded-lg border border-gray-200 bg-white p-3 sm:grid-cols-2 lg:grid-cols-5"
+      >
+        {[
+          ["/admin/settings#copy-home", "01 · Conteúdo da Home"],
+          ["/admin/settings#seo", "02 · SEO padrão do site"],
+          ["/admin/settings#copy-faq", "03 · Textos do FAQ"],
+          ["/admin/faq", "04 · Perguntas e respostas"],
+          ["/admin/settings#marca", "05 · Configurações gerais"],
+        ].map(([href, label]) => (
+          <a
+            key={href}
+            href={href}
+            className="rounded-md border border-gray-300 bg-gray-50 px-3 py-3 text-center text-sm font-semibold text-gray-800 transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Editar a página inicial em ordem</CardTitle>
+          <CardDescription>
+            Os textos da Home são editados em Configurações do site. Conteúdos cadastráveis — como banners, passeios, perguntas e depoimentos — abrem seu cadastro próprio. O número indica a ordem aproximada na página pública.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <nav aria-label="Edição da página inicial em ordem" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["/admin/settings#navegacao", "01 · Navbar — links do menu"],
+              ["/admin/banners", "02 · Hero — banners, imagens e botões"],
+              ["/admin/tours", "03 · Passeios — conteúdo dos cards"],
+              ["/admin/settings#home-passeios", "04 · Passeios — textos da seção"],
+              ["/admin/transfers", "05 · Transfers — conteúdo dos cards"],
+              ["/admin/settings#home-transfers", "06 · Transfers — textos da seção"],
+              ["/admin/content?section=servicesSection", "07 · Serviços — títulos, textos e cards"],
+              ["/admin/content?section=differentialsSection", "08 · Diferenciais — textos e imagens"],
+              ["/admin/content?section=imageCarouselSection", "09 · Galeria — título e imagens"],
+              ["/admin/content?section=transferBeberibe", "10 · Beberibe — textos e chamada"],
+              ["/admin/blog", "11 · Blog — artigos e imagens"],
+              ["/admin/settings#home-blog", "12 · Blog — textos da seção"],
+              ["/admin/testimonials", "13 · Depoimentos — relatos e fotos"],
+              ["/admin/settings#copy-testimonials", "14 · Depoimentos — título e introdução"],
+              ["/admin/content?section=googleReviews", "15 · Google — avaliações e textos"],
+              ["/admin/faq", "16 · FAQ — perguntas e respostas"],
+              ["/admin/settings#copy-faq", "17 · FAQ — título e introdução"],
+              ["/admin/settings#rodape", "18 · Rodapé — contatos, links e textos"],
+            ].map(([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+        </CardContent>
+      </Card>
+
       <nav aria-label="Atalhos das configurações" className="flex flex-wrap gap-2">
         {[
           ["#marca", "Marca e logos"],
-          ["#seo", "Metadados e SEO"],
           ["#navegacao", "Menu do site"],
           ["#contato", "Contato"],
           ["#rodape", "Rodapé"],
           ["#redes-sociais", "Redes sociais"],
           ["#textos-contato", "Textos da página Contato"],
-          ["#inicio", "Página inicial"],
-          ["#textos-publicos", "Textos de todas as páginas"],
+          ["#copy-home", "Textos da Home"],
+          ["#seo", "SEO padrão do site"],
+          ["#copy-faq", "Textos do FAQ"],
+          ["/admin/faq", "Perguntas e respostas"],
           ["#sobre-empresa", "Sobre a empresa"],
         ].map(([href, label]) => (
           <a
@@ -708,8 +838,9 @@ export default function SettingsAdmin() {
         <CardHeader>
           <CardTitle>Metadados e SEO do site</CardTitle>
           <CardDescription>
-            Esses dados definem o padrão de título, descrição, palavras-chave e imagem usados nos resultados de busca e
-            compartilhamentos. Páginas e artigos com SEO próprio continuam usando seus metadados específicos.
+            Esta área edita o SEO padrão do site: título, descrição, palavras-chave e imagem de compartilhamento. O SEO
+            específico de Passeios, Transfers, Pacotes e Blog fica nos campos “Título SEO” e “Descrição SEO” da seção
+            correspondente mais abaixo.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -779,6 +910,23 @@ export default function SettingsAdmin() {
               </div>
             </>
           )}
+          <nav aria-label="SEO específico por página" className="flex flex-wrap gap-2 border-t pt-4">
+            <span className="w-full text-sm font-medium text-gray-700">Ir para o SEO específico de:</span>
+            {[
+              ["#copy-tours", "Passeios"],
+              ["#copy-transfers", "Transfers"],
+              ["#copy-packages", "Pacotes"],
+              ["#copy-blog", "Blog"],
+            ].map(([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:border-primary hover:text-primary"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
         </CardContent>
       </Card>
 
@@ -1381,18 +1529,59 @@ export default function SettingsAdmin() {
           {pageCopyGroups.map((group) => {
             const defaults = defaultPublicPageCopy[group.key];
             const currentCopy = settings?.pageCopy?.[group.key] || {};
+            const fieldSections = group.key === "home"
+              ? homeFieldSections.map((section) => ({
+                  ...section,
+                  fields: group.fields.slice(section.start, section.end),
+                }))
+              : [{ id: `copy-fields-${group.key}`, title: "", fields: group.fields }];
             return (
               <details
                 key={group.key}
-                open={group.key === "home"}
+                id={`copy-${group.key}`}
+                open={group.key === "home" || group.key === "testimonials" || group.key === "faq"}
                 className="rounded-lg border border-gray-200"
               >
                 <summary className="cursor-pointer px-4 py-3 font-semibold text-gray-900 hover:bg-gray-50">
                   {group.title}
                   <span className="mt-1 block text-sm font-normal text-gray-500">{group.description}</span>
                 </summary>
-                <div className="grid gap-4 border-t p-4 md:grid-cols-2">
-                  {group.fields.map(([fieldKey, label, multiline]) => {
+                <div className="space-y-4 border-t p-4">
+                  {group.key === "faq" && (
+                    <div className="flex flex-col gap-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-950 sm:flex-row sm:items-center sm:justify-between">
+                      <p>
+                        <strong>Você está editando:</strong> título, introdução, mensagem sem perguntas e exibição da seção.
+                        As perguntas e respostas são gerenciadas separadamente na área FAQ.
+                      </p>
+                      <a href="/admin/faq" className="shrink-0 font-semibold underline underline-offset-2">
+                        Abrir perguntas e respostas
+                      </a>
+                    </div>
+                  )}
+                  {group.key === "testimonials" && (
+                    <div className="flex flex-col gap-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-950 sm:flex-row sm:items-center sm:justify-between">
+                      <p>
+                        <strong>Você está editando:</strong> título, introdução, texto sem foto e exibição da seção.
+                        Os relatos, nomes, notas e imagens são gerenciados na área Depoimentos.
+                      </p>
+                      <a href="/admin/testimonials" className="shrink-0 font-semibold underline underline-offset-2">
+                        Abrir depoimentos
+                      </a>
+                    </div>
+                  )}
+                  {fieldSections.map((fieldSection) => (
+                    <fieldset
+                      id={fieldSection.id}
+                      key={fieldSection.id}
+                      className="space-y-4 rounded-lg border border-gray-200 p-4"
+                    >
+                      {fieldSection.title && (
+                        <legend className="px-2 text-sm font-semibold text-gray-800">
+                          {fieldSection.title}
+                        </legend>
+                      )}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {fieldSection.fields.map(([fieldKey, label, multiline]) => {
                     const isHeading = fieldKey !== "seoTitle" &&
                       (fieldKey === "title" || fieldKey === "disabledTitle" || fieldKey.endsWith("Title"));
                     const isVisibilityEditable = isVisibilityEditableField(fieldKey, multiline);
@@ -1451,7 +1640,10 @@ export default function SettingsAdmin() {
                         )}
                       </div>
                     );
-                  })}
+                        })}
+                      </div>
+                    </fieldset>
+                  ))}
                   {cardHeadingControls[group.key] && (
                     <div className="grid gap-3 rounded-md bg-gray-50 p-3 md:col-span-2 sm:grid-cols-2">
                       {cardHeadingControls[group.key].map((control) => (

@@ -19,20 +19,14 @@ interface ContentResponse {
 }
 
 const documentNames: Record<string, string> = {
-  carousel: "Carrossel",
-  categories: "Categorias",
   differentialsSection: "Diferenciais",
-  footer: "Rodapé",
   googleReviews: "Avaliações do Google",
-  header: "Cabeçalho",
-  homeFAQ: "Perguntas frequentes da página inicial",
   imageCarouselSection: "Galeria de imagens",
-  linkInBio: "Link na bio",
-  pacotesPage: "Página de pacotes",
   servicesSection: "Serviços",
   transferBeberibe: "Transfer para Beberibe",
 };
 
+const editableDocumentIds = new Set(Object.keys(documentNames));
 const hiddenFields = new Set(["id", "createdAt", "updatedAt"]);
 
 function humanize(value: string): string {
@@ -145,9 +139,7 @@ export default function SiteContentAdminPage() {
         throw new Error("A resposta da API não contém a lista de documentos esperada.");
       }
 
-      const records = result.documents.filter(
-        (document) => document.id !== "about" && document.id !== "homeSeo",
-      );
+      const records = result.documents.filter((document) => editableDocumentIds.has(document.id));
       setTotalDocuments(result.totalDocuments ?? result.documents.length);
       setDocuments(records);
       setProjectId(result.projectId || null);
@@ -383,10 +375,24 @@ export default function SiteContentAdminPage() {
             <>
               <p className="font-semibold">Não há outras seções de conteúdo para editar aqui.</p>
               <p>
-                O documento legado “Sobre” não é usado pela página pública e foi ocultado para evitar duplicidade.
-                O conteúdo ativo de /sobre fica em Configurações do site &gt; Sobre a empresa. Nenhum dado foi removido do Firebase.
+                SEO, FAQ e configurações gerais continuam editáveis nas áreas próprias do painel. Este editor mostra apenas as seções públicas que não têm uma tela específica.
                 {projectId ? ` Projeto conectado: ${projectId}.` : ""}
               </p>
+              <nav aria-label="Outras áreas de edição" className="flex flex-wrap gap-2 pt-2">
+                {[
+                  ["/admin/settings#seo", "SEO do site"],
+                  ["/admin/faq", "Perguntas frequentes"],
+                  ["/admin/settings#marca", "Configurações gerais"],
+                ].map(([href, label]) => (
+                  <a
+                    key={href}
+                    href={href}
+                    className="rounded-md border border-amber-300 bg-white px-3 py-2 font-medium hover:bg-amber-100"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
             </>
           )}
           <button

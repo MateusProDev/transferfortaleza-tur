@@ -116,7 +116,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400">Sem imagem</span>
+                  <span className="text-gray-400">{copy?.toursImagePlaceholder || "Sem imagem"}</span>
                 </div>
               )}
             </Link>
@@ -136,11 +136,11 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
               <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                 <div className="flex items-center space-x-1">
                   <Clock size={16} />
-                  <span>{tour.duration || 'Consulte'}</span>
+                  <span>{tour.duration || copy?.toursDurationFallback || 'Consulte'}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Users size={16} />
-                  <span>Gr pequenos</span>
+                  <span>{copy?.toursGroupLabel || "Gr pequenos"}</span>
                 </div>
               </div>
 
