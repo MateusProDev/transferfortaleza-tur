@@ -12,7 +12,7 @@ import { getHomepageOpenGraphImage, normalizeOpenGraphImage, stripBrandSuffix, w
 import type { SitePageCopy, Tour, Transfer } from '@/types';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const baseUrl = getSiteUrl();
 

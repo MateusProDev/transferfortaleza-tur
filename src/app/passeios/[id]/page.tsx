@@ -23,7 +23,7 @@ interface PageProps {
   params: { id: string };
 }
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   try {

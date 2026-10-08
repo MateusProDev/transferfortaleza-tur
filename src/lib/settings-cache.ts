@@ -3,6 +3,13 @@ import type { SiteSettings } from '@/types';
 const SETTINGS_CACHE_KEY = 'passeio_legal_settings_cache';
 const SETTINGS_CACHE_TTL_MS = 5 * 60 * 1000;
 
+let cacheVersion = 0;
+let pendingSettingsRequest: {
+  version: number;
+  fetcher: typeof fetch;
+  promise: Promise<unknown | null>;
+} | null = null;
+
 export type SettingsCacheEntry<T> = {
   data: T;
   expiresAt: number;
@@ -24,7 +31,8 @@ export function getCachedSettings<T = unknown>(): T | null {
     }
 
     return parsed.data ?? null;
-  } catch {
+  } catch (error) {
+    console.warn('Unable to read cached site settings:', error);
     return null;
   }
 }
@@ -37,10 +45,16 @@ export function setCachedSettings<T = unknown>(data: T, ttlMs = SETTINGS_CACHE_T
     expiresAt: Date.now() + ttlMs,
   };
 
-  window.localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(entry));
+  try {
+    window.localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(entry));
+  } catch (error) {
+    console.warn('Unable to cache site settings in this browser:', error);
+  }
 }
 
 export function clearCachedSettings() {
+  cacheVersion += 1;
+  pendingSettingsRequest = null;
   if (typeof window === "undefined") return;
 
   try {
@@ -52,12 +66,34 @@ export function clearCachedSettings() {
 
 export async function fetchSettingsCached<T = SiteSettings>(fetcher: typeof fetch = fetch): Promise<T | null> {
   const cached = getCachedSettings<T>();
-  if (cached) return cached;
+  if (cached !== null) return cached;
 
-  const response = await fetcher('/api/settings');
-  if (!response.ok) return null;
+  const version = cacheVersion;
+  if (
+    pendingSettingsRequest?.version === version
+    && pendingSettingsRequest.fetcher === fetcher
+  ) {
+    return pendingSettingsRequest.promise as Promise<T | null>;
+  }
 
-  const data = (await response.json()) as T;
-  setCachedSettings(data);
-  return data;
+  const promise = (async () => {
+    const response = await fetcher('/api/settings');
+    if (!response.ok) {
+      console.error(`Unable to fetch site settings: HTTP ${response.status}`);
+      return null;
+    }
+
+    const data: unknown = await response.json();
+    if (version === cacheVersion) setCachedSettings(data);
+    return data;
+  })();
+  pendingSettingsRequest = { version, fetcher, promise };
+
+  try {
+    return await promise as T | null;
+  } finally {
+    if (pendingSettingsRequest?.promise === promise) {
+      pendingSettingsRequest = null;
+    }
+  }
 }

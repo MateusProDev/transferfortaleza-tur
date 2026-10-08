@@ -47,7 +47,7 @@ const Footer = dynamicImport(() => import("@/components/public/Footer"), {
 });
 
 // Cache the homepage briefly to keep content fresh without rendering it on every request.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = getSiteUrl();

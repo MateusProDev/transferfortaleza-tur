@@ -25,7 +25,7 @@ async function getPackage(slug: string) {
   return null;
 }
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
   const [tours, transfers] = await Promise.all([

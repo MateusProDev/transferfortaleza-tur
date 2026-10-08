@@ -2,7 +2,7 @@ import { getCachedSiteSettings, getCachedTransfers } from '@/lib/public-data-cac
 import type { SitePageCopy, Transfer } from '@/types';
 import TransfersClient from './TransfersClient';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export default async function TransfersPage() {
   let transfers: Transfer[] = [];
