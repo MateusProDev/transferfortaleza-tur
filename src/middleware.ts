@@ -1,7 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { BRAND_URL } from "@/lib/brand";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const canonicalUrl = new URL(BRAND_URL);
+  const canonicalHost = canonicalUrl.hostname;
+  const requestHost = request.nextUrl.hostname.toLowerCase();
+  const redirectHosts = new Set([
+    `www.${canonicalHost}`,
+    "transferfortaleza-tur.vercel.app",
+  ]);
+
+  if (redirectHosts.has(requestHost)) {
+    const destination = request.nextUrl.clone();
+    destination.protocol = canonicalUrl.protocol;
+    destination.hostname = canonicalHost;
+    destination.port = "";
+    return NextResponse.redirect(destination, 301);
+  }
 
   const disabledLeadApi =
     pathname === "/api/track" ||
