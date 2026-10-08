@@ -743,13 +743,16 @@ export default function SettingsAdmin() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to save settings");
+      const result = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(result?.error || "Não foi possível salvar as configurações.");
+      }
 
       clearCachedSettings();
-      toast.success("Settings saved successfully");
+      toast.success("Configurações salvas com sucesso.");
     } catch (error) {
       console.error("Error saving settings:", error);
-      toast.error("Failed to save settings");
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar as configurações.");
     } finally {
       setSaving(false);
     }
