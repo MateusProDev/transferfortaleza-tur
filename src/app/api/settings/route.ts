@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCachedSiteSettings, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminFirestore, getAdminProjectId } from "@/lib/firebase-admin";
@@ -217,6 +218,7 @@ export async function PUT(request: NextRequest) {
     }
     await saveSettings(body as SettingsPayload);
     invalidatePublicDataCache("site-settings");
+    revalidatePath("/", "layout");
     return NextResponse.json({ message: "Settings updated successfully" });
   } catch (error) {
     return settingsWriteError(error);
@@ -238,6 +240,7 @@ export async function POST(request: NextRequest) {
     }
     await saveSettings(body as SettingsPayload);
     invalidatePublicDataCache("site-settings");
+    revalidatePath("/", "layout");
     return NextResponse.json({ message: "Settings updated successfully" });
   } catch (error) {
     return settingsWriteError(error);
