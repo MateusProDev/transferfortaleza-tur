@@ -57,10 +57,10 @@ export default function GoogleReviews({ content, copy }: GoogleReviewsProps) {
                 />
               ))}
             </div>
-            <blockquote className="mb-6 text-lg leading-relaxed text-gray-700">
+            <blockquote className="mb-6 min-h-[9.25rem] line-clamp-5 text-lg leading-relaxed text-gray-700">
               &ldquo;{review.text}&rdquo;
             </blockquote>
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex min-h-11 items-center justify-center gap-3">
               {review.photo && (
                 <div className="relative h-11 w-11 overflow-hidden rounded-full bg-gray-200">
                   <Image

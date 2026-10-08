@@ -1,5 +1,6 @@
 "use client";
 
+import "@uiw/react-md-editor/markdown-editor.css";
 import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";

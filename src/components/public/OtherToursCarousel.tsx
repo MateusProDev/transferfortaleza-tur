@@ -55,7 +55,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
 
   const visibleTours = tours.length === 0
     ? []
-    : Array.from({ length: Math.min(itemsPerPage, tours.length) }, (_, index) => {
+    : Array.from({ length: itemsPerPage }, (_, index) => {
         const itemIndex = (currentIndex * itemsPerPage + index) % tours.length;
         return tours[itemIndex];
       });
@@ -79,8 +79,8 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
         onTouchEnd={() => setIsPaused(false)}
         onTouchCancel={() => setIsPaused(false)}
       >
-        {visibleTours.map((tour) => (
-          <div key={tour.id} className="relative group">
+        {visibleTours.map((tour, index) => (
+          <div key={`${tour.id}-${index}`} className="relative group">
             {tours.length > itemsPerPage && (
               <>
                 <button
@@ -125,13 +125,13 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
               {isCopyFieldEnabled(copy, "tourCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h3')}>
                 <Link
                   href={`/pacote/${tour.slug || tour.id}`}
-                  className="block text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
+                  className="mb-2 block min-h-14 line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
                   onClick={() => handleTourClick(tour.name)}
                 >
                   {tour.name}
                 </Link>
               </EditableHeading>}
-              {isCopyFieldEnabled(copy, "tourCardDescription") && <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>}
+              {isCopyFieldEnabled(copy, "tourCardDescription") && <p className="mb-4 min-h-12 line-clamp-2 flex-1 text-gray-600">{tour.description}</p>}
 
               <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                 <div className="flex items-center space-x-1">

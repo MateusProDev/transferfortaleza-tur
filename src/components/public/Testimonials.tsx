@@ -73,13 +73,13 @@ export default function Testimonials({ testimonials, copy }: TestimonialsProps) 
             </div>
 
             <blockquote className="text-center mb-8">
-              <p className="text-xl text-gray-700 italic leading-relaxed whitespace-pre-line">
+              <p className="min-h-[10.25rem] line-clamp-5 whitespace-pre-line text-xl italic leading-relaxed text-gray-700">
                 &ldquo;{featuredTestimonial.text}&rdquo;
               </p>
             </blockquote>
 
             <div className="flex items-center justify-center space-x-4">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-gray-200">
                 {featuredTestimonial.clientPhoto ? (
                   <Image
                     src={featuredTestimonial.clientPhoto}

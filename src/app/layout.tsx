@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
 import "./globals.css";
-import "@uiw/react-md-editor/markdown-editor.css";
 import { LocalBusinessJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import Analytics from "@/components/seo/Analytics";
 import { getSiteUrl } from "@/lib/site-url";
