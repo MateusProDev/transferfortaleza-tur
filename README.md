@@ -135,6 +135,11 @@ FAQ entries and catalog records in their dedicated admin sections. The generic
 site-content editor is limited to the home sections without dedicated editors.
 Testimonials and blog posts are read from `avaliacoes` and `blogPosts`.
 
+In Settings, the home editor follows the public page order and groups each
+section's copy, visibility control, and link to its dynamic content editor
+together. Dynamic banner/catalog/content values take precedence over fallback
+copy fields; the fallback fields are labeled and collapsed where appropriate.
+
 ### 7. Configure admin access
 
 1. Enable Google as a sign-in provider in Firebase Authentication.

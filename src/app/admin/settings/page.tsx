@@ -123,8 +123,8 @@ const pageCopyGroups = [
     title: "Página inicial",
     description: "Textos que aparecem na Home, organizados abaixo na mesma ordem das seções públicas. Passeios, banners e outros registros têm atalhos para seus cadastros próprios.",
     fields: [
-      ["heroTitle", "Título de fallback do banner", false],
-      ["heroSubtitle", "Texto de fallback do banner", true],
+      ["heroTitle", "Título do Hero (fallback do banner)", false],
+      ["heroSubtitle", "Texto do Hero (fallback do banner)", true],
       ["toursSectionTitle", "Título da seção principal de passeios", false],
       ["destinationsBadge", "Rótulo acima do título principal", false],
       ["toursSectionIntro", "Introdução da seção principal de passeios", true],
@@ -332,8 +332,74 @@ const homeFieldSections = [
   { id: "home-beberibe", title: "08 · Transfer para Beberibe", start: 40, end: 43 },
   { id: "home-blog", title: "09 · Blog", start: 29, end: 34 },
   { id: "home-google-reviews", title: "11 · Avaliações do Google", start: 39, end: 40 },
-  { id: "home-footer", title: "12 · Rodapé", start: 43, end: 49 },
+  { id: "home-footer", title: "13 · Rodapé", start: 43, end: 49 },
 ] as const;
+
+const homeSectionActions: Record<string, { description: string; href: string; label: string }> = {
+  "home-hero": {
+    description: "O título, texto, imagem e botões publicados vêm primeiro do banner ativo. Edite o banner para mudar o conteúdo visível; os textos abaixo são apenas reserva.",
+    href: "/admin/banners",
+    label: "Gerenciar banners do Hero",
+  },
+  "home-passeios": {
+    description: "Os nomes, descrições, fotos, preços e ordem vêm dos passeios cadastrados. Os campos desta seção controlam títulos, introdução e rótulos.",
+    href: "/admin/tours",
+    label: "Gerenciar passeios",
+  },
+  "home-transfers": {
+    description: "Os nomes, descrições, fotos, preços e ordem vêm dos transfers cadastrados. Os campos desta seção controlam títulos, introdução e rótulos.",
+    href: "/admin/transfers",
+    label: "Gerenciar transfers",
+  },
+  "home-blog": {
+    description: "Os artigos, títulos, textos e imagens dos cards vêm dos cadastros de artigos. Os campos desta seção controlam a chamada e os rótulos do bloco.",
+    href: "/admin/blog",
+    label: "Gerenciar artigos do Blog",
+  },
+  "home-services": {
+    description: "Edite aqui os textos de reserva da seção. O conteúdo dinâmico e os cards publicados são gerenciados no documento de Serviços.",
+    href: "/admin/content?section=servicesSection",
+    label: "Editar conteúdo e cards de Serviços",
+  },
+  "home-differentials": {
+    description: "O título e os itens publicados vêm do conteúdo dinâmico de Diferenciais. O campo abaixo só é usado se esse título estiver vazio.",
+    href: "/admin/content?section=differentialsSection",
+    label: "Editar conteúdo de Diferenciais",
+  },
+  "home-gallery": {
+    description: "O título e as imagens publicadas vêm do conteúdo dinâmico da Galeria.",
+    href: "/admin/content?section=imageCarouselSection",
+    label: "Editar título e imagens da Galeria",
+  },
+  "home-google-reviews": {
+    description: "O link e a configuração das avaliações vêm do conteúdo dinâmico do Google.",
+    href: "/admin/content?section=googleReviews",
+    label: "Editar conteúdo do Google",
+  },
+  "home-beberibe": {
+    description: "O texto principal, a imagem e a chamada publicados vêm do conteúdo dinâmico de Beberibe.",
+    href: "/admin/content?section=transferBeberibe",
+    label: "Editar conteúdo de Beberibe",
+  },
+  "home-footer": {
+    description: "Os contatos e links do rodapé usam as configurações gerais. Os campos abaixo editam os títulos e rótulos exibidos no rodapé.",
+    href: "#rodape",
+    label: "Ir para configurações do rodapé",
+  },
+};
+
+const homeSectionVisibilityControls: Record<string, Array<{ key: string; label: string }>> = {
+  "home-hero": [{ key: "heroSectionEnabled", label: "Banner principal" }],
+  "home-passeios": [
+    { key: "toursSectionEnabled", label: "Seção principal de passeios" },
+    { key: "moreToursSectionEnabled", label: "Seção de mais passeios" },
+  ],
+  "home-transfers": [
+    { key: "transfersSectionEnabled", label: "Seção de transfers" },
+    { key: "homeRelatedSectionEnabled", label: "Transfers recomendados" },
+  ],
+  "home-blog": [{ key: "blogSectionEnabled", label: "Seção do blog" }],
+};
 
 function getDefaultHeadingLevel(page: string, field: string) {
   if (
@@ -536,10 +602,13 @@ export default function SettingsAdmin() {
       const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
       if (!target) return;
 
-      const details = target instanceof HTMLDetailsElement
+      let details = target instanceof HTMLDetailsElement
         ? target
         : target.closest("details");
-      if (details) details.open = true;
+      while (details) {
+        details.open = true;
+        details = details.parentElement?.closest("details") || null;
+      }
       target.scrollIntoView({ block: "start" });
     };
 
@@ -727,37 +796,32 @@ export default function SettingsAdmin() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Editar a página inicial em ordem</CardTitle>
+          <CardTitle>Conteúdo da página inicial</CardTitle>
           <CardDescription>
-            Os textos da Home são editados em Configurações do site. Conteúdos cadastráveis — como banners, passeios, perguntas e depoimentos — abrem seu cadastro próprio. O número indica a ordem aproximada na página pública.
+            Cada bloco abaixo reúne os textos da seção e o atalho para o conteúdo dinâmico que aparece no site. Edite primeiro o conteúdo dinâmico; os textos de reserva são usados apenas quando o cadastro não fornece aquele valor.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <nav aria-label="Edição da página inicial em ordem" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <nav aria-label="Seções da página inicial" className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              ["/admin/settings#navegacao", "01 · Navbar — links do menu"],
-              ["/admin/banners", "02 · Hero — banners, imagens e botões"],
-              ["/admin/tours", "03 · Passeios — conteúdo dos cards"],
-              ["/admin/settings#home-passeios", "04 · Passeios — textos da seção"],
-              ["/admin/transfers", "05 · Transfers — conteúdo dos cards"],
-              ["/admin/settings#home-transfers", "06 · Transfers — textos da seção"],
-              ["/admin/content?section=servicesSection", "07 · Serviços — títulos, textos e cards"],
-              ["/admin/content?section=differentialsSection", "08 · Diferenciais — textos e imagens"],
-              ["/admin/content?section=imageCarouselSection", "09 · Galeria — título e imagens"],
-              ["/admin/content?section=transferBeberibe", "10 · Beberibe — textos e chamada"],
-              ["/admin/blog", "11 · Blog — artigos e imagens"],
-              ["/admin/settings#home-blog", "12 · Blog — textos da seção"],
-              ["/admin/testimonials", "13 · Depoimentos — relatos e fotos"],
-              ["/admin/settings#copy-testimonials", "14 · Depoimentos — título e introdução"],
-              ["/admin/content?section=googleReviews", "15 · Google — avaliações e textos"],
-              ["/admin/faq", "16 · FAQ — perguntas e respostas"],
-              ["/admin/settings#copy-faq", "17 · FAQ — título e introdução"],
-              ["/admin/settings#rodape", "18 · Rodapé — contatos, links e textos"],
+              ["#navegacao", "01 · Navbar"],
+              ["#home-hero", "02 · Hero"],
+              ["#home-passeios", "03 · Passeios e pacotes"],
+              ["#home-transfers", "04 · Transfers"],
+              ["#home-services", "05 · Serviços"],
+              ["#home-differentials", "06 · Diferenciais"],
+              ["#home-gallery", "07 · Galeria de imagens"],
+              ["#home-beberibe", "08 · Transfer para Beberibe"],
+              ["#home-blog", "09 · Blog"],
+              ["#copy-testimonials", "10 · Depoimentos"],
+              ["#home-google-reviews", "11 · Avaliações do Google"],
+              ["#copy-faq", "12 · FAQ"],
+              ["#home-footer", "13 · Rodapé"],
             ].map(([href, label]) => (
               <a
                 key={href}
                 href={href}
-                className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 {label}
               </a>
@@ -765,30 +829,6 @@ export default function SettingsAdmin() {
           </nav>
         </CardContent>
       </Card>
-
-      <nav aria-label="Atalhos das configurações" className="flex flex-wrap gap-2">
-        {[
-          ["#marca", "Marca e logos"],
-          ["#navegacao", "Menu do site"],
-          ["#contato", "Contato"],
-          ["#rodape", "Rodapé"],
-          ["#redes-sociais", "Redes sociais"],
-          ["#textos-contato", "Textos da página Contato"],
-          ["#copy-home", "Textos da Home"],
-          ["#seo", "SEO padrão do site"],
-          ["#copy-faq", "Textos do FAQ"],
-          ["/admin/faq", "Perguntas e respostas"],
-          ["#sobre-empresa", "Sobre a empresa"],
-        ].map(([href, label]) => (
-          <a
-            key={href}
-            href={href}
-            className="rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
 
       <Card id="marca" className="scroll-mt-6">
         <CardHeader>
@@ -1467,57 +1507,6 @@ export default function SettingsAdmin() {
         </CardContent>
       </Card>
 
-      <Card id="inicio" className="scroll-mt-6">
-        <CardHeader>
-          <CardTitle>Seções da página inicial</CardTitle>
-          <CardDescription>Escolha se os blocos de passeios e transfers aparecem na página inicial.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <label htmlFor="home-tours-enabled" className="text-sm font-medium">Passeios</label>
-              <p className="text-xs text-muted-foreground">Mostrar seção de passeios no site</p>
-            </div>
-            <input
-              id="home-tours-enabled"
-              type="checkbox"
-              checked={settings?.sections?.toursEnabled ?? true}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  sections: {
-                    ...settings?.sections,
-                    toursEnabled: e.target.checked,
-                  },
-                })
-              }
-              className="w-4 h-4 text-primary-600 rounded focus:ring-primary-600"
-            />
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <label htmlFor="home-transfers-enabled" className="text-sm font-medium">Transfers</label>
-              <p className="text-xs text-muted-foreground">Mostrar seção de transfer no site</p>
-            </div>
-            <input
-              id="home-transfers-enabled"
-              type="checkbox"
-              checked={settings?.sections?.transfersEnabled ?? true}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  sections: {
-                    ...settings?.sections,
-                    transfersEnabled: e.target.checked,
-                  },
-                })
-              }
-              className="w-4 h-4 text-primary-600 rounded focus:ring-primary-600"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       <Card id="textos-publicos" className="scroll-mt-6">
         <CardHeader>
           <CardTitle>Textos e detalhes das páginas públicas</CardTitle>
@@ -1580,7 +1569,87 @@ export default function SettingsAdmin() {
                           {fieldSection.title}
                         </legend>
                       )}
-                      <div className="grid gap-4 md:grid-cols-2">
+                      {homeSectionActions[fieldSection.id] && (
+                        <div className="flex flex-col gap-3 rounded-md border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="text-sm text-gray-700">
+                            <p className="font-semibold text-gray-900">Conteúdo que aparece no site</p>
+                            <p>{homeSectionActions[fieldSection.id].description}</p>
+                          </div>
+                          <a
+                            href={homeSectionActions[fieldSection.id].href}
+                            className="inline-flex shrink-0 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                          >
+                            {homeSectionActions[fieldSection.id].label}
+                          </a>
+                        </div>
+                      )}
+                      {group.key === "home" && homeSectionVisibilityControls[fieldSection.id] && (
+                        <fieldset className="space-y-3 rounded-md border p-3">
+                          <legend className="px-1 text-sm font-semibold text-gray-700">Exibição deste bloco na Home</legend>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            {homeSectionVisibilityControls[fieldSection.id].map((control) => (
+                              <VisibilityControl
+                                key={control.key}
+                                label={`Exibir ${control.label.toLowerCase()}`}
+                                enabled={currentCopy[control.key]}
+                                onChange={(enabled) =>
+                                  setSettings({
+                                    ...settings,
+                                    pageCopy: {
+                                      ...settings?.pageCopy,
+                                      [group.key]: { ...currentCopy, [control.key]: String(enabled) },
+                                    },
+                                  })
+                                }
+                              />
+                            ))}
+                          </div>
+                        </fieldset>
+                      )}
+                      {group.key === "home" && ["home-passeios", "home-transfers"].includes(fieldSection.id) && (
+                        <fieldset className="space-y-3 rounded-md border p-3">
+                          <legend className="px-1 text-sm font-semibold text-gray-700">
+                            Exibição geral nas páginas de catálogo
+                          </legend>
+                          <VisibilityControl
+                            label={fieldSection.id === "home-passeios"
+                              ? "Disponibilizar também em /passeios e /pacotes"
+                              : "Disponibilizar também em /transfer e /pacotes"}
+                            enabled={fieldSection.id === "home-passeios"
+                              ? settings?.sections?.toursEnabled !== false
+                              : settings?.sections?.transfersEnabled !== false}
+                            onChange={(enabled) =>
+                              setSettings((current: any) => ({
+                                ...current,
+                                sections: {
+                                  ...current?.sections,
+                                  [fieldSection.id === "home-passeios" ? "toursEnabled" : "transfersEnabled"]: enabled,
+                                },
+                              }))
+                            }
+                          />
+                        </fieldset>
+                      )}
+                      <details
+                        open={fieldSection.id !== "home-hero"}
+                        className="rounded-md border border-gray-200 p-3"
+                      >
+                        <summary className="cursor-pointer font-medium text-gray-800">
+                          {fieldSection.id === "home-hero"
+                            ? "Textos de reserva e acessibilidade do Hero"
+                            : "Textos editáveis desta seção"}
+                          {fieldSection.id === "home-hero" ? (
+                            <span className="mt-1 block text-sm font-normal text-gray-500">
+                              Só substituem o texto do banner quando o cadastro do banner está sem título ou descrição.
+                            </span>
+                          ) : (
+                            <span className="mt-1 block text-sm font-normal text-gray-500">
+                              Textos, rótulos e opções de exibição usados nesta seção.
+                            </span>
+                          )}
+                        </summary>
+                        <div className="mt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
                         {fieldSection.fields.map(([fieldKey, label, multiline]) => {
                     const isHeading = fieldKey !== "seoTitle" &&
                       (fieldKey === "title" || fieldKey === "disabledTitle" || fieldKey.endsWith("Title"));
@@ -1642,8 +1711,31 @@ export default function SettingsAdmin() {
                     );
                         })}
                       </div>
+                        </div>
+                      </details>
                     </fieldset>
                   ))}
+                  {group.key === "faq" && (
+                    <fieldset className="rounded-md border p-3">
+                      <legend className="px-1 text-sm font-semibold text-gray-700">Exibição do FAQ na Home</legend>
+                      <VisibilityControl
+                        label="Exibir bloco de perguntas frequentes"
+                        enabled={settings?.pageCopy?.home?.faqSectionEnabled}
+                        onChange={(enabled) =>
+                          setSettings((current: any) => ({
+                            ...current,
+                            pageCopy: {
+                              ...current?.pageCopy,
+                              home: {
+                                ...current?.pageCopy?.home,
+                                faqSectionEnabled: String(enabled),
+                              },
+                            },
+                          }))
+                        }
+                      />
+                    </fieldset>
+                  )}
                   {cardHeadingControls[group.key] && (
                     <div className="grid gap-3 rounded-md bg-gray-50 p-3 md:col-span-2 sm:grid-cols-2">
                       {cardHeadingControls[group.key].map((control) => (
@@ -1688,7 +1780,7 @@ export default function SettingsAdmin() {
                       </div>
                     </fieldset>
                   )}
-                  {sectionVisibilityControls[group.key] && (
+                  {group.key !== "home" && sectionVisibilityControls[group.key] && (
                     <fieldset className="space-y-3 rounded-md border p-3 md:col-span-2">
                       <legend className="px-1 text-sm font-semibold text-gray-700">Exibição de seções e listas</legend>
                       <div className="grid gap-3 sm:grid-cols-2">
