@@ -62,6 +62,7 @@ export default function Footer() {
     { label: 'Blog', href: '/blog' },
     { label: 'Transfers', href: '/transfer' },
     { label: 'Política', href: '/politica-de-privacidade' },
+    { label: 'Política de Cancelamento', href: '/politica-de-cancelamento' },
     { label: 'Contato', href: '/contato' },
   ];
   const configuredQuickLinks: Array<{ label: string; href: string }> | undefined = settings?.footerLinks
@@ -69,6 +70,9 @@ export default function Footer() {
     .map((link: { label: string; url: string }) => ({ label: link.label, href: link.url }));
   const hasConfiguredQuickLinks = Boolean(settings?.footerLinks?.length);
   const visibleQuickLinks = hasConfiguredQuickLinks ? configuredQuickLinks || [] : quickLinks;
+  if (!visibleQuickLinks.some((link) => link.href === '/politica-de-cancelamento')) {
+    visibleQuickLinks.push({ label: 'Política de Cancelamento', href: '/politica-de-cancelamento' });
+  }
   const homeCopy = settings?.pageCopy?.home;
 
   return (

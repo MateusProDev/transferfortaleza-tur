@@ -20,7 +20,7 @@ interface TransfersProps {
 export default function Transfers({ transfers, whatsappNumber, copy }: TransfersProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const itemsPerPage = 3;
+  const itemsPerPage = 1;
 
   const featuredTransfers = transfers.filter((transfer) => transfer.featuredOnHome);
   const displayTransfers = featuredTransfers.length > 0 ? featuredTransfers : transfers.slice(0, 6);
@@ -83,7 +83,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
         <div className="relative">
           {/* Carousel */}
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 px-2 md:px-0 transition-all duration-300 ease-out"
+            className="grid grid-cols-1 gap-6 lg:gap-8 px-2 md:px-0 transition-all duration-300 ease-out"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
@@ -91,7 +91,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
             onTouchCancel={() => setIsPaused(false)}
           >
             {visibleTransfers.map((transfer) => (
-              <div key={transfer.id} className="relative group">
+              <div key={transfer.id} className="relative group mx-auto w-full max-w-sm">
                 {displayTransfers.length > itemsPerPage && (
                   <>
                     <button

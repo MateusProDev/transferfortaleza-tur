@@ -50,6 +50,7 @@ const defaultMenuLinks = [
   { id: "blog", label: "Blog", url: "/blog", order: 3, active: true },
   { id: "about", label: "Sobre", url: "/sobre", order: 4, active: true },
   { id: "contact", label: "Contato", url: "/contato", order: 5, active: true },
+  { id: "cancellation-policy", label: "Política de Cancelamento", url: "/politica-de-cancelamento", order: 6, active: true },
 ];
 
 const defaultFooterLinks = [
@@ -57,6 +58,7 @@ const defaultFooterLinks = [
   { id: "blog", label: "Blog", url: "/blog", active: true },
   { id: "transfers", label: "Transfers", url: "/transfer", active: true },
   { id: "privacy", label: "Política", url: "/politica-de-privacidade", active: true },
+  { id: "cancellation-policy", label: "Política de Cancelamento", url: "/politica-de-cancelamento", active: true },
   { id: "contact", label: "Contato", url: "/contato", active: true },
 ];
 
@@ -311,6 +313,22 @@ const pageCopyGroups = [
     ],
   },
   {
+    key: "cancellationPolicy",
+    title: "Política de Cancelamento",
+    description: "Edite o conteúdo publicado na página de cancelamento. O texto inicial é um modelo Lorem ipsum e deve ser substituído pelas regras oficiais da empresa antes da publicação.",
+    fields: [
+      ["brandLabel", "Nome exibido acima do título", false], ["title", "Título da página", false],
+      ["updatedLabel", "Rótulo da data de atualização", false], ["updatedDate", "Data de atualização", false],
+      ["introduction", "Introdução", true],
+      ["section1Title", "Seção 1 — título", false], ["section1Body", "Seção 1 — conteúdo", true],
+      ["section2Title", "Seção 2 — título", false], ["section2Body", "Seção 2 — conteúdo", true],
+      ["section3Title", "Seção 3 — título", false], ["section3Body", "Seção 3 — conteúdo", true],
+      ["section4Title", "Seção 4 — título", false], ["section4Body", "Seção 4 — conteúdo", true],
+      ["section5Title", "Seção 5 — título", false], ["section5Body", "Seção 5 — conteúdo", true],
+      ["seoTitle", "Título SEO", false], ["seoDescription", "Descrição SEO", true],
+    ],
+  },
+  {
     key: "cookie",
     title: "Aviso de cookies e consentimento",
     description: "Edite os textos do aviso sem alterar como a autorização é armazenada ou aplicada.",
@@ -406,7 +424,7 @@ function getDefaultHeadingLevel(page: string, field: string) {
     field === "heroTitle" ||
     field === "disabledTitle" ||
     field === "productName" ||
-    (field === "title" && ["tours", "transfers", "packages", "blog", "privacy"].includes(page))
+    (field === "title" && ["tours", "transfers", "packages", "blog", "privacy", "cancellationPolicy"].includes(page))
   ) {
     return "h1";
   }
@@ -548,6 +566,13 @@ const sectionVisibilityControls: Record<string, Array<{ key: string; label: stri
   transfers: [{ key: "listingSectionEnabled", label: "Lista de transfers" }],
   blog: [{ key: "listingSectionEnabled", label: "Lista de artigos" }],
   privacy: [
+    { key: "section1SectionEnabled", label: "Seção 1 da política" },
+    { key: "section2SectionEnabled", label: "Seção 2 da política" },
+    { key: "section3SectionEnabled", label: "Seção 3 da política" },
+    { key: "section4SectionEnabled", label: "Seção 4 da política" },
+    { key: "section5SectionEnabled", label: "Seção 5 da política" },
+  ],
+  cancellationPolicy: [
     { key: "section1SectionEnabled", label: "Seção 1 da política" },
     { key: "section2SectionEnabled", label: "Seção 2 da política" },
     { key: "section3SectionEnabled", label: "Seção 3 da política" },

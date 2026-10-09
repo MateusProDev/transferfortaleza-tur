@@ -34,7 +34,7 @@ export const defaultContactCopy: ContactPageCopy = {
 };
 
 export const defaultPublicPageCopy: Record<
-  "home" | "tours" | "transfers" | "packages" | "blog" | "testimonials" | "faq" | "tourDetails" | "transferDetails" | "privacy" | "cookie",
+  "home" | "tours" | "transfers" | "packages" | "blog" | "testimonials" | "faq" | "tourDetails" | "transferDetails" | "privacy" | "cancellationPolicy" | "cookie",
   SitePageCopy
 > = {
   home: {
@@ -237,6 +237,25 @@ export const defaultPublicPageCopy: Record<
     section5Body: "Para dúvidas ou solicitações relacionadas a privacidade e dados pessoais, entre em contato pelos canais disponíveis na página de contato da Transfer Fortaleza Tur.",
     seoTitle: "Política de Privacidade | Transfer Fortaleza Tur",
     seoDescription: "Saiba como a Transfer Fortaleza Tur coleta e utiliza dados de navegação e atendimento.",
+  },
+  cancellationPolicy: {
+    brandLabel: "Transfer Fortaleza Tur",
+    title: "Política de Cancelamento",
+    updatedLabel: "Última atualização",
+    updatedDate: "09 de outubro de 2026",
+    introduction: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consulte as condições aplicáveis à sua reserva e, em caso de dúvida, fale com nossa equipe antes de confirmar o serviço.",
+    section1Title: "1. Solicitação de cancelamento",
+    section1Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. A solicitação de cancelamento deve ser encaminhada pelos canais oficiais de atendimento, com os dados utilizados na reserva e a identificação do serviço contratado.",
+    section2Title: "2. Prazos e condições",
+    section2Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. As condições e os prazos podem variar conforme o serviço, a data contratada e as regras informadas no momento da reserva. Confirme essas condições com nossa equipe.",
+    section3Title: "3. Reembolso e taxas",
+    section3Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. A existência de reembolso, eventuais taxas e o prazo de processamento dependem das condições aplicáveis à reserva e deverão ser confirmados antes da contratação.",
+    section4Title: "4. Alterações e reagendamento",
+    section4Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pedidos de alteração ou reagendamento estão sujeitos à disponibilidade e à confirmação da equipe responsável pelo atendimento.",
+    section5Title: "5. Contato",
+    section5Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Para solicitar um cancelamento ou esclarecer as condições da sua reserva, entre em contato pelos canais disponíveis na página de contato.",
+    seoTitle: "Política de Cancelamento | Transfer Fortaleza Tur",
+    seoDescription: "Consulte as condições para cancelamento e alteração de reservas da Transfer Fortaleza Tur.",
   },
   cookie: {
     title: "Podemos melhorar seu atendimento?",

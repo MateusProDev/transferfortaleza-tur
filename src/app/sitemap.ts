@@ -48,6 +48,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.2,
     },
+    {
+      url: `${baseUrl}/politica-de-cancelamento`,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 
   const [tours, transfers, blogPosts] = await Promise.all([

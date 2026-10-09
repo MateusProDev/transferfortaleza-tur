@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import { MessageCircle } from 'lucide-react';
 import { getCachedSiteSettings } from '@/lib/public-data-cache';
 import { getSiteUrl } from '@/lib/site-url';
 import { getHomepageOpenGraphImage, stripBrandSuffix, withBrandSuffix } from '@/lib/open-graph';
+import { normalizeBrazilianPhone } from '@/lib/phone';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
 const baseUrl = getSiteUrl();
@@ -38,7 +40,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PrivacyPolicyPage() {
-  const copy = (await getCachedSiteSettings())?.pageCopy?.privacy;
+  const settings = await getCachedSiteSettings();
+  const copy = settings?.pageCopy?.privacy;
+  const whatsappNumber = normalizeBrazilianPhone(
+    settings?.whatsappConfig?.number || settings?.contactInfo?.whatsapp || '5585997314093',
+  );
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-16 text-slate-800">
       <article className="mx-auto max-w-3xl rounded-xl bg-white p-6 shadow-sm sm:p-10">
@@ -80,6 +87,15 @@ export default async function PrivacyPolicyPage() {
           </section>}
         </div>
       </article>
+      <a
+        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Olá! Gostaria de tirar uma dúvida sobre a política de privacidade.')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Fale conosco pelo WhatsApp"
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-300 motion-safe:animate-pulse"
+      >
+        <MessageCircle size={28} aria-hidden="true" />
+      </a>
     </main>
   );
 }

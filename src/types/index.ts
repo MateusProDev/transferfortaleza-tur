@@ -207,6 +207,7 @@ export interface SiteSettings {
     tourDetails?: Partial<SitePageCopy>;
     transferDetails?: Partial<SitePageCopy>;
     privacy?: Partial<SitePageCopy>;
+    cancellationPolicy?: Partial<SitePageCopy>;
     cookie?: Partial<SitePageCopy>;
   };
   companyName?: string;

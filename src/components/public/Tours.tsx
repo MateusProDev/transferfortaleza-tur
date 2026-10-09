@@ -35,7 +35,7 @@ interface ToursProps {
 export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const itemsPerPage = 3;
+  const itemsPerPage = 1;
 
   const featuredTours = tours
     .filter((tour) => tour.featured)
@@ -123,7 +123,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
         <div className="relative">
           {/* Carousel */}
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 px-2 md:px-0 transition-all duration-300 ease-out"
+            className="grid grid-cols-1 gap-6 lg:gap-8 px-2 md:px-0 transition-all duration-300 ease-out"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
@@ -141,7 +141,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                     url={`${BRAND_URL}/pacote/${tour.slug || tour.id}`}
                   />
                 )}
-                <div className="relative group">
+                <div className="relative group mx-auto w-full max-w-sm">
                   {displayTours.length > itemsPerPage && (
                     <>
                       <button
@@ -175,7 +175,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                       alt={tour.mainImageAlt || tour.name}
                       fill
                       className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) calc(50vw - 2rem), calc(100vw - 4rem)"
+                      sizes="(min-width: 640px) 384px, calc(100vw - 4rem)"
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
