@@ -8,6 +8,7 @@ import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 import type { SitePageCopy } from '@/types';
+import useResponsiveCarouselItemsPerPage from '@/hooks/useResponsiveCarouselItemsPerPage';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
 
 interface Tour {
@@ -29,7 +30,7 @@ interface OtherToursCarouselProps {
 export default function OtherToursCarousel({ tours, whatsappNumber, copy }: OtherToursCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const itemsPerPage = 1;
+  const itemsPerPage = useResponsiveCarouselItemsPerPage();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -44,6 +45,10 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
   const totalGroups = Math.max(1, Math.ceil(tours.length / itemsPerPage));
 
   useEffect(() => {
+    setCurrentIndex((index) => Math.min(index, totalGroups - 1));
+  }, [totalGroups]);
+
+  useEffect(() => {
     if (tours.length <= itemsPerPage || isPaused) return;
 
     const timer = setInterval(() => {
@@ -55,10 +60,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
 
   const visibleTours = tours.length === 0
     ? []
-    : Array.from({ length: itemsPerPage }, (_, index) => {
-        const itemIndex = (currentIndex * itemsPerPage + index) % tours.length;
-        return tours[itemIndex];
-      });
+    : tours.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage);
 
   const goToPrevious = () => setCurrentIndex((previousIndex) => (previousIndex - 1 + totalGroups) % totalGroups);
   const goToNext = () => setCurrentIndex((previousIndex) => (previousIndex + 1) % totalGroups);
@@ -72,7 +74,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
   return (
     <div className="relative">
       <div
-        className="grid grid-cols-1 gap-6 lg:gap-8 px-2 md:px-0 transition-all duration-300 ease-out"
+        className="relative grid grid-cols-1 gap-6 px-2 transition-all duration-300 ease-out md:grid-cols-2 md:px-0 lg:grid-cols-3 lg:gap-8"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
@@ -80,25 +82,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
         onTouchCancel={() => setIsPaused(false)}
       >
         {visibleTours.map((tour, index) => (
-          <div key={`${tour.id}-${index}`} className="relative group mx-auto w-full max-w-sm">
-            {tours.length > itemsPerPage && (
-              <>
-                <button
-                  onClick={goToPrevious}
-                  className="absolute -left-3 md:-left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white"
-                  aria-label={`Passeio anterior: ${tour.name}`}
-                >
-                  <ChevronLeft size={20} className="md:w-6 md:h-6" />
-                </button>
-                <button
-                  onClick={goToNext}
-                  className="absolute -right-3 md:-right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white"
-                  aria-label={`Próximo passeio: ${tour.name}`}
-                >
-                  <ChevronRight size={20} className="md:w-6 md:h-6" />
-                </button>
-              </>
-            )}
+          <div key={`${tour.id}-${index}`} className="relative group mx-auto w-full max-w-sm md:max-w-none">
             <article className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group">
             <Link
               href={`/pacote/${tour.slug || tour.id}`}
@@ -112,7 +96,7 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
                   alt={tour.mainImageAlt || tour.name}
                   fill
                   className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                  sizes="(min-width: 640px) 384px, calc(100vw - 4rem)"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, calc(100vw - 4rem)"
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -167,6 +151,24 @@ export default function OtherToursCarousel({ tours, whatsappNumber, copy }: Othe
             </article>
           </div>
         ))}
+        {tours.length > itemsPerPage && (
+          <>
+            <button
+              onClick={goToPrevious}
+              className="absolute -left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white md:-left-4 md:h-12 md:w-12"
+              aria-label="Passeio anterior"
+            >
+              <ChevronLeft size={20} className="md:h-6 md:w-6" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="absolute -right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white md:-right-4 md:h-12 md:w-12"
+              aria-label="Próximo passeio"
+            >
+              <ChevronRight size={20} className="md:h-6 md:w-6" />
+            </button>
+          </>
+        )}
       </div>
 
       {tours.length > itemsPerPage && (

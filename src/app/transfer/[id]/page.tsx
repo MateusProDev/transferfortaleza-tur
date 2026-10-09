@@ -15,7 +15,6 @@ import TransferConversionBar from "@/components/public/TransferConversionBar";
 import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
 import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
-import RecommendedTransfers from "@/components/public/RecommendedTransfers";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 
@@ -119,13 +118,6 @@ export default async function TransferDetailPage({ params }: PageProps) {
     : [];
   const includesItems = Array.isArray(transfer.includesItems) ? transfer.includesItems.filter(Boolean) : [];
   const excludesItems = Array.isArray(transfer.excludesItems) ? transfer.excludesItems.filter(Boolean) : [];
-  const allTransfers = await getCachedTransfers(true);
-  const relatedTransfers = transfer.recommendedTransferIds?.length
-    ? transfer.recommendedTransferIds
-        .map((id) => allTransfers.find((item) => item.id === id))
-        .filter((item): item is Types.Transfer => Boolean(item && item.id !== transfer.id))
-        .slice(0, 3)
-    : allTransfers.filter((item) => item.id !== transfer.id).slice(0, 3);
   const whatsappNumber = normalizeBrazilianPhone(settings?.whatsappConfig?.number || "5585997314093");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
 
@@ -288,7 +280,6 @@ export default async function TransferDetailPage({ params }: PageProps) {
         />
       ))}
 
-      {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "relatedSection") && <RecommendedTransfers transfers={relatedTransfers} copy={settings?.pageCopy?.transferDetails} />}
       <Footer />
     </main>
   );

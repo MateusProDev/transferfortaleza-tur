@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Car, Users, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
-import RecommendedTransfers from './RecommendedTransfers';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 import type { Transfer } from '@/types';
 import type { SitePageCopy } from '@/types';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from './EditableHeading';
+import useResponsiveCarouselItemsPerPage from '@/hooks/useResponsiveCarouselItemsPerPage';
 
 interface TransfersProps {
   transfers: Transfer[];
@@ -20,13 +20,10 @@ interface TransfersProps {
 export default function Transfers({ transfers, whatsappNumber, copy }: TransfersProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const itemsPerPage = 1;
+  const itemsPerPage = useResponsiveCarouselItemsPerPage();
 
   const featuredTransfers = transfers.filter((transfer) => transfer.featuredOnHome);
   const displayTransfers = featuredTransfers.length > 0 ? featuredTransfers : transfers.slice(0, 6);
-  const otherTransfers = featuredTransfers.length > 0
-    ? transfers.filter((transfer) => !transfer.featuredOnHome)
-    : transfers.slice(6);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -39,6 +36,10 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
   }, []);
 
   const totalGroups = Math.max(1, Math.ceil(displayTransfers.length / itemsPerPage));
+
+  useEffect(() => {
+    setCurrentIndex((index) => Math.min(index, totalGroups - 1));
+  }, [totalGroups]);
 
   useEffect(() => {
     if (displayTransfers.length <= itemsPerPage || isPaused) return;
@@ -83,7 +84,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
         <div className="relative">
           {/* Carousel */}
           <div
-            className="grid grid-cols-1 gap-6 lg:gap-8 px-2 md:px-0 transition-all duration-300 ease-out"
+            className="relative grid grid-cols-1 gap-6 px-2 transition-all duration-300 ease-out md:grid-cols-2 md:px-0 lg:grid-cols-3 lg:gap-8"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
@@ -91,25 +92,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
             onTouchCancel={() => setIsPaused(false)}
           >
             {visibleTransfers.map((transfer) => (
-              <div key={transfer.id} className="relative group mx-auto w-full max-w-sm">
-                {displayTransfers.length > itemsPerPage && (
-                  <>
-                    <button
-                      onClick={goToPrevious}
-                      className="absolute -left-3 md:-left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white"
-                      aria-label={`Transfer anterior: ${transfer.name}`}
-                    >
-                      <ChevronLeft size={20} className="md:w-6 md:h-6" />
-                    </button>
-                    <button
-                      onClick={goToNext}
-                      className="absolute -right-3 md:-right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white"
-                      aria-label={`Próximo transfer: ${transfer.name}`}
-                    >
-                      <ChevronRight size={20} className="md:w-6 md:h-6" />
-                    </button>
-                  </>
-                )}
+              <div key={transfer.id} className="relative group mx-auto w-full max-w-sm md:max-w-none">
                 <article
                   className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 ease-out flex flex-col group"
                 >
@@ -176,6 +159,24 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
                 </article>
               </div>
             ))}
+            {displayTransfers.length > itemsPerPage && (
+              <>
+                <button
+                  onClick={goToPrevious}
+                  className="absolute -left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white md:-left-4 md:h-12 md:w-12"
+                  aria-label="Transfer anterior"
+                >
+                  <ChevronLeft size={20} className="md:h-6 md:w-6" />
+                </button>
+                <button
+                  onClick={goToNext}
+                  className="absolute -right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-lg transition hover:bg-white md:-right-4 md:h-12 md:w-12"
+                  aria-label="Próximo transfer"
+                >
+                  <ChevronRight size={20} className="md:h-6 md:w-6" />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Dots */}
@@ -207,24 +208,6 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
         </div>
       </div>
     </section>
-    {otherTransfers.length > 0 && isCopyFieldEnabled(copy, "homeRelatedSection") && (
-      <RecommendedTransfers
-        transfers={otherTransfers}
-        copy={{
-          relatedTitle: copy?.homeRelatedTitle || "Outros transfers recomendados",
-          relatedTitleHeadingLevel: copy?.homeRelatedTitleHeadingLevel || "h2",
-          relatedTitleEnabled: copy?.homeRelatedTitleEnabled,
-          relatedIntro: copy?.homeRelatedIntro || "Confira outras opções de transporte para sua viagem",
-          relatedIntroEnabled: copy?.homeRelatedIntroEnabled,
-          cardTitleEnabled: copy?.transferCardTitleEnabled,
-          relatedSeeAll: copy?.homeRelatedSeeAll || "Ver todos",
-          relatedCardButton: copy?.homeRelatedCardButton || "Ver transfer",
-          vehicleFallback: copy?.transfersVehicleFallback || "Consulte",
-          capacityFallback: copy?.transfersCapacityFallback || "Consulte",
-          capacitySuffix: copy?.transfersCapacitySuffix || "pessoas",
-        }}
-      />
-    )}
     </>
   );
 }
