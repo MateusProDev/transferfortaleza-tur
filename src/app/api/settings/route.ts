@@ -4,6 +4,11 @@ import { getCachedSiteSettings, invalidatePublicDataCache } from "@/lib/public-d
 import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminFirestore, getAdminProjectId } from "@/lib/firebase-admin";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const settingsResponseHeaders = { "Cache-Control": "private, no-store, max-age=0" };
+
 type SettingsPayload = Record<string, unknown>;
 
 class SettingsSaveError extends Error {
@@ -193,12 +198,12 @@ function settingsWriteError(error: unknown): NextResponse {
 export async function GET() {
   try {
     const settings = await getCachedSiteSettings();
-    return NextResponse.json(settings);
+    return NextResponse.json(settings, { headers: settingsResponseHeaders });
   } catch (error) {
     console.error("Error fetching settings:", error);
     return NextResponse.json(
       { error: "Failed to fetch settings" },
-      { status: 500 }
+      { status: 500, headers: settingsResponseHeaders },
     );
   }
 }

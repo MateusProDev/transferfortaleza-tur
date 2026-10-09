@@ -1,7 +1,7 @@
 import type { SiteSettings } from '@/types';
 
 const SETTINGS_CACHE_KEY = 'passeio_legal_settings_cache';
-const SETTINGS_CACHE_TTL_MS = 5 * 60 * 1000;
+const SETTINGS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 let cacheVersion = 0;
 let pendingSettingsRequest: {
@@ -15,7 +15,7 @@ export type SettingsCacheEntry<T> = {
   expiresAt: number;
 };
 
-export function getCachedSettings<T = unknown>(): T | null {
+function readCachedSettingsEntry<T = unknown>(): SettingsCacheEntry<T> | null {
   if (typeof window === 'undefined') return null;
 
   try {
@@ -23,18 +23,18 @@ export function getCachedSettings<T = unknown>(): T | null {
     if (!raw) return null;
 
     const parsed = JSON.parse(raw) as SettingsCacheEntry<T>;
-    if (!parsed || typeof parsed.expiresAt !== 'number') return null;
-
-    if (Date.now() > parsed.expiresAt) {
-      window.localStorage.removeItem(SETTINGS_CACHE_KEY);
-      return null;
-    }
-
-    return parsed.data ?? null;
+    if (!parsed || typeof parsed.expiresAt !== 'number' || parsed.data == null) return null;
+    return parsed;
   } catch (error) {
     console.warn('Unable to read cached site settings:', error);
     return null;
   }
+}
+
+export function getCachedSettings<T = unknown>(): T | null {
+  const cached = readCachedSettingsEntry<T>();
+  if (!cached || Date.now() > cached.expiresAt) return null;
+  return cached.data;
 }
 
 export function setCachedSettings<T = unknown>(data: T, ttlMs = SETTINGS_CACHE_TTL_MS) {
@@ -67,6 +67,7 @@ export function clearCachedSettings() {
 export async function fetchSettingsCached<T = SiteSettings>(fetcher: typeof fetch = fetch): Promise<T | null> {
   const cached = getCachedSettings<T>();
   if (cached !== null) return cached;
+  const stale = readCachedSettingsEntry<T>()?.data ?? null;
 
   const version = cacheVersion;
   if (
@@ -77,10 +78,20 @@ export async function fetchSettingsCached<T = SiteSettings>(fetcher: typeof fetc
   }
 
   const promise = (async () => {
-    const response = await fetcher('/api/settings');
+    let response: Response;
+    try {
+      response = await fetcher('/api/settings', { cache: 'no-store' });
+    } catch (error) {
+      if (stale !== null) {
+        console.warn('Unable to refresh site settings; using the saved copy:', error);
+        return stale;
+      }
+      throw error;
+    }
+
     if (!response.ok) {
       console.error(`Unable to fetch site settings: HTTP ${response.status}`);
-      return null;
+      return stale;
     }
 
     const data: unknown = await response.json();
