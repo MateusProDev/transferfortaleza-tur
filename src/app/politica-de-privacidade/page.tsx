@@ -6,7 +6,7 @@ import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/componen
 
 const baseUrl = getSiteUrl();
 
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getCachedSiteSettings();

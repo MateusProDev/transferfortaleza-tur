@@ -26,12 +26,11 @@ interface Transfer {
 
 interface TransfersClientProps {
   transfers: Transfer[];
-  sectionDisabled: boolean;
   loadError: boolean;
   copy?: Partial<SitePageCopy>;
 }
 
-export default function TransfersClient({ transfers, sectionDisabled, loadError, copy }: TransfersClientProps) {
+export default function TransfersClient({ transfers, loadError, copy }: TransfersClientProps) {
   const [filteredTransfers, setFilteredTransfers] = useState<Transfer[]>(transfers);
   const [searchTerm, setSearchTerm] = useState('');
   const baseUrl = getSiteUrl();
@@ -53,23 +52,6 @@ export default function TransfersClient({ transfers, sectionDisabled, loadError,
     setFilteredTransfers(filtered);
   }, [searchTerm, transfers]);
 
-  if (sectionDisabled) {
-    return (
-      <main className="min-h-screen bg-gray-50 pt-24">
-        <Header />
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Seção Indisponível</h1>
-            <p className="text-gray-600 mb-8">{copy?.disabledMessage || "A seção de transfer está temporariamente desativada."}</p>
-            <Link href="/" className="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors">
-              Voltar para a Página Inicial
-            </Link>
-          </div>
-        </div>
-        <Footer />
-      </main>
-    );
-  }
   return (
     <main className="min-h-screen bg-[#0F3A4A] pt-24">
       <Header />

@@ -17,7 +17,7 @@ import {
   toPlainFirestoreValue,
 } from "@/lib/firestore-content";
 
-const PUBLIC_DATA_TTL_SECONDS = 3600;
+const PUBLIC_DATA_TTL_SECONDS = 24 * 60 * 60;
 
 function restoreDate(value: unknown): Date {
   if (value instanceof Date) return value;

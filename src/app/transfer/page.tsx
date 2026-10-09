@@ -2,11 +2,10 @@ import { getCachedSiteSettings, getCachedTransfers } from '@/lib/public-data-cac
 import type { SitePageCopy, Transfer } from '@/types';
 import TransfersClient from './TransfersClient';
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function TransfersPage() {
   let transfers: Transfer[] = [];
-  let sectionDisabled = false;
   let loadError = false;
   let copy: Partial<SitePageCopy> | undefined;
 
@@ -16,7 +15,6 @@ export default async function TransfersPage() {
       getCachedSiteSettings(),
     ]);
     transfers = loadedTransfers;
-    sectionDisabled = settings?.sections?.transfersEnabled === false;
     copy = settings?.pageCopy?.transfers;
   } catch (error) {
     console.error('Error fetching transfers page data:', error);
@@ -26,7 +24,6 @@ export default async function TransfersPage() {
   return (
     <TransfersClient
       transfers={transfers}
-      sectionDisabled={sectionDisabled}
       loadError={loadError}
       copy={copy}
     />

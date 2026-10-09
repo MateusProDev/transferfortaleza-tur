@@ -9,7 +9,7 @@ import { getCachedBlogPosts, getCachedSiteSettings } from '@/lib/public-data-cac
 import { shouldOptimizeImage } from '@/lib/image-optimization';
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from '@/components/public/EditableHeading';
 
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export default async function BlogPage() {
   const [posts, settings] = await Promise.all([

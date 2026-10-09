@@ -3,7 +3,7 @@ import PasseiosClient from './PasseiosClient';
 import type { Tour } from '@/types';
 import type { SitePageCopy } from '@/types';
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 async function getPageData(): Promise<{
   tours: Tour[];

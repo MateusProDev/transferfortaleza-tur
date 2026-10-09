@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getCachedBlogPosts, getCachedTours, getCachedTransfers } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getSiteUrl();
