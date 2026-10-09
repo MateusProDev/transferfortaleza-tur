@@ -61,7 +61,6 @@ export default async function PacotesPage() {
   let tours: Tour[] = [];
   let transfers: Transfer[] = [];
   let toursEnabled = true;
-  let transfersEnabled = true;
   let loadError = false;
   let pageCopy: Partial<SitePageCopy> | undefined;
 
@@ -75,7 +74,6 @@ export default async function PacotesPage() {
     transfers = loadedTransfers;
     pageCopy = settings?.pageCopy?.packages;
     toursEnabled = settings?.sections?.toursEnabled !== false;
-    transfersEnabled = settings?.sections?.transfersEnabled !== false;
   } catch (error) {
     console.error('Error fetching packages page data:', error);
     loadError = true;
@@ -86,7 +84,7 @@ export default async function PacotesPage() {
     { name: 'Passeios e Transfers', url: `${baseUrl}/pacotes` },
   ];
   const showTours = toursEnabled && isCopyFieldEnabled(pageCopy, "toursSection");
-  const showTransfers = transfersEnabled && isCopyFieldEnabled(pageCopy, "transfersSection");
+  const showTransfers = isCopyFieldEnabled(pageCopy, "transfersSection");
 
   return (
     <main className="min-h-screen bg-[#0F3A4A] pt-24">
