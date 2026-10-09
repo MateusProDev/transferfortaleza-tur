@@ -139,8 +139,6 @@ const pageCopyGroups = [
       ["tourFeaturedBadge", "Selo de passeio em destaque", false],
       ["tourReserveButton", "Botão de reserva pelo WhatsApp", false],
       ["tourDetailsButton", "Botão de detalhes do passeio", false],
-      ["moreToursTitle", "Título de mais passeios", false],
-      ["moreToursIntro", "Introdução de mais passeios", true],
       ["transfersTitle", "Título dos transfers", false],
       ["transfersIntro", "Introdução dos transfers", true],
       ["transfersButton", "Botão para ver todos os transfers", false],
@@ -342,15 +340,15 @@ const pageCopyGroups = [
 
 const homeFieldSections = [
   { id: "home-hero", title: "02 · Hero", start: 0, end: 2 },
-  { id: "home-passeios", title: "03 · Passeios e pacotes", start: 2, end: 16 },
-  { id: "home-transfers", title: "04 · Transfers", start: 16, end: 29 },
-  { id: "home-services", title: "05 · Serviços", start: 34, end: 36 },
-  { id: "home-differentials", title: "06 · Diferenciais", start: 36, end: 37 },
-  { id: "home-gallery", title: "07 · Galeria de imagens", start: 37, end: 39 },
-  { id: "home-beberibe", title: "08 · Transfer para Beberibe", start: 40, end: 43 },
-  { id: "home-blog", title: "09 · Blog", start: 29, end: 34 },
-  { id: "home-google-reviews", title: "11 · Avaliações do Google", start: 39, end: 40 },
-  { id: "home-footer", title: "13 · Rodapé", start: 43, end: 49 },
+  { id: "home-passeios", title: "03 · Passeios e pacotes", start: 2, end: 14 },
+  { id: "home-transfers", title: "04 · Transfers", start: 14, end: 27 },
+  { id: "home-services", title: "05 · Serviços", start: 32, end: 34 },
+  { id: "home-differentials", title: "06 · Diferenciais", start: 34, end: 35 },
+  { id: "home-gallery", title: "07 · Galeria de imagens", start: 35, end: 37 },
+  { id: "home-beberibe", title: "08 · Transfer para Beberibe", start: 38, end: 41 },
+  { id: "home-blog", title: "09 · Blog", start: 27, end: 32 },
+  { id: "home-google-reviews", title: "11 · Avaliações do Google", start: 37, end: 38 },
+  { id: "home-footer", title: "13 · Rodapé", start: 41, end: 47 },
 ] as const;
 
 const homeSectionActions: Record<string, { description: string; href: string; label: string }> = {
@@ -410,7 +408,6 @@ const homeSectionVisibilityControls: Record<string, Array<{ key: string; label: 
   "home-hero": [{ key: "heroSectionEnabled", label: "Banner principal" }],
   "home-passeios": [
     { key: "toursSectionEnabled", label: "Seção principal de passeios" },
-    { key: "moreToursSectionEnabled", label: "Seção de mais passeios" },
   ],
   "home-transfers": [
     { key: "transfersSectionEnabled", label: "Seção de transfers" },
@@ -551,7 +548,6 @@ const sectionVisibilityControls: Record<string, Array<{ key: string; label: stri
   home: [
     { key: "heroSectionEnabled", label: "Banner principal" },
     { key: "toursSectionEnabled", label: "Seção principal de passeios" },
-    { key: "moreToursSectionEnabled", label: "Seção de mais passeios" },
     { key: "transfersSectionEnabled", label: "Seção de transfers" },
     { key: "homeRelatedSectionEnabled", label: "Transfers recomendados" },
     { key: "blogSectionEnabled", label: "Seção do blog" },

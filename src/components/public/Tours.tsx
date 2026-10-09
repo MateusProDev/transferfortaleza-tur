@@ -7,7 +7,6 @@ import { Clock, Users, ChevronLeft, ChevronRight, MapPin, MessageCircle } from '
 import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import { normalizeBrazilianPhone } from '@/lib/phone';
-import OtherToursCarousel from './OtherToursCarousel';
 import useResponsiveCarouselItemsPerPage from '@/hooks/useResponsiveCarouselItemsPerPage';
 import { ProductJsonLd } from '@/components/seo/JsonLd';
 import { BRAND_URL } from '@/lib/brand';
@@ -41,10 +40,11 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
   const featuredTours = tours
     .filter((tour) => tour.featured)
     .sort((first, second) => (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER));
-  const displayTours = featuredTours.length > 0 ? featuredTours : tours.slice(0, 6);
-  const otherTours = featuredTours.length > 0
-    ? tours.filter((tour) => !featuredTours.some((featuredTour) => featuredTour.id === tour.id))
-    : tours.slice(6);
+  const featuredTourIds = new Set(featuredTours.map((tour) => tour.id));
+  const displayTours = [
+    ...featuredTours,
+    ...tours.filter((tour) => !featuredTourIds.has(tour.id)),
+  ];
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -268,19 +268,6 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
           </Link>
         </div>
 
-        {otherTours.length > 0 && isCopyFieldEnabled(copy, "moreToursSection") && (
-          <div className="mt-16 border-t border-gray-200 pt-14">
-            <div className="text-center mb-10">
-              {isCopyFieldEnabled(copy, "moreToursTitle") && <EditableHeading level={getHeadingLevel(copy, 'moreToursTitle', 'h2')} className="font-display text-3xl md:text-4xl text-gray-900 mb-4">
-                {copy?.moreToursTitle || "Mais Passeios"}
-              </EditableHeading>}
-              {isCopyFieldEnabled(copy, "moreToursIntro") && <p className="text-gray-600 max-w-2xl mx-auto">
-                {copy?.moreToursIntro || "Explore outros roteiros para encontrar a experiência ideal para sua viagem"}
-              </p>}
-            </div>
-            <OtherToursCarousel tours={otherTours} whatsappNumber={whatsappNumber} copy={copy} />
-          </div>
-        )}
       </div>
     </section>
   );

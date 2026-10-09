@@ -52,8 +52,6 @@ export const defaultPublicPageCopy: Record<
     tourFeaturedBadge: "Destaque",
     tourReserveButton: "Reservar pelo WhatsApp",
     tourDetailsButton: "Ver passeio",
-    moreToursTitle: "Mais Passeios",
-    moreToursIntro: "Explore outros roteiros para encontrar a experiência ideal para sua viagem",
     transfersTitle: "Serviços de Transfer",
     transfersIntro: "Conforto e segurança em seus deslocamentos com nossa frota moderna",
     transfersButton: "Ver Todos os Transfers",
