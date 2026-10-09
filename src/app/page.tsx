@@ -125,12 +125,10 @@ async function getPageData() {
       banners,
       tours: tours.filter((tour) => tour.featured).slice(0, 5),
       transfers: transfers
-        .filter((transfer) => transfer.featuredOnHome)
         .sort((first, second) =>
           (first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER)
           || first.name.localeCompare(second.name)
-        )
-        .slice(0, 5),
+        ),
       testimonials: testimonials.filter((testimonial) => testimonial.active),
       googleReviews,
       homeSections,
@@ -160,7 +158,6 @@ export default async function Home() {
   const { banners, tours, transfers, testimonials, googleReviews, homeSections, blogPosts, faqs, settings } = await getPageData();
   
   const toursEnabled = settings?.sections?.toursEnabled ?? true;
-  const transfersEnabled = settings?.sections?.transfersEnabled ?? true;
   const homeCopy = settings?.pageCopy?.home;
   const testimonialsCopy = settings?.pageCopy?.testimonials;
   const faqCopy = settings?.pageCopy?.faq;
@@ -173,7 +170,7 @@ export default async function Home() {
 
       {toursEnabled && isCopyFieldEnabled(homeCopy, "toursSection") && <Tours tours={tours} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
       
-      {transfersEnabled && isCopyFieldEnabled(homeCopy, "transfersSection") && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
+      {isCopyFieldEnabled(homeCopy, "transfersSection") && <Transfers transfers={transfers} whatsappNumber={settings?.whatsappConfig?.number} copy={homeCopy} />}
 
       <HomeConfiguredSections
         services={homeSections.services}
