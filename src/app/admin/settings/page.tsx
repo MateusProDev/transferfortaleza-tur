@@ -1612,7 +1612,7 @@ export default function SettingsAdmin() {
                           </div>
                         </fieldset>
                       )}
-                      {group.key === "home" && ["home-passeios", "home-transfers"].includes(fieldSection.id) && (
+                      {group.key === "home" && fieldSection.id === "home-passeios" && (
                         <fieldset className="space-y-3 rounded-md border p-3">
                           <legend className="px-1 text-sm font-semibold text-gray-700">
                             Exibição geral nas páginas de catálogo
