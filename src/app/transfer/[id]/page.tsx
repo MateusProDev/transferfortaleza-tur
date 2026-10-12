@@ -17,6 +17,7 @@ import { getSiteUrl } from "@/lib/site-url";
 import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
+import PackageLocationMap from "@/components/public/PackageLocationMap";
 
 interface PageProps {
   params: { id: string };
@@ -213,6 +214,8 @@ export default async function TransferDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {transfer.location && <PackageLocationMap location={transfer.location} packageName={transfer.name} />}
 
       {((includesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "includesSection")) ||
         (excludesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "excludesSection"))) && (

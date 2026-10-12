@@ -9,6 +9,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 import ImageGalleryUpload from "@/components/ui/ImageGalleryUpload";
 import { GalleryImage, TourFAQ } from "@/types";
 import { useTransfers } from "@/hooks/useApi";
+import PackageLocationField from "@/components/admin/PackageLocationField";
 
 export default function NewTransfer() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function NewTransfer() {
     slug: "",
     description: "",
     longDescription: "",
+    location: "",
     price: "",
     order: "",
     capacity: "",
@@ -47,6 +49,7 @@ export default function NewTransfer() {
           slug: formData.slug,
           description: formData.description,
           longDescription: formData.longDescription,
+          location: formData.location,
           price: formData.price ? Number(formData.price) : undefined,
           order: formData.order ? Number(formData.order) : undefined,
           capacity: parseInt(formData.capacity),
@@ -128,6 +131,10 @@ export default function NewTransfer() {
                 rows={6}
               />
             </div>
+            <PackageLocationField
+              value={formData.location}
+              onChange={(location) => setFormData((current) => ({ ...current, location }))}
+            />
             <div>
               <label className="block text-sm font-medium mb-2">Preço (opcional)</label>
               <input

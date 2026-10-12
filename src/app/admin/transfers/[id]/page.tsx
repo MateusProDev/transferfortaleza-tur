@@ -10,6 +10,7 @@ import ImageGalleryUpload from "@/components/ui/ImageGalleryUpload";
 import { GalleryImage, TourFAQ } from "@/types";
 import { useTransfers } from "@/hooks/useApi";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import PackageLocationField from "@/components/admin/PackageLocationField";
 
 export default function EditTransfer() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function EditTransfer() {
     slug: "",
     description: "",
     longDescription: "",
+    location: "",
     price: "",
     order: "",
     capacity: "",
@@ -55,6 +57,7 @@ export default function EditTransfer() {
           slug: transfer.slug || "",
           description: transfer.description || "",
           longDescription: transfer.longDescription || "",
+          location: transfer.location || "",
           price: transfer.price !== undefined && transfer.price !== null ? String(transfer.price) : "",
           order: transfer.order !== undefined && transfer.order !== null ? String(transfer.order) : "",
           capacity: transfer.capacity ? transfer.capacity.toString() : "",
@@ -172,6 +175,10 @@ export default function EditTransfer() {
                 onChange={(longDescription) => setFormData({ ...formData, longDescription })}
               />
             </div>
+            <PackageLocationField
+              value={formData.location}
+              onChange={(location) => setFormData((current) => ({ ...current, location }))}
+            />
             <div>
               <label className="block text-sm font-medium mb-2">Preço (opcional)</label>
               <input

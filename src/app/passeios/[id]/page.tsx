@@ -18,6 +18,7 @@ import { getSiteUrl } from "@/lib/site-url";
 import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
+import PackageLocationMap from "@/components/public/PackageLocationMap";
 
 interface PageProps {
   params: { id: string };
@@ -296,6 +297,8 @@ export default async function PasseioDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {tour.location && <PackageLocationMap location={tour.location} packageName={tour.name} />}
 
       {/* Selos de Confiança */}
       <TourTrustBadges copy={settings?.pageCopy?.tourDetails} />

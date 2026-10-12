@@ -12,6 +12,7 @@ import { useTours } from "@/hooks/useApi";
 import { TourFAQ } from "@/types";
 import { DEFAULT_TOUR_FAQS } from "@/components/public/TourFAQ";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import PackageLocationField from "@/components/admin/PackageLocationField";
 
 export default function NewTour() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function NewTour() {
     slug: "",
     description: "",
     longDescription: "",
+    location: "",
     duration: "",
     price: "",
     order: "",
@@ -118,6 +120,10 @@ export default function NewTour() {
                 onChange={(longDescription) => setFormData({ ...formData, longDescription })}
               />
             </div>
+            <PackageLocationField
+              value={formData.location}
+              onChange={(location) => setFormData((current) => ({ ...current, location }))}
+            />
             <div>
               <label className="block text-sm font-medium mb-2">Duração</label>
               <input

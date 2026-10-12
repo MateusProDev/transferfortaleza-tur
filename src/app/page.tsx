@@ -1,6 +1,6 @@
 import dynamicImport from "next/dynamic";
 import { Metadata } from "next";
-import { MessageCircle } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import Header from "@/components/public/Header";
 import { isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import Hero from "@/components/public/Hero";
@@ -205,10 +205,13 @@ export default async function Home() {
         href={`https://wa.me/${normalizeBrazilianPhone(settings?.whatsappConfig?.number || "5585997314093")}?text=${encodeURIComponent("Olá! Quero saber mais sobre os tours e transfers.")}`}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Falar pelo WhatsApp"
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_30px_rgba(37,211,102,0.45)] transition-transform duration-200 hover:scale-105 hover:bg-[#1ebc5d]"
+        aria-label="Solicitar orçamento pelo WhatsApp"
+        className="fixed bottom-5 right-4 z-50 flex max-w-[calc(100vw-2rem)] items-center gap-3 rounded-full border-4 border-white bg-[#25D366] px-4 py-3 font-semibold uppercase tracking-wide text-white shadow-[0_0_0_5px_rgba(0,128,0,0.85),0_12px_30px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-105 hover:bg-[#1ebc5d] sm:right-6 sm:gap-4 sm:px-7 sm:py-4"
       >
-        <MessageCircle className="h-7 w-7" />
+        <FaWhatsapp aria-hidden="true" className="h-6 w-6 shrink-0 sm:h-8 sm:w-8" />
+        <span className="whitespace-nowrap text-xs sm:text-base md:text-lg">
+          Orçamento por WhatsApp
+        </span>
       </WhatsAppConversionLink>
 
       <Footer />

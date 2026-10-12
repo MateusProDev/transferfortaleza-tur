@@ -184,6 +184,7 @@ export function mapPackageToTour(id: string, value: unknown): Tour {
     ...record,
     id,
     slug: firstString(record.slug) || undefined,
+    location: firstString(record.location, record.localizacao, record.endereco) || undefined,
     order: asNumber(record.ordem ?? record.order),
     recommendedTourIds: sourceRecommendations(record.pacotesRecomendados ?? record.recommendedTourIds),
     faqs: sourceFaqs(record.faq ?? record.faqs),
@@ -230,6 +231,7 @@ export function mapPackageToTransfer(id: string, value: unknown): Transfer {
     ...record,
     id,
     slug: firstString(record.slug) || undefined,
+    location: firstString(record.location, record.localizacao, record.endereco) || undefined,
     order: asNumber(record.ordem ?? record.order),
     recommendedTransferIds: sourceRecommendations(record.pacotesRecomendados ?? record.recommendedTransferIds),
     featuredOnHome: featured,
@@ -264,6 +266,7 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
 
   copy("name", "titulo");
   copy("slug", "slug");
+  copy("location", "location", (item) => typeof item === "string" ? item.trim() : "");
   copy("description", "descricaoCurta");
   copy("longDescription", "descricao");
   copy("duration", "duracao");
