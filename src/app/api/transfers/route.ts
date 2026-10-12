@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { transferService } from "@/lib/firestore";
+import { adminTransferService } from "@/lib/admin-firestore-services";
 import { getCachedTransfers, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const id = await transferService.create(body);
+    const id = await adminTransferService.create(body);
     invalidatePublicDataCache("catalog");
     return NextResponse.json(
       { id, message: "Transfer created successfully" },

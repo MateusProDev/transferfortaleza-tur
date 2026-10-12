@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { bannerService } from "@/lib/firestore";
+import { adminBannerService } from "@/lib/admin-firestore-services";
 import { getCachedBannerById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -37,7 +37,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    await bannerService.update(params.id, body);
+    await adminBannerService.update(params.id, body);
     invalidatePublicDataCache("banners");
     revalidatePath("/");
     return NextResponse.json({ message: "Banner updated successfully" });
@@ -59,7 +59,7 @@ export async function DELETE(
   if (session instanceof NextResponse) return session;
 
   try {
-    await bannerService.delete(params.id);
+    await adminBannerService.delete(params.id);
     invalidatePublicDataCache("banners");
     revalidatePath("/");
     return NextResponse.json({ message: "Banner deleted successfully" });

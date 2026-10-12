@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { bannerService } from "@/lib/firestore";
+import { adminBannerService } from "@/lib/admin-firestore-services";
 import { getCachedBanners, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const id = await bannerService.create(body);
+    const id = await adminBannerService.create(body);
     invalidatePublicDataCache("banners");
     revalidatePath("/");
     return NextResponse.json(

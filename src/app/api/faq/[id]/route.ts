@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { faqService } from "@/lib/firestore";
+import { adminFaqService } from "@/lib/admin-firestore-services";
 import { getCachedFaqItems, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -36,7 +36,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    await faqService.update(params.id, body);
+    await adminFaqService.update(params.id, body);
     invalidatePublicDataCache("faqs", "site-content");
     return NextResponse.json({ message: "FAQ item updated successfully" });
   } catch (error) {
@@ -57,7 +57,7 @@ export async function DELETE(
   if (session instanceof NextResponse) return session;
 
   try {
-    await faqService.delete(params.id);
+    await adminFaqService.delete(params.id);
     invalidatePublicDataCache("faqs", "site-content");
     return NextResponse.json({ message: "FAQ item deleted successfully" });
   } catch (error) {

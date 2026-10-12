@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { transferService } from "@/lib/firestore";
+import { adminTransferService } from "@/lib/admin-firestore-services";
 import { getCachedTransferById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -36,7 +36,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    await transferService.update(params.id, body);
+    await adminTransferService.update(params.id, body);
     invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Transfer updated successfully" });
   } catch (error) {
@@ -57,7 +57,7 @@ export async function DELETE(
   if (session instanceof NextResponse) return session;
 
   try {
-    await transferService.delete(params.id);
+    await adminTransferService.delete(params.id);
     invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Transfer deleted successfully" });
   } catch (error) {

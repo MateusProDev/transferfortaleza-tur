@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { tourService } from "@/lib/firestore";
+import { adminTourService } from "@/lib/admin-firestore-services";
 import { getCachedTourById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -36,7 +36,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    await tourService.update(params.id, body);
+    await adminTourService.update(params.id, body);
     invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Tour updated successfully" });
   } catch (error) {
@@ -57,7 +57,7 @@ export async function DELETE(
   if (session instanceof NextResponse) return session;
 
   try {
-    await tourService.delete(params.id);
+    await adminTourService.delete(params.id);
     invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Tour deleted successfully" });
   } catch (error) {

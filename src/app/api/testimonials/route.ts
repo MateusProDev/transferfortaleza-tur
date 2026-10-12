@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { testimonialService } from "@/lib/firestore";
+import { adminTestimonialService } from "@/lib/admin-firestore-services";
 import { getCachedTestimonials, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const id = await testimonialService.create(body);
+    const id = await adminTestimonialService.create(body);
     invalidatePublicDataCache("testimonials");
     return NextResponse.json(
       { id, message: "Testimonial created successfully" },

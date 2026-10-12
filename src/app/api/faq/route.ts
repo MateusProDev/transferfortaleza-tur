@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { faqService } from "@/lib/firestore";
+import { adminFaqService } from "@/lib/admin-firestore-services";
 import { getCachedFaqItems, invalidatePublicDataCache } from "@/lib/public-data-cache";
 import { requireAdminSession } from "@/lib/admin-api-auth";
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const id = await faqService.create(body);
+    const id = await adminFaqService.create(body);
     invalidatePublicDataCache("faqs", "site-content");
     return NextResponse.json(
       { id, message: "FAQ item created successfully" },
