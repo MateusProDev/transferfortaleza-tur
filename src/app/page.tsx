@@ -1,9 +1,11 @@
 import dynamicImport from "next/dynamic";
 import { Metadata } from "next";
+import { MessageCircle } from "lucide-react";
 import Header from "@/components/public/Header";
 import { isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import Hero from "@/components/public/Hero";
 import HomeConfiguredSections from "@/components/public/HomeConfiguredSections";
+import WhatsAppConversionLink from "@/components/public/WhatsAppConversionLink";
 import {
   getCachedBanners,
   getCachedBlogPosts,
@@ -19,6 +21,7 @@ import {
 import { getSiteUrl } from "@/lib/site-url";
 import { normalizeOpenGraphImage, stripBrandSuffix, withBrandSuffix } from "@/lib/open-graph";
 import { replaceLegacyBrand } from "@/lib/brand";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 
 const Tours = dynamicImport(() => import("@/components/public/Tours"), {
   loading: () => <div className="h-[420px] w-full" />,
@@ -198,6 +201,16 @@ export default async function Home() {
         sectionEnabled={isCopyFieldEnabled(homeCopy, "faqSection")}
       />
       
+      <WhatsAppConversionLink
+        href={`https://wa.me/${normalizeBrazilianPhone(settings?.whatsappConfig?.number || "5585997314093")}?text=${encodeURIComponent("Olá! Quero saber mais sobre os tours e transfers.")}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Falar pelo WhatsApp"
+        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_30px_rgba(37,211,102,0.45)] transition-transform duration-200 hover:scale-105 hover:bg-[#1ebc5d]"
+      >
+        <MessageCircle className="h-7 w-7" />
+      </WhatsAppConversionLink>
+
       <Footer />
     </main>
   );

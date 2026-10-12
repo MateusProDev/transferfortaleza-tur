@@ -93,69 +93,74 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
           >
             {visibleTransfers.map((transfer) => (
               <div key={transfer.id} className="relative group mx-auto w-full max-w-sm md:max-w-none">
-                <article
-                  className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-all duration-300 ease-out flex flex-col group"
-                >
-                <Link
-                  href={`/pacote/${transfer.slug || transfer.id}`}
-                  className="relative mb-4 block h-40 w-full"
-                  aria-label={`Ver transfer: ${transfer.name}`}
-                >
-                  {transfer.imageUrl ? (
-                    <Image
-                      src={transfer.imageUrl}
-                      alt={transfer.imageAlt || transfer.name}
-                      fill
-                      className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                      sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) calc(50vw - 2rem), calc(100vw - 2rem)"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                      <span className="text-gray-400">{copy?.transfersImagePlaceholder || "Sem imagem"}</span>
+                <article className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group">
+                  <Link
+                    href={`/pacote/${transfer.slug || transfer.id}`}
+                    className="relative block aspect-square w-full overflow-hidden"
+                    aria-label={`Ver transfer: ${transfer.name}`}
+                  >
+                    {transfer.imageUrl ? (
+                      <Image
+                        src={transfer.imageUrl}
+                        alt={transfer.imageAlt || transfer.name}
+                        fill
+                        className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                        sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) calc(50vw - 2rem), calc(100vw - 2rem)"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400">{copy?.transfersImagePlaceholder || "Sem imagem"}</span>
+                      </div>
+                    )}
+                  </Link>
+
+                  <div className="p-6 flex flex-col flex-1">
+                    {isCopyFieldEnabled(copy, "transferCardTitle") && (
+                      <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
+                        <Link
+                          href={`/pacote/${transfer.slug || transfer.id}`}
+                          className="mb-2 block min-h-14 line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
+                        >
+                          {transfer.name}
+                        </Link>
+                      </EditableHeading>
+                    )}
+
+                    {isCopyFieldEnabled(copy, "transferCardDescription") && (
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{transfer.description}</p>
+                    )}
+
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+                      <div className="flex items-center space-x-1">
+                        <Car size={16} />
+                        <span>{transfer.vehicleType || copy?.transfersVehicleFallback || 'Consulte'}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Users size={16} />
+                        <span>{transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} ${copy?.transfersCapacitySuffix || "pessoas"}` : copy?.transfersCapacityFallback || 'Consulte'}</span>
+                      </div>
                     </div>
-                  )}
-                </Link>
 
-                {isCopyFieldEnabled(copy, "transferCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
-                  <Link
-                    href={`/pacote/${transfer.slug || transfer.id}`}
-                    className="block text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors"
-                  >
-                    {transfer.name}
-                  </Link>
-                </EditableHeading>}
-                {isCopyFieldEnabled(copy, "transferCardDescription") && <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{transfer.description}</p>}
-
-                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                  <div className="flex items-center space-x-1">
-                    <Car size={16} />
-                    <span>{transfer.vehicleType || copy?.transfersVehicleFallback || 'Consulte'}</span>
+                    <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <Link
+                        href={`/pacote/${transfer.slug || transfer.id}`}
+                        className="flex-1 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
+                      >
+                        {copy?.transferDetailsButton || "Ver transfer"}
+                      </Link>
+                      <WhatsAppConversionLink
+                        href={`https://wa.me/${normalizeBrazilianPhone(whatsappNumber || "5585997314093")}?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre o transfer: ${transfer.name}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap"
+                        aria-label={`Consultar ${transfer.name} pelo WhatsApp`}
+                      >
+                        <MessageCircle size={18} />
+                        <span className="hidden sm:inline">{copy?.transferWhatsappButton || "WhatsApp"}</span>
+                        <span className="sm:hidden">{copy?.transferWhatsappButton || "WhatsApp"}</span>
+                      </WhatsAppConversionLink>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Users size={16} />
-                    <span>{transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} ${copy?.transfersCapacitySuffix || "pessoas"}` : copy?.transfersCapacityFallback || 'Consulte'}</span>
-                  </div>
-                </div>
-
-                <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
-                  <Link
-                    href={`/pacote/${transfer.slug || transfer.id}`}
-                    className="flex-1 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
-                  >
-                    {copy?.transferDetailsButton || "Ver transfer"}
-                  </Link>
-                  <WhatsAppConversionLink
-                    href={`https://wa.me/${normalizeBrazilianPhone(whatsappNumber || "5585997314093")}?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre o transfer: ${transfer.name}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm whitespace-nowrap"
-                    aria-label={`Consultar ${transfer.name} pelo WhatsApp`}
-                  >
-                    <MessageCircle size={18} />
-                    <span className="hidden sm:inline">{copy?.transferWhatsappButton || "WhatsApp"}</span>
-                    <span className="sm:hidden">{copy?.transferWhatsappButton || "WhatsApp"}</span>
-                  </WhatsAppConversionLink>
-                </div>
                 </article>
               </div>
             ))}
