@@ -11,7 +11,7 @@ function getDatabase() {
   if (!adminDb) {
     throw new Error("Firebase Admin Firestore is not configured.");
   }
-  return adminDb;
+  return adminDb; 
 }
 
 async function logActivity(
