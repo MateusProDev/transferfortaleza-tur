@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { getCachedFaqItems, getCachedSiteSettings, getCachedTransfers } from "@/lib/public-data-cache";
+import { getCachedFaqItems, getCachedGoogleReviews, getCachedSiteSettings, getCachedTransfers } from "@/lib/public-data-cache";
 import { Car, Check, ChevronDown, Users, X } from "lucide-react";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -18,6 +18,7 @@ import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } f
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import PackageLocationMap from "@/components/public/PackageLocationMap";
+import PackageReviewHighlights from "@/components/public/PackageReviewHighlights";
 
 interface PageProps {
   params: { id: string };
@@ -114,6 +115,12 @@ export default async function TransferDetailPage({ params }: PageProps) {
     getCachedFaqItems(),
     getCachedSiteSettings(),
   ]);
+  let googleReviews = null;
+  try {
+    googleReviews = await getCachedGoogleReviews();
+  } catch (error) {
+    console.error("Error fetching package Google reviews:", error);
+  }
   const transferFaqs = Array.isArray(transfer.faqs)
     ? transfer.faqs.filter((faq) => faq.question?.trim() && faq.answer?.trim())
     : [];
@@ -254,6 +261,8 @@ export default async function TransferDetailPage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      <PackageReviewHighlights content={googleReviews} />
 
       {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqSection") && (transferFaqs.length > 0 ? (
         <section className="bg-white py-12">

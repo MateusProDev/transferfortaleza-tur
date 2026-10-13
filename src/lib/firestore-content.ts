@@ -429,6 +429,16 @@ export function mapGoogleReviewsDocument(value: unknown): GoogleReviewsContent {
     autoplayDelay: Math.max(1000, asNumber(record.autoplayDelay) ?? 6000),
     googleUrl: firstString(record.googleUrl),
     reviews,
+    tripAdvisorImage: firstString(record.tripAdvisorImage, "/trip-avaliacoes-google.jpg"),
+    tripAdvisorImageAlt: firstString(
+      record.tripAdvisorImageAlt,
+      "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
+    ),
+    googleReviewsImage: firstString(record.googleReviewsImage, "/avaliacoes-google.jpg"),
+    googleReviewsImageAlt: firstString(
+      record.googleReviewsImageAlt,
+      "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+    ),
   };
 }
 

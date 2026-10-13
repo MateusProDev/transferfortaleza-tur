@@ -139,7 +139,33 @@ export default function SiteContentAdminPage() {
         throw new Error("A resposta da API não contém a lista de documentos esperada.");
       }
 
-      const records = result.documents.filter((document) => editableDocumentIds.has(document.id));
+      const records = result.documents
+        .filter((document) => editableDocumentIds.has(document.id))
+        .map((document) => document.id === "googleReviews"
+          ? {
+              ...document,
+              data: {
+                ...document.data,
+                tripAdvisorImage: document.data.tripAdvisorImage || "/trip-avaliacoes-google.jpg",
+                tripAdvisorImageAlt: document.data.tripAdvisorImageAlt
+                  || "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
+                googleReviewsImage: document.data.googleReviewsImage || "/avaliacoes-google.jpg",
+                googleReviewsImageAlt: document.data.googleReviewsImageAlt
+                  || "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+              },
+            }
+          : document);
+      if (!records.some((document) => document.id === "googleReviews")) {
+        records.push({
+          id: "googleReviews",
+          data: {
+            tripAdvisorImage: "/trip-avaliacoes-google.jpg",
+            tripAdvisorImageAlt: "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
+            googleReviewsImage: "/avaliacoes-google.jpg",
+            googleReviewsImageAlt: "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+          },
+        });
+      }
       setTotalDocuments(result.totalDocuments ?? result.documents.length);
       setDocuments(records);
       setProjectId(result.projectId || null);

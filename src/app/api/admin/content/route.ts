@@ -122,8 +122,26 @@ export async function GET(request: NextRequest) {
       const data = document.data();
       delete data.createdAt;
       delete data.updatedAt;
-      return { id: document.id, data: serializeValue(data) as ContentDocument };
+      const serializedData = serializeValue(data) as ContentDocument;
+      if (document.id === "googleReviews") {
+        serializedData.tripAdvisorImage ||= "/trip-avaliacoes-google.jpg";
+        serializedData.tripAdvisorImageAlt ||= "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur";
+        serializedData.googleReviewsImage ||= "/avaliacoes-google.jpg";
+        serializedData.googleReviewsImageAlt ||= "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google";
+      }
+      return { id: document.id, data: serializedData };
     });
+    if (!documents.some((document) => document.id === "googleReviews")) {
+      documents.push({
+        id: "googleReviews",
+        data: {
+          tripAdvisorImage: "/trip-avaliacoes-google.jpg",
+          tripAdvisorImageAlt: "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
+          googleReviewsImage: "/avaliacoes-google.jpg",
+          googleReviewsImageAlt: "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+        },
+      });
+    }
 
     return NextResponse.json({
       documents,
@@ -164,7 +182,7 @@ export async function PUT(request: NextRequest) {
 
     const document = db.collection("content").doc(id);
     const existing = await document.get();
-    if (!existing.exists) {
+    if (!existing.exists && id !== "googleReviews") {
       return NextResponse.json({ error: "Este documento de conteúdo não existe." }, { status: 404 });
     }
 

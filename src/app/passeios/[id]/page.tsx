@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
-import { getCachedSiteSettings, getCachedTours } from "@/lib/public-data-cache";
+import { getCachedGoogleReviews, getCachedSiteSettings, getCachedTours } from "@/lib/public-data-cache";
 import { Clock, Check, X, Users, AlertCircle, Sparkles, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -19,6 +19,7 @@ import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } f
 import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import PackageLocationMap from "@/components/public/PackageLocationMap";
+import PackageReviewHighlights from "@/components/public/PackageReviewHighlights";
 
 interface PageProps {
   params: { id: string };
@@ -131,6 +132,12 @@ export default async function PasseioDetailPage({ params }: PageProps) {
     getCachedTours(true),
     getCachedSiteSettings(),
   ]);
+  let googleReviews = null;
+  try {
+    googleReviews = await getCachedGoogleReviews();
+  } catch (error) {
+    console.error("Error fetching package Google reviews:", error);
+  }
   const relatedTours = tour.recommendedTourIds?.length
     ? tour.recommendedTourIds
         .map((id) => allTours.find((item) => item.id === id))
@@ -302,6 +309,8 @@ export default async function PasseioDetailPage({ params }: PageProps) {
 
       {/* Selos de Confiança */}
       <TourTrustBadges copy={settings?.pageCopy?.tourDetails} />
+
+      <PackageReviewHighlights content={googleReviews} />
 
       {/* FAQ */}
       {isCopyFieldEnabled(settings?.pageCopy?.tourDetails, "faqSection") && <TourFAQ faqs={tour.faqs} title={settings?.pageCopy?.tourDetails?.faqTitle} titleLevel={getHeadingLevel(settings?.pageCopy?.tourDetails, "faqTitle", "h2")} titleEnabled={isCopyFieldEnabled(settings?.pageCopy?.tourDetails, "faqTitle")} />}
