@@ -34,18 +34,20 @@ export default function PackageReviewHighlights({ content }: PackageReviewHighli
             {content?.badge || "A confiança de quem viaja com a gente"}
           </p>
           <h2 id="package-reviews-title" className="text-2xl font-bold text-gray-900 sm:text-3xl">
-            {content?.title || "Excelência reconhecida pelos nossos clientes"}
+            {content?.title || "O que nossos clientes dizem"}
           </h2>
           <div className="mt-3 flex items-center justify-center gap-1" aria-label="5 estrelas">
             {Array.from({ length: 5 }, (_, index) => (
               <Star key={index} aria-hidden="true" className="h-5 w-5 fill-amber-400 text-amber-400" />
             ))}
           </div>
-          {content?.subtitle && (
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
-              {content.subtitle}
-            </p>
-          )}
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
+            {content?.subtitle || "Avaliações reais de viajantes satisfeitos"}
+          </p>
+          <p className="mx-auto mt-4 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-900 sm:text-base">
+            <Star aria-hidden="true" className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <span><strong>+420 avaliações</strong> somadas no TripAdvisor e Google</span>
+          </p>
         </div>
 
         <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-5 sm:grid-cols-2 sm:gap-7">
