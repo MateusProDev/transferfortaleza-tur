@@ -4,7 +4,7 @@ import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { getCachedFaqItems, getCachedGoogleReviews, getCachedSiteSettings, getCachedTransfers } from "@/lib/public-data-cache";
-import { Car, Check, ChevronDown, Users, X } from "lucide-react";
+import { Car, Check, ChevronDown, Users, X, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import * as Types from "@/types";
@@ -193,9 +193,13 @@ export default async function TransferDetailPage({ params }: PageProps) {
 
               {transfer.longDescription && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productLongDescription") && (
                 <details className="group mb-7">
-                  <summary className="cursor-pointer text-primary-600 font-semibold hover:text-primary-700 flex items-center gap-2">
-                    {settings?.pageCopy?.transferDetails?.fullDescription || "Ver roteiro e detalhes do transfer"} {transfer.name}
-                    <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
+                  <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-primary-700 bg-primary-700 px-4 py-3 text-left font-semibold text-white shadow-md transition hover:border-primary-800 hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 [&::-webkit-details-marker]:hidden">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <BookOpen size={19} aria-hidden="true" className="shrink-0" />
+                      <span className="group-open:hidden">{settings?.pageCopy?.transferDetails?.fullDescription || "Ler descrição completa"}</span>
+                      <span className="hidden group-open:inline">Recolher descrição</span>
+                    </span>
+                    <ChevronDown size={18} aria-hidden="true" className="shrink-0 transition-transform group-open:rotate-180" />
                   </summary>
                   <MarkdownDescription content={transfer.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
                 </details>

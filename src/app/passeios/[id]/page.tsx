@@ -4,7 +4,7 @@ import { cache } from "react";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { getCachedGoogleReviews, getCachedSiteSettings, getCachedTours } from "@/lib/public-data-cache";
-import { Clock, Check, X, Users, AlertCircle, Sparkles, ChevronDown } from "lucide-react";
+import { Clock, Check, X, Users, AlertCircle, Sparkles, ChevronDown, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import TourConversionBar from "@/components/public/TourConversionBar";
@@ -256,9 +256,13 @@ export default async function PasseioDetailPage({ params }: PageProps) {
               {tour.longDescription && isCopyFieldEnabled(settings?.pageCopy?.tourDetails, "productLongDescription") && (
                 <div className="mb-8">
                   <details className="group">
-                    <summary className="cursor-pointer text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-2">
-                      {settings?.pageCopy?.tourDetails?.fullDescription || "Ler descrição completa"}
-                      <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
+                    <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-primary-700 bg-primary-700 px-4 py-3 text-left font-semibold text-white shadow-md transition hover:border-primary-800 hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 [&::-webkit-details-marker]:hidden">
+                      <span className="flex min-w-0 items-center gap-2">
+                        <BookOpen size={19} aria-hidden="true" className="shrink-0" />
+                        <span className="group-open:hidden">{settings?.pageCopy?.tourDetails?.fullDescription || "Ler descrição completa"}</span>
+                        <span className="hidden group-open:inline">Recolher descrição</span>
+                      </span>
+                      <ChevronDown size={18} aria-hidden="true" className="shrink-0 transition-transform group-open:rotate-180" />
                     </summary>
                     <MarkdownDescription content={tour.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
                   </details>
