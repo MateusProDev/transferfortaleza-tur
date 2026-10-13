@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Star } from "lucide-react";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
 import type { GoogleReviewsContent } from "@/types";
 
@@ -7,79 +6,23 @@ interface PackageReviewHighlightsProps {
   content: GoogleReviewsContent | null;
 }
 
-const reviewImages = [
-  {
-    source: "/trip-avaliacoes-google.jpg",
-    alt: "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
-    key: "tripAdvisor" as const,
-  },
-  {
-    source: "/avaliacoes-google.jpg",
-    alt: "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
-    key: "googleReviews" as const,
-  },
-];
-
 export default function PackageReviewHighlights({ content }: PackageReviewHighlightsProps) {
-  const images = reviewImages.map(({ source, alt, key }) => ({
-    source: (key === "tripAdvisor" ? content?.tripAdvisorImage : content?.googleReviewsImage) || source,
-    alt: (key === "tripAdvisor" ? content?.tripAdvisorImageAlt : content?.googleReviewsImageAlt) || alt,
-  }));
+  const image = content?.reviewsHighlightImage || "/confianca-transfer-fortaleza.jpg";
+  const alt = content?.reviewsHighlightImageAlt
+    || "Transfer Fortaleza Tur: mais que números, é confiança. Mais de 260 avaliações no Google e 160 no TripAdvisor.";
 
   return (
-    <section className="border-t border-gray-200 bg-white py-10 sm:py-14" aria-labelledby="package-reviews-title">
+    <section className="border-t border-gray-200 bg-white py-8 sm:py-12" aria-label={alt}>
       <div className="container mx-auto px-4">
-        <div className="mx-auto mb-7 max-w-3xl text-center sm:mb-9">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-primary-700">
-            {content?.badge || "A confiança de quem viaja com a gente"}
-          </p>
-          <h2 id="package-reviews-title" className="text-2xl font-bold text-gray-900 sm:text-3xl">
-            {content?.title || "O que nossos clientes dizem"}
-          </h2>
-          <div className="mt-3 flex items-center justify-center gap-1" aria-label="5 estrelas">
-            {Array.from({ length: 5 }, (_, index) => (
-              <Star key={index} aria-hidden="true" className="h-5 w-5 fill-amber-400 text-amber-400" />
-            ))}
-          </div>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
-            {content?.subtitle || "Avaliações reais de viajantes satisfeitos"}
-          </p>
-          <p className="mx-auto mt-4 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-900 sm:text-base">
-            <Star aria-hidden="true" className="h-4 w-4 fill-amber-400 text-amber-400" />
-            <span><strong>+420 avaliações</strong> somadas no TripAdvisor e Google</span>
-          </p>
-        </div>
-
-        <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-5 sm:grid-cols-2 sm:gap-7">
-          {images.map(({ source, alt }, index) => {
-            const image = (
-              <div className="relative mx-auto aspect-[16/9] w-full max-w-xl overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
-                <Image
-                  src={source}
-                  alt={alt}
-                  fill
-                  sizes="(min-width: 640px) 50vw, 100vw"
-                  unoptimized={!shouldOptimizeImage(source)}
-                  className="object-contain"
-                />
-              </div>
-            );
-
-            return content?.googleUrl && index === 1 ? (
-              <a
-                key={source}
-                href={content.googleUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Ver avaliações da Transfer Fortaleza Tur no Google"
-                className="rounded-xl transition-transform hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-600"
-              >
-                {image}
-              </a>
-            ) : (
-              <div key={source}>{image}</div>
-            );
-          })}
+        <div className="relative mx-auto aspect-[3/4] w-full max-w-3xl overflow-hidden rounded-xl sm:rounded-2xl">
+          <Image
+            src={image}
+            alt={alt}
+            fill
+            sizes="(min-width: 768px) 768px, 100vw"
+            unoptimized={!shouldOptimizeImage(image)}
+            className="object-contain"
+          />
         </div>
       </div>
     </section>

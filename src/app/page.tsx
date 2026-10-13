@@ -180,6 +180,7 @@ export default async function Home() {
         differentials={homeSections.differentials}
         imageCarousel={homeSections.imageCarousel}
         transferBeberibe={homeSections.transferBeberibe}
+        googleReviews={googleReviews}
         settings={settings}
         copy={homeCopy}
       />

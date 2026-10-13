@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
 import { normalizeBrazilianPhone } from "@/lib/phone";
-import type { SitePageCopy, SiteSettings } from "@/types";
+import type { GoogleReviewsContent, SitePageCopy, SiteSettings } from "@/types";
 
 type ContentRecord = Record<string, unknown>;
 
@@ -10,6 +10,7 @@ interface HomeConfiguredSectionsProps {
   differentials: unknown;
   imageCarousel: unknown;
   transferBeberibe: unknown;
+  googleReviews: GoogleReviewsContent | null;
   settings: SiteSettings | null;
   copy?: Partial<SitePageCopy>;
 }
@@ -127,6 +128,7 @@ export default function HomeConfiguredSections({
   differentials: differentialsValue,
   imageCarousel: imageCarouselValue,
   transferBeberibe,
+  googleReviews,
   settings,
   copy,
 }: HomeConfiguredSectionsProps) {
@@ -158,6 +160,16 @@ export default function HomeConfiguredSections({
       alt: text(asRecord(value).alt) || "Experiência turística em Fortaleza e região",
     }))
     .filter((image) => image.url);
+  const reviewImages = [
+    {
+      url: googleReviews?.homeGoogleReviewsImage || "/avaliacao-google.jpg",
+      alt: googleReviews?.homeGoogleReviewsImageAlt || "Avaliação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+    },
+    {
+      url: googleReviews?.homeTripAdvisorImage || "/avaliacao-tripadvisor.jpg",
+      alt: googleReviews?.homeTripAdvisorImageAlt || "Avaliação excelente da Transfer Fortaleza Tur com mais de 160 avaliações no TripAdvisor",
+    },
+  ];
 
   return (
     <>
@@ -237,6 +249,20 @@ export default function HomeConfiguredSections({
                 ))}
               </div>
             )}
+          </div>
+          <div className="container mx-auto mt-8 grid gap-4 px-4 sm:grid-cols-2 sm:gap-6">
+            {reviewImages.map((image) => (
+              <div key={image.url} className="relative aspect-[16/9] overflow-hidden rounded-xl bg-white shadow-sm">
+                <Image
+                  src={image.url}
+                  alt={image.alt}
+                  fill
+                  unoptimized={!shouldOptimizeImage(image.url)}
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="object-contain"
+                />
+              </div>
+            ))}
           </div>
         </section>
       )}

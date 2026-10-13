@@ -111,10 +111,12 @@ export interface GoogleReviewsContent {
   autoplayDelay: number;
   googleUrl: string;
   reviews: GoogleReview[];
-  tripAdvisorImage?: string;
-  tripAdvisorImageAlt?: string;
-  googleReviewsImage?: string;
-  googleReviewsImageAlt?: string;
+  reviewsHighlightImage?: string;
+  reviewsHighlightImageAlt?: string;
+  homeGoogleReviewsImage?: string;
+  homeGoogleReviewsImageAlt?: string;
+  homeTripAdvisorImage?: string;
+  homeTripAdvisorImageAlt?: string;
 }
 
 // Blog/Articles Types

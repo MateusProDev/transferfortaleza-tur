@@ -146,12 +146,15 @@ export default function SiteContentAdminPage() {
               ...document,
               data: {
                 ...document.data,
-                tripAdvisorImage: document.data.tripAdvisorImage || "/trip-avaliacoes-google.jpg",
-                tripAdvisorImageAlt: document.data.tripAdvisorImageAlt
-                  || "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
-                googleReviewsImage: document.data.googleReviewsImage || "/avaliacoes-google.jpg",
-                googleReviewsImageAlt: document.data.googleReviewsImageAlt
-                  || "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+                reviewsHighlightImage: document.data.reviewsHighlightImage || "/confianca-transfer-fortaleza.jpg",
+                reviewsHighlightImageAlt: document.data.reviewsHighlightImageAlt
+                  || "Transfer Fortaleza Tur: mais que números, é confiança. Mais de 260 avaliações no Google e 160 no TripAdvisor.",
+                homeGoogleReviewsImage: document.data.homeGoogleReviewsImage || "/avaliacao-google.jpg",
+                homeGoogleReviewsImageAlt: document.data.homeGoogleReviewsImageAlt
+                  || "Avaliação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+                homeTripAdvisorImage: document.data.homeTripAdvisorImage || "/avaliacao-tripadvisor.jpg",
+                homeTripAdvisorImageAlt: document.data.homeTripAdvisorImageAlt
+                  || "Avaliação excelente da Transfer Fortaleza Tur com mais de 160 avaliações no TripAdvisor",
               },
             }
           : document);
@@ -159,10 +162,12 @@ export default function SiteContentAdminPage() {
         records.push({
           id: "googleReviews",
           data: {
-            tripAdvisorImage: "/trip-avaliacoes-google.jpg",
-            tripAdvisorImageAlt: "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
-            googleReviewsImage: "/avaliacoes-google.jpg",
-            googleReviewsImageAlt: "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+            reviewsHighlightImage: "/confianca-transfer-fortaleza.jpg",
+            reviewsHighlightImageAlt: "Transfer Fortaleza Tur: mais que números, é confiança. Mais de 260 avaliações no Google e 160 no TripAdvisor.",
+            homeGoogleReviewsImage: "/avaliacao-google.jpg",
+            homeGoogleReviewsImageAlt: "Avaliação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+            homeTripAdvisorImage: "/avaliacao-tripadvisor.jpg",
+            homeTripAdvisorImageAlt: "Avaliação excelente da Transfer Fortaleza Tur com mais de 160 avaliações no TripAdvisor",
           },
         });
       }

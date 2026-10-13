@@ -429,15 +429,20 @@ export function mapGoogleReviewsDocument(value: unknown): GoogleReviewsContent {
     autoplayDelay: Math.max(1000, asNumber(record.autoplayDelay) ?? 6000),
     googleUrl: firstString(record.googleUrl),
     reviews,
-    tripAdvisorImage: firstString(record.tripAdvisorImage, "/trip-avaliacoes-google.jpg"),
-    tripAdvisorImageAlt: firstString(
-      record.tripAdvisorImageAlt,
-      "Selo TripAdvisor Travellers’ Choice 2026 da Transfer Fortaleza Tur",
+    reviewsHighlightImage: firstString(record.reviewsHighlightImage, "/confianca-transfer-fortaleza.jpg"),
+    reviewsHighlightImageAlt: firstString(
+      record.reviewsHighlightImageAlt,
+      "Transfer Fortaleza Tur: mais que números, é confiança. Mais de 260 avaliações no Google e 160 no TripAdvisor.",
     ),
-    googleReviewsImage: firstString(record.googleReviewsImage, "/avaliacoes-google.jpg"),
-    googleReviewsImageAlt: firstString(
-      record.googleReviewsImageAlt,
-      "Classificação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+    homeGoogleReviewsImage: firstString(record.homeGoogleReviewsImage, "/avaliacao-google.jpg"),
+    homeGoogleReviewsImageAlt: firstString(
+      record.homeGoogleReviewsImageAlt,
+      "Avaliação excelente da Transfer Fortaleza Tur com mais de 260 avaliações no Google",
+    ),
+    homeTripAdvisorImage: firstString(record.homeTripAdvisorImage, "/avaliacao-tripadvisor.jpg"),
+    homeTripAdvisorImageAlt: firstString(
+      record.homeTripAdvisorImageAlt,
+      "Avaliação excelente da Transfer Fortaleza Tur com mais de 160 avaliações no TripAdvisor",
     ),
   };
 }
