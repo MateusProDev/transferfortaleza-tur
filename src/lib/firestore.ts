@@ -462,6 +462,8 @@ export const faqService = {
     const faq = {
       pergunta: data.question,
       resposta: data.answer,
+      ...(data.category !== undefined ? { categoria: data.category } : {}),
+      ativo: data.active ?? true,
     };
     const nextEntries = [...entries, faq];
 
@@ -489,6 +491,8 @@ export const faqService = {
       ...current,
       ...(data.question !== undefined ? { pergunta: data.question } : {}),
       ...(data.answer !== undefined ? { resposta: data.answer } : {}),
+      ...(data.category !== undefined ? { categoria: data.category } : {}),
+      ...(data.active !== undefined ? { ativo: data.active } : {}),
     };
     entries[index] = updated;
     await firebaseService.update<Record<string, unknown>>("content", "homeFAQ", { faq: entries });

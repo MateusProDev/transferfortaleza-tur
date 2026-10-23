@@ -10,6 +10,7 @@ import ImageGalleryUpload from "@/components/ui/ImageGalleryUpload";
 import { GalleryImage, TourFAQ } from "@/types";
 import { useTransfers } from "@/hooks/useApi";
 import PackageLocationField from "@/components/admin/PackageLocationField";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function NewTransfer() {
   const router = useRouter();
@@ -66,13 +67,14 @@ export default function NewTransfer() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to create transfer");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível criar o transfer.");
 
       toast.success("Transfer criado com sucesso");
       refetch();
       router.push("/admin/transfers");
     } catch (error) {
-      toast.error("Erro ao criar transfer");
+      console.error("Error creating transfer:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao criar transfer");
     } finally {
       setLoading(false);
     }

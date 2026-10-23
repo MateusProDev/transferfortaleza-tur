@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function NewFaqItem() {
   const router = useRouter();
@@ -27,12 +28,13 @@ export default function NewFaqItem() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to create FAQ item");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível criar a pergunta.");
 
       toast.success("FAQ item created successfully");
       router.push("/admin/faq");
     } catch (error) {
-      toast.error("Failed to create FAQ item");
+      console.error("Error creating FAQ item:", error);
+      toast.error(error instanceof Error ? error.message : "Não foi possível criar a pergunta.");
     } finally {
       setLoading(false);
     }

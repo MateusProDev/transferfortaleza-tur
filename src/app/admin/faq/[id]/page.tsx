@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/Button";
 import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function EditFAQ() {
   const router = useRouter();
@@ -52,13 +53,13 @@ export default function EditFAQ() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to update FAQ");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível atualizar a pergunta.");
 
       toast.success("Pergunta atualizada com sucesso");
       router.push("/admin/faq");
     } catch (error) {
       console.error("Error updating FAQ:", error);
-      toast.error("Erro ao atualizar pergunta");
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar pergunta");
     } finally {
       setSaving(false);
     }

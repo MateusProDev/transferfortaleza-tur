@@ -11,6 +11,7 @@ import { GalleryImage, TourFAQ } from "@/types";
 import { useTransfers } from "@/hooks/useApi";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import PackageLocationField from "@/components/admin/PackageLocationField";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function EditTransfer() {
   const router = useRouter();
@@ -104,13 +105,14 @@ export default function EditTransfer() {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Failed to update transfer");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível atualizar o transfer.");
 
       toast.success("Transfer atualizado com sucesso");
       refetch();
       router.push("/admin/transfers");
     } catch (error) {
-      toast.error("Erro ao atualizar transfer");
+      console.error("Error updating transfer:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar transfer");
     } finally {
       setSaving(false);
     }

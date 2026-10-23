@@ -136,7 +136,7 @@ async function getPageData() {
       googleReviews,
       homeSections,
       blogPosts,
-      faqs: faqContent.faqs,
+      faqs: faqContent.faqs.filter((faq) => faq.active !== false),
       faqContent,
       settings,
     };

@@ -121,6 +121,8 @@ export const adminFaqService = {
       const nextEntries = [...entries, {
         pergunta: data.question,
         resposta: data.answer,
+        ...(data.category !== undefined ? { categoria: data.category } : {}),
+        ativo: data.active ?? true,
       }];
       transaction.set(reference, {
         faq: nextEntries,
@@ -131,6 +133,8 @@ export const adminFaqService = {
     await logActivity("created", "content", "homeFAQ", {
       question: data.question,
       answer: data.answer,
+      ...(data.category !== undefined ? { category: data.category } : {}),
+      active: data.active ?? true,
     });
     return id;
   },
@@ -155,6 +159,8 @@ export const adminFaqService = {
         ...currentEntry,
         ...(data.question !== undefined ? { pergunta: data.question } : {}),
         ...(data.answer !== undefined ? { resposta: data.answer } : {}),
+        ...(data.category !== undefined ? { categoria: data.category } : {}),
+        ...(data.active !== undefined ? { ativo: data.active } : {}),
       };
       transaction.update(homeFaqReference, {
         faq: entries,

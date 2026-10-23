@@ -383,8 +383,9 @@ export function mapHomeFaqDocument(value: unknown): FAQ[] {
           id: firstString(faq.id) || `home-faq-${index}`,
           question,
           answer,
+          category: firstString(faq.category, faq.categoria) || undefined,
           order: index,
-          active: true,
+          active: toBoolean(faq.active ?? faq.ativo, true),
           createdAt: toDate(record.updatedAt),
           updatedAt: toDate(record.updatedAt),
         }]

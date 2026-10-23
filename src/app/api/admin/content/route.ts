@@ -172,6 +172,18 @@ export async function PUT(request: NextRequest) {
       { status: 503 },
     );
   }
+  const adminProjectId = getAdminProjectId();
+  const configuredProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  if (adminProjectId && configuredProjectId && adminProjectId !== configuredProjectId) {
+    console.error("Firebase project mismatch for editable content:", {
+      adminProjectId,
+      configuredProjectId,
+    });
+    return NextResponse.json(
+      { error: "As credenciais do servidor apontam para um projeto Firebase diferente do site." },
+      { status: 503 },
+    );
+  }
 
   try {
     const body = await request.json();
@@ -208,7 +220,15 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ message: "Conteúdo atualizado.", id });
   } catch (error) {
-    console.error("Error saving editable site content:", error);
-    return NextResponse.json({ error: "Não foi possível salvar o conteúdo do site." }, { status: 500 });
+    const details = getFirebaseErrorDetails(error);
+    const firebaseCode = details.code.replace(/^firestore\//, "").replace(/^auth\//, "");
+    console.error("Error saving editable site content:", details, error);
+    return NextResponse.json(
+      { error: "Não foi possível salvar o conteúdo do site. Consulte o código Firebase nos logs do servidor.", code: firebaseCode },
+      { status: firebaseCode === "7" || firebaseCode === "8"
+        || firebaseCode === "permission-denied" || firebaseCode === "resource-exhausted"
+        ? 503
+        : 500 },
+    );
   }
 }

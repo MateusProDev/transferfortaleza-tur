@@ -13,6 +13,7 @@ import { DEFAULT_TOUR_FAQS } from "@/components/public/TourFAQ";
 import type { TourFAQ } from "@/types";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import PackageLocationField from "@/components/admin/PackageLocationField";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function EditTour() {
   const router = useRouter();
@@ -108,13 +109,14 @@ export default function EditTour() {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Failed to update tour");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível atualizar o passeio.");
 
       toast.success("Passeio atualizado com sucesso");
       refetch();
       router.push("/admin/tours");
     } catch (error) {
-      toast.error("Erro ao atualizar passeio");
+      console.error("Error updating tour:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar passeio");
     } finally {
       setSaving(false);
     }

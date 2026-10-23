@@ -7,6 +7,7 @@ import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { useBanners } from "@/hooks/useApi";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function EditBanner() {
   const router = useRouter();
@@ -78,13 +79,14 @@ export default function EditBanner() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to update banner");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível atualizar o banner.");
 
       toast.success("Banner atualizado com sucesso");
       refetch();
       router.push("/admin/banners");
     } catch (error) {
-      toast.error("Erro ao atualizar banner");
+      console.error("Error updating banner:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar banner");
     } finally {
       setSaving(false);
     }

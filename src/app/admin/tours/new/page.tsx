@@ -13,6 +13,7 @@ import { TourFAQ } from "@/types";
 import { DEFAULT_TOUR_FAQS } from "@/components/public/TourFAQ";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import PackageLocationField from "@/components/admin/PackageLocationField";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function NewTour() {
   const router = useRouter();
@@ -56,13 +57,14 @@ export default function NewTour() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to create tour");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível criar o passeio.");
 
       toast.success("Passeio criado com sucesso");
       refetch();
       router.push("/admin/tours");
     } catch (error) {
-      toast.error("Erro ao criar passeio");
+      console.error("Error creating tour:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao criar passeio");
     } finally {
       setLoading(false);
     }

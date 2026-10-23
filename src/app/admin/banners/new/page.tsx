@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { useBanners } from "@/hooks/useApi";
+import { getAdminApiError } from "@/lib/admin-api-client";
 
 export default function NewBanner() {
   const router = useRouter();
@@ -38,13 +39,14 @@ export default function NewBanner() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to create banner");
+      if (!response.ok) throw await getAdminApiError(response, "Não foi possível criar o banner.");
 
       toast.success("Banner criado com sucesso");
       refetch();
       router.push("/admin/banners");
     } catch (error) {
-      toast.error("Erro ao criar banner");
+      console.error("Error creating banner:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao criar banner");
     } finally {
       setLoading(false);
     }

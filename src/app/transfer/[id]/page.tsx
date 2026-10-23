@@ -112,7 +112,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
     ...(transfer.galleryImages || []),
   ].filter((image) => image.url);
   const [faqs, settings] = await Promise.all([
-    getCachedFaqItems(),
+    getCachedFaqItems().then((items) => items.filter((faq) => faq.active !== false)),
     getCachedSiteSettings(),
   ]);
   let googleReviews = null;
