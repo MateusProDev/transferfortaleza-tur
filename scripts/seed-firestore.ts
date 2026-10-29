@@ -170,9 +170,9 @@ const sampleSettings = {
   footerLogo: 'https://res.cloudinary.com/demo/image/upload/v1/logo',
   footerLogoAlt: 'Logo Transfer Fortaleza Tur',
   socialLinks: [
-    { id: '1', platform: 'facebook', url: 'https://facebook.com/passeiolegal' },
-    { id: '2', platform: 'instagram', url: 'https://instagram.com/passeiolegal' },
-    { id: '3', platform: 'whatsapp', url: 'https://wa.me/5511999999999' },
+    { id: '1', platform: 'facebook', url: 'https://facebook.com/transferfortalezatur' },
+    { id: '2', platform: 'instagram', url: 'https://instagram.com/transferfortalezatur' },
+    { id: '3', platform: 'whatsapp', url: 'https://wa.me/558596748958' },
   ],
   contactInfo: {
     email: 'contato@example.com',

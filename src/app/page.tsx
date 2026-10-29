@@ -203,7 +203,7 @@ export default async function Home() {
       />
       
       <WhatsAppConversionLink
-        href={`https://wa.me/${normalizeBrazilianPhone(settings?.whatsappConfig?.number || "5585997314093")}?text=${encodeURIComponent("Olá! Quero saber mais sobre os tours e transfers.")}`}
+        href={`https://wa.me/${normalizeBrazilianPhone(settings?.whatsappConfig?.number || "558596748958")}?text=${encodeURIComponent("Olá! Quero saber mais sobre os tours e transfers.")}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Solicitar orçamento pelo WhatsApp"

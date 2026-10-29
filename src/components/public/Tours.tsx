@@ -198,7 +198,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
 
                   <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
                     <WhatsAppConversionLink
-                      href={`https://wa.me/${normalizeBrazilianPhone(whatsappNumber || "5585997314093")}?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
+                      href={`https://wa.me/${normalizeBrazilianPhone(whatsappNumber || "558596748958")}?text=${encodeURIComponent(`Olá! Gostaria de reservar o passeio: ${tour.name}`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex min-w-0 flex-1 items-center justify-center gap-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-3 py-2 rounded-lg transition-colors font-medium whitespace-nowrap text-xs sm:text-sm"

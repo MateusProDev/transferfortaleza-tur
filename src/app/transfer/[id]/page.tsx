@@ -126,7 +126,7 @@ export default async function TransferDetailPage({ params }: PageProps) {
     : [];
   const includesItems = Array.isArray(transfer.includesItems) ? transfer.includesItems.filter(Boolean) : [];
   const excludesItems = Array.isArray(transfer.excludesItems) ? transfer.excludesItems.filter(Boolean) : [];
-  const whatsappNumber = normalizeBrazilianPhone(settings?.whatsappConfig?.number || "5585997314093");
+  const whatsappNumber = normalizeBrazilianPhone(settings?.whatsappConfig?.number || "558596748958");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
 
   return (

@@ -25,7 +25,7 @@ interface ContactSettings {
 }
 
 /* Número de fallback, usado apenas se as configurações do site não carregarem. */
-const FALLBACK_WHATSAPP = "5585997314093";
+const FALLBACK_WHATSAPP = "558596748958";
 
 function buildWhatsAppUrl(number: string, message: string) {
   const digits = normalizeBrazilianPhone(number || FALLBACK_WHATSAPP);
@@ -295,7 +295,7 @@ export default function Contact() {
             {/* Map */}
             <div className="w-full h-80 rounded-lg overflow-hidden shadow-lg">
               <iframe
-                src="https://www.google.com/maps?q=Avenida+Oceano+Atlantico+683+-+Porto+das+Dunas,+Aquiraz+-+CE,+61700-000&output=embed"
+                src="https://www.google.com/maps?q=Rua+812,+Conjunto+Ceará,+60532-160,+Fortaleza+-+CE,+Brasil&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

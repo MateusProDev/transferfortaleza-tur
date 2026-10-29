@@ -10,7 +10,7 @@ interface TourConversionBarProps {
   whatsappNumber?: string;
 }
 
-export default function TourConversionBar({ tourName, whatsappNumber = "5585997314093" }: TourConversionBarProps) {
+export default function TourConversionBar({ tourName, whatsappNumber = "558596748958" }: TourConversionBarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {

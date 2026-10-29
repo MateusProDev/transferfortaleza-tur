@@ -83,12 +83,15 @@ export default function FAQ({
                     <ChevronDown className="text-gray-500" size={20} />
                   )}
                 </button>
-                <div
-                  id={`faq-answer-${faq.id}`}
-                  className={`px-6 pb-4 text-gray-600 ${openIndex === index ? 'block' : 'hidden'}`}
-                >
-                  <p>{faq.answer}</p>
-                </div>
+                {openIndex === index && (
+                  <div
+                    id={`faq-answer-${faq.id}`}
+                    className="px-6 pb-4 text-gray-600"
+                    role="region"
+                  >
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>

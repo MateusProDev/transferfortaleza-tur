@@ -12,7 +12,7 @@ interface TransferConversionBarProps {
 
 export default function TransferConversionBar({
   transferName,
-  whatsappNumber = "5585997314093",
+  whatsappNumber = "558596748958",
 }: TransferConversionBarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 

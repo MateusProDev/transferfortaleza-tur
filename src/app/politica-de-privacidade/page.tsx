@@ -43,7 +43,7 @@ export default async function PrivacyPolicyPage() {
   const settings = await getCachedSiteSettings();
   const copy = settings?.pageCopy?.privacy;
   const whatsappNumber = normalizeBrazilianPhone(
-    settings?.whatsappConfig?.number || settings?.contactInfo?.whatsapp || '5585997314093',
+    settings?.whatsappConfig?.number || settings?.contactInfo?.whatsapp || '558596748958',
   );
 
   return (

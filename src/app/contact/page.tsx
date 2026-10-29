@@ -36,7 +36,7 @@ interface ContactSettings {
 }
 
 /* Número de fallback, usado apenas se as configurações do site não carregarem. */
-const FALLBACK_WHATSAPP = "5585997314093";
+const FALLBACK_WHATSAPP = "558596748958";
 
 const baseUrl = getSiteUrl();
 

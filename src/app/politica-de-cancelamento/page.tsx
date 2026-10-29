@@ -46,7 +46,7 @@ export default async function CancellationPolicyPage() {
   const settings = await getCachedSiteSettings();
   const copy = settings?.pageCopy?.cancellationPolicy;
   const whatsappNumber = normalizeBrazilianPhone(
-    settings?.whatsappConfig?.number || settings?.contactInfo?.whatsapp || '5585997314093',
+    settings?.whatsappConfig?.number || settings?.contactInfo?.whatsapp || '558596748958',
   );
   const sections = [
     {

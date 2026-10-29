@@ -153,15 +153,15 @@ export default function RootLayout({
           url={baseUrl}
           description="Descubra os melhores passeios turísticos e serviços de transfer em Fortaleza e região com a Transfer Fortaleza Tur. Experiências únicas de turismo com conforto, segurança e profissionalismo."
           address={{
-            street: process.env.NEXT_PUBLIC_BUSINESS_STREET || "Avenida Oceano Atlântico",
-            number: process.env.NEXT_PUBLIC_BUSINESS_NUMBER || "683-685",
-            neighborhood: process.env.NEXT_PUBLIC_BUSINESS_NEIGHBORHOOD || "Porto das Dunas",
-            city: process.env.NEXT_PUBLIC_BUSINESS_CITY || "Aquiraz",
+            street: process.env.NEXT_PUBLIC_BUSINESS_STREET || "Rua 812",
+            number: process.env.NEXT_PUBLIC_BUSINESS_NUMBER || "",
+            neighborhood: process.env.NEXT_PUBLIC_BUSINESS_NEIGHBORHOOD || "Conjunto Ceará",
+            city: process.env.NEXT_PUBLIC_BUSINESS_CITY || "Fortaleza",
             state: process.env.NEXT_PUBLIC_BUSINESS_STATE || "CE",
-            zip: process.env.NEXT_PUBLIC_BUSINESS_ZIP || "61700-000",
+            zip: process.env.NEXT_PUBLIC_BUSINESS_ZIP || "60532-160",
           }}
-          phone={normalizeBrazilianPhone(process.env.NEXT_PUBLIC_BUSINESS_PHONE || "+5585997314093")}
-          email={process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "passeiolegalfortaleza@gmail.com"}
+          phone={normalizeBrazilianPhone(process.env.NEXT_PUBLIC_BUSINESS_PHONE || "+558596748958")}
+          email={process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "contato@transferfortalezatur.com.br"}
           areaServed={["Fortaleza", "Ceará"]}
         />
         <WebSiteJsonLd

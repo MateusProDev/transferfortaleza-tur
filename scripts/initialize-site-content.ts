@@ -49,17 +49,17 @@ const siteSettings = {
   footerLogo: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
   footerLogoAlt: 'Logo Transfer Fortaleza Tur',
   socialLinks: [
-    { id: '1', platform: 'instagram' as const, url: 'https://instagram.com/passeiolegalfortaleza' },
-    { id: '2', platform: 'whatsapp' as const, url: 'https://wa.me/5585997314093' },
+    { id: '1', platform: 'instagram' as const, url: 'https://instagram.com/transferfortalezatur' },
+    { id: '2', platform: 'whatsapp' as const, url: 'https://wa.me/558596748958' },
   ],
   contactInfo: {
-    email: 'passeiolegalfortaleza@gmail.com',
-    phone: '(85) 99731-4093',
-    whatsapp: '(85) 99731-4093',
-    address: 'Avenida Oceano Atlântico, 683-685 – Porto das Dunas, Aquiraz – CE',
-    city: 'Aquiraz',
+    email: 'contato@transferfortalezatur.com.br',
+    phone: '(85) 96748-958',
+    whatsapp: '(85) 96748-958',
+    address: 'Rua 812, Conjunto Ceará, CEP 60532-160, Fortaleza-CE, Brasil',
+    city: 'Fortaleza',
     state: 'CE',
-    zipCode: '61700-000',
+    zipCode: '60532-160',
   },
   seoSettings: {
     siteTitle: 'Transfer Fortaleza Tur - Passeios e Transfers em Fortaleza',
@@ -68,7 +68,7 @@ const siteSettings = {
     ogImage: 'https://res.cloudinary.com/jhcsri5f/image/upload/v1787052503/passeiolegal/tours/g915icb1magxipgeqtdi.jpg',
   },
   whatsappConfig: {
-    number: '5585997314093',
+    number: '558596748958',
     defaultMessage: 'Olá! Gostaria de saber mais sobre os passeios.',
   },
   primaryColor: '#3b82f6',
@@ -79,7 +79,7 @@ const siteSettings = {
 const faqs = [
   {
     question: 'Como faço uma reserva?',
-    answer: 'Você pode fazer uma reserva através do nosso site, entrando em contato pelo WhatsApp no número (85) 99731-4093 ou pelo email passeiolegalfortaleza@gmail.com. Nossa equipe irá confirmar a disponibilidade e enviar os detalhes do pagamento.',
+    answer: 'Você pode fazer uma reserva através do nosso site, entrando em contato pelo WhatsApp no número (85) 96748-958 ou pelo email contato@transferfortalezatur.com.br. Nossa equipe irá confirmar a disponibilidade e enviar os detalhes do pagamento.',
     order: 1,
     active: true,
     category: 'Reservas',

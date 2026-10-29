@@ -9,7 +9,7 @@ import { fetchSettingsCached } from '@/lib/settings-cache';
 import { replaceLegacyBrand } from '@/lib/brand';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 
-const defaultTripadvisorUrl = 'https://www.tripadvisor.com.br/UserReviewEdit-g23379655-d34005292-Transfer_Fortaleza_Tur-Porto_Das_Dunas_Aquiraz_State_of_Ceara.html';
+const defaultTripadvisorUrl = 'https://www.tripadvisor.com.br/UserReviewEdit-g23379655-d34005292-Transfer_Fortaleza_Tur-Fortaleza_State_of_Ceara.html';
 const defaultGoogleSafeBrowsingUrl = 'https://transparencyreport.google.com/safe-browsing/search?url=transferfortalezatur.com.br&hl=pt_BR';
 
 interface SocialLink {

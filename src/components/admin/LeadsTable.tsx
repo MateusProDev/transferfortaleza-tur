@@ -92,7 +92,7 @@ export function LeadsTable({ leads }: LeadsTableProps) {
   function openWhatsApp(lead: LeadRow) {
     const code = lead.code;
     const message = `🔎 Código de referência: ${code}`;
-    const url = `https://wa.me/5585997314093?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/558596748958?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
