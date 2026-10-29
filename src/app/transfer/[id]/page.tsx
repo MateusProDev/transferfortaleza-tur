@@ -214,12 +214,6 @@ export default async function TransferDetailPage({ params }: PageProps) {
                 >
                   {settings?.pageCopy?.transferDetails?.quoteButton || "Solicitar orçamento pelo WhatsApp"}
                 </WhatsAppConversionLink>
-                <Link
-                  href="#contact"
-                  className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center"
-                >
-                  {settings?.pageCopy?.transferDetails?.contactButton || "Fale conosco"}
-                </Link>
               </div>
             </div>
           </div>

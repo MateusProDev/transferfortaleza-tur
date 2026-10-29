@@ -20,6 +20,8 @@ import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import PackageLocationMap from "@/components/public/PackageLocationMap";
 import PackageReviewHighlights from "@/components/public/PackageReviewHighlights";
+import WhatsAppConversionLink from "@/components/public/WhatsAppConversionLink";
+import { normalizeBrazilianPhone } from "@/lib/phone";
 
 interface PageProps {
   params: { id: string };
@@ -154,6 +156,9 @@ export default async function PasseioDetailPage({ params }: PageProps) {
     ...(tour.galleryImages || []),
   ].filter((image) => image.url);
 
+  const whatsappNumber = normalizeBrazilianPhone(settings?.whatsappConfig?.number || "558596748958");
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o passeio: ${tour.name}`)}`;
+
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
     { name: "Passeios", url: `${baseUrl}/passeios` },
@@ -245,6 +250,18 @@ export default async function PasseioDetailPage({ params }: PageProps) {
                   <EditableHeading level={getHeadingLevel(settings?.pageCopy?.tourDetails, "urgencyTitle", "h3")} className="font-semibold text-orange-900 text-sm">{settings?.pageCopy?.tourDetails?.urgencyTitle || "Últimas vagas disponíveis"}</EditableHeading>
                   <p className="text-xs text-orange-700 mt-1">{settings?.pageCopy?.tourDetails?.urgencyText || "Reserve agora para garantir sua vaga neste passeio exclusivo."}</p>
                 </div>
+              </div>
+
+              {/* Botão de WhatsApp */}
+              <div className="mb-8">
+                <WhatsAppConversionLink
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center w-full"
+                >
+                  {settings?.pageCopy?.tourDetails?.quoteButton || "Solicitar orçamento pelo WhatsApp"}
+                </WhatsAppConversionLink>
               </div>
 
               {/* Descrição */}
