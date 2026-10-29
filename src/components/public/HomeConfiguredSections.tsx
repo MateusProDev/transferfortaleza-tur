@@ -189,9 +189,12 @@ export default function HomeConfiguredSections({
                 const image = text(service.image);
                 const link = text(service.link) || whatsappHref(whatsappNumber, `Olá! Gostaria de saber mais sobre ${title}.`);
                 return (
-                  <article
+                  <a
                     key={text(service.id) || `service-${index}`}
-                    className="overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm"
+                    href={link}
+                    target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
+                    rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
+                    className="group overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm transition-transform hover:scale-105 hover:shadow-md"
                     style={service.color ? { borderTopColor: String(service.color), borderTopWidth: 4 } : undefined}
                   >
                     {image && (
@@ -200,21 +203,14 @@ export default function HomeConfiguredSections({
                       </div>
                     )}
                     <div className="p-5">
-                      <h3 className="mb-2 text-xl font-semibold text-gray-900">{title}</h3>
+                      <h3 className="mb-2 text-xl font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{title}</h3>
                       {text(service.description) && <p className="mb-4 text-gray-600">{text(service.description)}</p>}
-                      {link && (
-                        <a
-                          href={link}
-                          target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
-                          rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
-                          className="font-semibold text-primary-800 hover:text-primary-950"
-                        >
-                          {text(service.linkText)
-                            || `${text(copy?.serviceLinkTextPrefix) || "Saiba mais sobre"} ${title}`}
-                        </a>
-                      )}
+                      <span className="font-semibold text-primary-800 hover:text-primary-950 transition-colors">
+                        {text(service.linkText)
+                          || `${text(copy?.serviceLinkTextPrefix) || "Saiba mais sobre"} ${title}`}
+                      </span>
                     </div>
-                  </article>
+                  </a>
                 );
               })}
             </div>
