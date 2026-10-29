@@ -8,9 +8,9 @@ import { getSiteUrl } from "@/lib/site-url";
 import { replaceLegacyBrand } from "@/lib/brand";
 import { getHomepageOpenGraphImage, stripBrandSuffix, withBrandSuffix } from "@/lib/open-graph";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
-
-const baseUrl = getSiteUrl();
-
+ 
+const baseUrl = getSiteUrl(); 
+ 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getCachedSiteSettings();
   const about = settings?.aboutSection;

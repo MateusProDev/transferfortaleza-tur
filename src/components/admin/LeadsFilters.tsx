@@ -11,7 +11,7 @@ const STATUS_OPTIONS = [
   { value: 'nao_respondeu', label: 'Não respondeu' },
   { value: 'perdido', label: 'Perdido' },
 ];
-
+ 
 export function LeadsFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
