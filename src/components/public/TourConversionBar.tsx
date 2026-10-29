@@ -43,7 +43,7 @@ export default function TourConversionBar({ tourName, whatsappNumber = "55859674
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap"
+            className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-white px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap"
           >
             <MessageCircle size={18} />
             <span>Solicitar Orçamento</span>

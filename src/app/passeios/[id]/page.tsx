@@ -258,7 +258,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 bg-[#0b5d3a] hover:bg-[#0a4b31] text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center w-full"
+                  className="flex-1 bg-[#f97316] hover:bg-[#ea580c] text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center w-full"
                 >
                   {settings?.pageCopy?.tourDetails?.quoteButton || "Solicitar orçamento pelo WhatsApp"}
                 </WhatsAppConversionLink>

@@ -35,7 +35,7 @@ export default function TransferConversionBar({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-[#0b5d3a] px-4 py-2 font-medium text-white transition-colors hover:bg-[#0a4b31]"
+          className="flex shrink-0 items-center gap-2 rounded-lg bg-[#f97316] px-4 py-2 font-medium text-white transition-colors hover:bg-[#ea580c]"
         >
           <MessageCircle size={18} />
           <span>Solicitar orçamento</span>
