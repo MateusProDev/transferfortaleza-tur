@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import TourDetailPage from "@/app/passeios/[id]/page";
-import TransferDetailPage from "@/app/transfer/[id]/page";
 import { getCachedTours, getCachedTransfers } from "@/lib/public-data-cache";
 import { getSiteUrl } from "@/lib/site-url";
 import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";

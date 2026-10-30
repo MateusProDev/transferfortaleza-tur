@@ -1,28 +1,55 @@
-import type { Metadata } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
-import TransferDetailPage from "@/app/transfer/[id]/page";
-import { getCachedTransfers } from "@/lib/public-data-cache";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import Header from "@/components/public/Header";
+import Footer from "@/components/public/Footer";
+import { getCachedFaqItems, getCachedGoogleReviews, getCachedSiteSettings, getCachedTransfers } from "@/lib/public-data-cache";
+import { Car, Check, ChevronDown, Users, X, BookOpen } from "lucide-react";
+import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+import * as Types from "@/types";
+import DetailGallery from "@/components/public/DetailGallery";
+import WhatsAppConversionLink from "@/components/public/WhatsAppConversionLink";
+import { normalizeBrazilianPhone } from "@/lib/phone";
+import TransferConversionBar from "@/components/public/TransferConversionBar";
+import FAQ from "@/components/public/FAQ";
 import { getSiteUrl } from "@/lib/site-url";
-import { normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
+import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
+import MarkdownDescription from "@/components/public/MarkdownDescription";
+import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
+import PackageLocationMap from "@/components/public/PackageLocationMap";
+import PackageReviewHighlights from "@/components/public/PackageReviewHighlights";
 
 interface PageProps {
   params: { slug: string };
 }
 
-async function getTransfer(slug: string) {
-  const transfers = await getCachedTransfers(true);
-  return transfers.find((item) => item.slug === slug || item.id === slug);
-}
-
 export const revalidate = 86400;
 
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
-  const transfers = await getCachedTransfers(true);
-  return transfers.map((transfer) => ({ slug: transfer.slug || transfer.id }));
+  try {
+    const transfers = await getCachedTransfers(true);
+    return transfers.map((transfer) => ({ slug: transfer.slug || transfer.id }));
+  } catch (error) {
+    console.error("Error generating transfer pages:", error);
+    return [];
+  }
 }
 
+const getTransfer = cache(async (slug: string): Promise<Types.Transfer | null> => {
+  try {
+    const transfers = await getCachedTransfers(false);
+    return transfers.find((transfer) => transfer.slug === slug || transfer.id === slug) || null;
+  } catch (error) {
+    console.error("Error fetching transfer:", error);
+    return null;
+  }
+});
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const baseUrl = getSiteUrl();
   const transfer = await getTransfer(params.slug);
+
   if (!transfer) {
     return {
       title: "Transfer não encontrado",
@@ -30,48 +57,240 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const baseUrl = getSiteUrl();
-  const slug = transfer.slug || transfer.id;
-  const canonical = `${baseUrl}/transfers/${slug}`;
-  const title = transfer.name;
-  const description = transfer.description;
+  const description = transfer.description || `Solicite um orçamento para ${transfer.name} com a Transfer Fortaleza Tur.`;
   const image = transfer.imageUrl
     ? normalizeOpenGraphImage(transfer.imageUrl)
-    : `${baseUrl}/android-icon-192x192.png`;
+    : await getHomepageOpenGraphImage();
 
   return {
-    title,
+    title: transfer.name,
     description,
-    alternates: { canonical },
+    alternates: {
+      canonical: `${baseUrl}/transfers/${params.slug}`,
+    },
     openGraph: {
       type: "website",
       locale: "pt_BR",
-      url: canonical,
-      title: withBrandSuffix(title),
+      url: `${baseUrl}/transfers/${params.slug}`,
+      title: withBrandSuffix(transfer.name),
       description,
       siteName: "Transfer Fortaleza Tur",
-      images: [{ url: image, alt: title }],
+      images: [{
+        url: image,
+        alt: transfer.imageAlt || transfer.name,
+      }],
     },
     twitter: {
       card: "summary_large_image",
-      title: withBrandSuffix(title),
+      title: withBrandSuffix(transfer.name),
       description,
       images: [image],
     },
   };
 }
 
-export default async function TransferSlugPage({ params }: PageProps) {
+export default async function TransferDetailPage({ params }: PageProps) {
   const transfer = await getTransfer(params.slug);
-  if (!transfer) notFound();
 
-  const slug = transfer.slug || transfer.id;
-
-  // Se o slug não bater, redireciona para o correto
-  if (params.slug !== slug) {
-    permanentRedirect(`/transfers/${slug}`);
+  if (!transfer) {
+    notFound();
   }
 
-  // Renderiza a página existente usando o ID
-  return <TransferDetailPage params={{ id: slug }} />;
+  const baseUrl = getSiteUrl();
+  const breadcrumbItems = [
+    { name: "Início", url: baseUrl },
+    { name: "Transfer", url: `${baseUrl}/transfer` },
+    { name: transfer.name, url: `${baseUrl}/transfers/${params.slug}` },
+  ];
+  const galleryImages = [
+    {
+      id: "main",
+      url: transfer.imageUrl,
+      alt: transfer.imageAlt,
+      order: 0,
+    },
+    ...(transfer.galleryImages || []),
+  ].filter((image) => image.url);
+  const [faqs, settings] = await Promise.all([
+    getCachedFaqItems().then((items) => items.filter((faq) => faq.active !== false)),
+    getCachedSiteSettings(),
+  ]);
+  let googleReviews = null;
+  try {
+    googleReviews = await getCachedGoogleReviews();
+  } catch (error) {
+    console.error("Error fetching package Google reviews:", error);
+  }
+  const transferFaqs = Array.isArray(transfer.faqs)
+    ? transfer.faqs.filter((faq) => faq.question?.trim() && faq.answer?.trim())
+    : [];
+  const includesItems = Array.isArray(transfer.includesItems) ? transfer.includesItems.filter(Boolean) : [];
+  const excludesItems = Array.isArray(transfer.excludesItems) ? transfer.excludesItems.filter(Boolean) : [];
+  const whatsappNumber = normalizeBrazilianPhone(settings?.whatsappConfig?.number || "558596748958");
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Olá, gostaria de saber mais sobre o transfer: ${transfer.name}`)}`;
+
+  return (
+    <main className="min-h-screen pt-24 pb-20">
+      <Header />
+      <TransferConversionBar transferName={transfer.name} whatsappNumber={whatsappNumber} />
+      <BreadcrumbJsonLd items={breadcrumbItems} />
+
+      <section className="bg-white">
+        <div className="container mx-auto px-4 py-6">
+          <Link
+            href="/transfer"
+            className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 font-medium transition-colors"
+          >
+            {settings?.pageCopy?.transferDetails?.backLink || "← Voltar para transfer"}
+          </Link>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <DetailGallery
+              images={galleryImages}
+              alt={`${transfer.imageAlt || transfer.name} - Transfer em Fortaleza e região`}
+              featured={transfer.featuredOnHome}
+            />
+
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                  {settings?.pageCopy?.transferDetails?.availability || "Disponível para orçamento"}
+                </span>
+                {transfer.featuredOnHome && (
+                  <span className="bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full">
+                    {settings?.pageCopy?.transferDetails?.featured || "Destaque"}
+                  </span>
+                )}
+              </div>
+
+              {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productName") && <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "productName", "h1")} className="text-3xl lg:text-4xl font-bold text-gray-900 mb-5 leading-tight">
+                {transfer.name.trim()}
+              </EditableHeading>}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
+                <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <Car size={22} className="text-primary-600" />
+                  <div>
+                    <p className="text-xs text-gray-500">{settings?.pageCopy?.transferDetails?.vehicleLabel || "Veículo"}</p>
+                    <p className="font-semibold text-gray-900">{transfer.vehicleType || "Consulte"}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <Users size={22} className="text-primary-600" />
+                  <div>
+                    <p className="text-xs text-gray-500">{settings?.pageCopy?.transferDetails?.capacityLabel || "Capacidade"}</p>
+                    <p className="font-semibold text-gray-900">
+                      {transfer.capacity && transfer.capacity > 0 ? `${transfer.capacity} ${settings?.pageCopy?.transferDetails?.capacitySuffix || "pessoas"}` : "Consulte"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "aboutSection") && <div className="mb-7">
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "aboutTitle", "h2")} className="text-xl font-bold text-gray-900 mb-3">{settings?.pageCopy?.transferDetails?.aboutTitle || "Sobre este transfer"}</EditableHeading>
+                {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productDescription") && <p className="text-gray-600 leading-relaxed whitespace-pre-line">{transfer.description}</p>}
+              </div>}
+
+              {transfer.longDescription && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "productLongDescription") && (
+                <details className="group mb-7">
+                  <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-primary-700 bg-primary-700 px-4 py-3 text-left font-semibold text-white shadow-md transition hover:border-primary-800 hover:bg-primary-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 [&::-webkit-details-marker]:hidden">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <BookOpen size={19} aria-hidden="true" className="shrink-0" />
+                      <span className="group-open:hidden">{settings?.pageCopy?.transferDetails?.fullDescription || "Ler descrição completa"}</span>
+                      <span className="hidden group-open:inline">Recolher descrição</span>
+                    </span>
+                    <ChevronDown size={18} aria-hidden="true" className="shrink-0 transition-transform group-open:rotate-180" />
+                  </summary>
+                  <MarkdownDescription content={transfer.longDescription} className="mt-4 text-gray-600 leading-relaxed" />
+                </details>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <WhatsAppConversionLink
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-[#f97316] hover:bg-[#ea580c] text-white px-6 py-3 rounded-lg transition-colors font-semibold text-center"
+                >
+                  {settings?.pageCopy?.transferDetails?.quoteButton || "Solicitar orçamento pelo WhatsApp"}
+                </WhatsAppConversionLink>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {transfer.location && <PackageLocationMap location={transfer.location} packageName={transfer.name} />}
+
+      {((includesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "includesSection")) ||
+        (excludesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "excludesSection"))) && (
+        <section className="border-y border-gray-200 bg-gray-50 py-12">
+          <div className="container mx-auto grid grid-cols-1 gap-10 px-4 md:grid-cols-2">
+            {includesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "includesSection") && (
+              <div>
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "includesTitle", "h2")} className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
+                  <Check size={22} className="text-green-600" /> {settings?.pageCopy?.transferDetails?.includesTitle || "O que está incluído"}
+                </EditableHeading>
+                <ul className="space-y-3">
+                  {includesItems.map((item, index) => (
+                    <li key={`${item}-${index}`} className="flex items-start gap-3 text-gray-700">
+                      <Check size={19} className="mt-0.5 shrink-0 text-green-600" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {excludesItems.length > 0 && isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "excludesSection") && (
+              <div>
+                <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "excludesTitle", "h2")} className="mb-5 flex items-center gap-2 text-2xl font-bold text-gray-900">
+                  <X size={22} className="text-red-600" /> {settings?.pageCopy?.transferDetails?.excludesTitle || "O que não está incluído"}
+                </EditableHeading>
+                <ul className="space-y-3">
+                  {excludesItems.map((item, index) => (
+                    <li key={`${item}-${index}`} className="flex items-start gap-3 text-gray-700">
+                      <X size={19} className="mt-0.5 shrink-0 text-red-600" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <PackageReviewHighlights content={googleReviews} />
+
+      {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqSection") && (transferFaqs.length > 0 ? (
+        <section className="bg-white py-12">
+          <div className="container mx-auto px-4">
+            {isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqTitle") && <EditableHeading level={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")} className="mb-8 text-center text-3xl font-bold text-gray-900">{settings?.pageCopy?.transferDetails?.faqTitle || "Perguntas sobre este transfer"}</EditableHeading>}
+            <div className="mx-auto max-w-3xl space-y-3">
+              {transferFaqs.map((faq, index) => (
+                <details key={`${faq.question}-${index}`} className="group rounded-lg border border-gray-200">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-semibold text-gray-900">
+                    {faq.question}
+                    <ChevronDown size={20} className="shrink-0 text-primary-600 transition-transform group-open:rotate-180" />
+                  </summary>
+                  <p className="border-t border-gray-200 px-5 py-4 leading-relaxed text-gray-600 whitespace-pre-line">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <FAQ
+          faqs={faqs}
+          title={settings?.pageCopy?.transferDetails?.faqTitle}
+          titleLevel={getHeadingLevel(settings?.pageCopy?.transferDetails, "faqTitle", "h2")}
+          titleEnabled={isCopyFieldEnabled(settings?.pageCopy?.transferDetails, "faqTitle")}
+        />
+      ))}
+
+      <Footer />
+    </main>
+  );
 }

@@ -86,9 +86,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
       images: [image],
     },
-    alternates: {
-      canonical: `${baseUrl}/transfers/${params.id}`,
-    },
   };
 }
 
