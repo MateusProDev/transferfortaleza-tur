@@ -1,6 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { shouldOptimizeImage } from "@/lib/image-optimization";
 import { normalizeBrazilianPhone } from "@/lib/phone";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import type { GoogleReviewsContent, SitePageCopy, SiteSettings } from "@/types";
 
 type ContentRecord = Record<string, unknown>;
@@ -132,6 +136,20 @@ export default function HomeConfiguredSections({
   settings,
   copy,
 }: HomeConfiguredSectionsProps) {
+  const [expandedServices, setExpandedServices] = useState<Set<string>>(new Set());
+
+  const toggleService = (id: string) => {
+    setExpandedServices((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
   const services = asRecord(servicesValue);
   const differentials = asRecord(differentialsValue);
   const imageCarousel = asRecord(imageCarouselValue);
@@ -188,9 +206,11 @@ export default function HomeConfiguredSections({
                 const title = text(service.title);
                 const image = text(service.image);
                 const link = text(service.link) || whatsappHref(whatsappNumber, `Olá! Gostaria de saber mais sobre ${title}.`);
+                const serviceId = text(service.id) || `service-${index}`;
+                const isExpanded = expandedServices.has(serviceId);
                 return (
                   <a
-                    key={text(service.id) || `service-${index}`}
+                    key={serviceId}
                     href={link}
                     target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
                     rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
@@ -204,7 +224,28 @@ export default function HomeConfiguredSections({
                     )}
                     <div className="p-5 flex flex-col h-full">
                       <h3 className="mb-2 text-xl font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{title}</h3>
-                      {text(service.description) && <p className="mb-4 text-gray-600 line-clamp-2 min-h-[40px]">{text(service.description)}</p>}
+                      {text(service.description) && (
+                        <div className="mb-4">
+                          <p className={`text-gray-600 min-h-[40px] ${isExpanded ? '' : 'line-clamp-2'}`}>{text(service.description)}</p>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toggleService(serviceId);
+                            }}
+                            className="flex items-center justify-center mt-2 text-primary-600 text-xs font-medium w-full"
+                          >
+                            {isExpanded ? (
+                              <span className="flex items-center gap-1">
+                                Ver menos <ChevronDown size={14} className="rotate-180" />
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1">
+                                Ver mais <ChevronDown size={14} />
+                              </span>
+                            )}
+                          </button>
+                        </div>
+                      )}
                       <span className="mt-auto font-semibold text-primary-800 hover:text-primary-950 transition-colors">
                         {text(service.linkText)
                           || `${text(copy?.serviceLinkTextPrefix) || "Saiba mais sobre"} ${title}`}
