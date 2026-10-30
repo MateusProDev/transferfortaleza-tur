@@ -142,7 +142,7 @@ export default async function PacotesPage() {
                   <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {tours.map((tour) => (
                       <article key={tour.id} className="flex flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-shadow hover:shadow-xl">
-                        <Link href={`/pacote/${tour.slug || tour.id}`} className="relative block aspect-square w-full overflow-hidden" aria-label={`Ver passeio: ${tour.name}`}>
+                        <Link href={`/passeios/${tour.slug || tour.id}`} className="relative block aspect-square w-full overflow-hidden" aria-label={`Ver passeio: ${tour.name}`}>
                           {tour.mainImageUrl ? (
                             <Image
                               src={tour.mainImageUrl}
@@ -158,7 +158,7 @@ export default async function PacotesPage() {
                         </Link>
                         <div className="flex flex-1 flex-col p-6">
                           {isCopyFieldEnabled(pageCopy, "cardTitle") && <EditableHeading level={getHeadingLevel(pageCopy, "cardTitle", "h3")} className="mb-2 text-xl font-bold text-gray-900">
-                            <Link href={`/pacote/${tour.slug || tour.id}`} className="hover:text-primary-600" aria-label={`Ver passeio: ${tour.name}`}>{tour.name}</Link>
+                            <Link href={`/passeios/${tour.slug || tour.id}`} className="hover:text-primary-600" aria-label={`Ver passeio: ${tour.name}`}>{tour.name}</Link>
                           </EditableHeading>}
                           {isCopyFieldEnabled(pageCopy, "cardDescription") && <p className="mb-4 line-clamp-2 flex-1 text-gray-600">{tour.description}</p>}
                           <div className="mb-5 flex items-center gap-2 text-sm text-gray-500">
@@ -168,7 +168,7 @@ export default async function PacotesPage() {
                             <span>{pageCopy?.groupLabel || "Grupos pequenos"}</span>
                           </div>
                           <Link
-                            href={`/pacote/${tour.slug || tour.id}`}
+                            href={`/passeios/${tour.slug || tour.id}`}
                             className="rounded-lg bg-primary-600 px-4 py-2 text-center font-medium text-white transition hover:bg-primary-700"
                           >
                             Ver passeio
@@ -198,7 +198,7 @@ export default async function PacotesPage() {
                   <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {transfers.map((transfer) => (
                       <article key={transfer.id} className="flex flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-shadow hover:shadow-xl">
-                        <Link href={`/pacote/${transfer.slug || transfer.id}`} className="relative block h-48 w-full" aria-label={`Ver transfer: ${transfer.name}`}>
+                        <Link href={`/transfers/${transfer.slug || transfer.id}`} className="relative block h-48 w-full" aria-label={`Ver transfer: ${transfer.name}`}>
                           {transfer.imageUrl ? (
                             <Image
                               src={transfer.imageUrl}
@@ -214,7 +214,7 @@ export default async function PacotesPage() {
                         </Link>
                         <div className="flex flex-1 flex-col p-6">
                           {isCopyFieldEnabled(pageCopy, "cardTitle") && <EditableHeading level={getHeadingLevel(pageCopy, "cardTitle", "h3")} className="mb-2 text-xl font-bold text-gray-900">
-                            <Link href={`/pacote/${transfer.slug || transfer.id}`} className="hover:text-primary-600" aria-label={`Ver transfer: ${transfer.name}`}>{transfer.name}</Link>
+                            <Link href={`/transfers/${transfer.slug || transfer.id}`} className="hover:text-primary-600" aria-label={`Ver transfer: ${transfer.name}`}>{transfer.name}</Link>
                           </EditableHeading>}
                           {isCopyFieldEnabled(pageCopy, "cardDescription") && <p className="mb-4 line-clamp-2 flex-1 text-gray-600">{transfer.description}</p>}
                           <div className="mb-5 flex items-center gap-2 text-sm text-gray-500">
@@ -224,7 +224,7 @@ export default async function PacotesPage() {
                             <span>{transfer.capacity > 0 ? `${transfer.capacity} ${pageCopy?.capacitySuffix || "pessoas"}` : pageCopy?.capacityFallback || 'Consulte'}</span>
                           </div>
                           <Link
-                            href={`/pacote/${transfer.slug || transfer.id}`}
+                            href={`/transfers/${transfer.slug || transfer.id}`}
                             className="rounded-lg bg-secondary-600 px-4 py-2 text-center font-medium text-white transition hover:bg-secondary-700"
                           >
                             Ver transfer

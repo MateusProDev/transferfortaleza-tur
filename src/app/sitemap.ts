@@ -70,13 +70,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       })),
     ...tours.map((tour) => ({
-      url: `${baseUrl}/pacote/${tour.slug || tour.id}`,
+      url: `${baseUrl}/passeios/${tour.slug || tour.id}`,
       lastModified: tour.updatedAt,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
     ...transfers.map((transfer) => ({
-      url: `${baseUrl}/pacote/${transfer.slug || transfer.id}`,
+      url: `${baseUrl}/transfers/${transfer.slug || transfer.id}`,
       lastModified: transfer.updatedAt,
       changeFrequency: "weekly" as const,
       priority: 0.8,

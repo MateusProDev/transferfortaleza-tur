@@ -96,7 +96,7 @@ export default function TransfersClient({ transfers, loadError, copy }: Transfer
             {filteredTransfers.map((transfer) => (
               <article key={transfer.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
                 <Link
-                  href={`/pacote/${transfer.slug || transfer.id}`}
+                  href={`/transfers/${transfer.slug || transfer.id}`}
                   className="relative block h-48 w-full"
                   aria-label={`Ver transfer: ${transfer.name}`}
                 >
@@ -110,7 +110,7 @@ export default function TransfersClient({ transfers, loadError, copy }: Transfer
                 </Link>
                 <div className="p-6 flex flex-col flex-1">
                   {isCopyFieldEnabled(copy, "cardTitle") && <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h2')} className="text-xl font-bold text-gray-900 mb-2">
-                    <Link href={`/pacote/${transfer.slug || transfer.id}`} className="hover:text-primary-600" aria-label={`Ver transfer: ${transfer.name}`}>{transfer.name}</Link>
+                    <Link href={`/transfers/${transfer.slug || transfer.id}`} className="hover:text-primary-600" aria-label={`Ver transfer: ${transfer.name}`}>{transfer.name}</Link>
                   </EditableHeading>}
                   {isCopyFieldEnabled(copy, "cardDescription") && <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{transfer.description}</p>}
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
@@ -119,7 +119,7 @@ export default function TransfersClient({ transfers, loadError, copy }: Transfer
                   </div>
                   <div className="flex items-center justify-end">
                     <Link
-                      href={`/pacote/${transfer.slug || transfer.id}`}
+                      href={`/transfers/${transfer.slug || transfer.id}`}
                       className="bg-secondary-600 hover:bg-secondary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
                       aria-label={`Ver detalhes de ${transfer.name}`}
                     >

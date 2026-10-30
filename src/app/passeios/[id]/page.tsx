@@ -98,10 +98,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'max-snippet': -1,
       },
     },
+    alternates: {
+      canonical: `${baseUrl}/passeios/${params.id}`,
+    },
     openGraph: {
       type: "website",
       locale: "pt_BR",
-      url: `${baseUrl}/pacote/${params.id}`,
+      url: `${baseUrl}/passeios/${params.id}`,
       title: withBrandSuffix(tour.name),
       description,
       siteName: "Transfer Fortaleza Tur",
@@ -116,8 +119,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
       images: [image],
     },
-    alternates: {
-      canonical: `${baseUrl}/pacote/${params.id}`,
+      canonical: `${baseUrl}/passeios/${params.id}`,
     },
   };
 }
@@ -162,7 +164,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
   const breadcrumbItems = [
     { name: "Início", url: baseUrl },
     { name: "Passeios", url: `${baseUrl}/passeios` },
-    { name: tour.name, url: `${baseUrl}/pacote/${params.id}` },
+    { name: tour.name, url: `${baseUrl}/passeios/${params.id}` },
   ];
 
   return (
@@ -181,7 +183,7 @@ export default async function PasseioDetailPage({ params }: PageProps) {
           description={tour.description}
           image={tour.mainImageUrl}
           price={tour.price}
-          url={`${baseUrl}/pacote/${params.id}`}
+          url={`${baseUrl}/passeios/${params.id}`}
         />
       )}
 

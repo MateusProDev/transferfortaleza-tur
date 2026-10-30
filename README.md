@@ -336,7 +336,8 @@ vercel
 
 ## SEO and legacy URLs
 
-- Tour and transfer details use the legacy `/pacote/:slug` URL. Keep existing slugs exactly as stored; do not regenerate them from names.
+- Tour details use `/passeios/:slug` URL and transfer details use `/transfers/:slug` URL. Keep existing slugs exactly as stored; do not regenerate them from names.
+- Legacy `/pacote/:slug` URLs are redirected to the appropriate route based on item type.
 - The Portuguese routes `/sobre` and `/contato` are canonical. English aliases and replaced detail paths return permanent redirects to the preferred URLs.
 - Blog pages are server-rendered so article links and content are present in the initial HTML response.
 - Every public page template has one page-level `<h1>`; section headings use `<h2>` and nested topics/cards use `<h3>` or `<h4>` as appropriate. Multiple `<h2>` elements are expected and are not duplicate H1s.

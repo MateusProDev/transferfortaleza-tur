@@ -95,7 +95,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
               <div key={transfer.id} className="relative group mx-auto w-full max-w-sm md:max-w-none">
                 <article className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group">
                   <Link
-                    href={`/pacote/${transfer.slug || transfer.id}`}
+                    href={`/transfers/${transfer.slug || transfer.id}`}
                     className="relative block aspect-square w-full overflow-hidden"
                     aria-label={`Ver transfer: ${transfer.name}`}
                   >
@@ -118,7 +118,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
                     {isCopyFieldEnabled(copy, "transferCardTitle") && (
                       <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
                         <Link
-                          href={`/pacote/${transfer.slug || transfer.id}`}
+                          href={`/transfers/${transfer.slug || transfer.id}`}
                           className="mb-2 block min-h-14 line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
                         >
                           {transfer.name}
@@ -143,7 +143,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
 
                     <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
                       <Link
-                        href={`/pacote/${transfer.slug || transfer.id}`}
+                        href={`/transfers/${transfer.slug || transfer.id}`}
                         className="flex-1 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                       >
                         {copy?.transferDetailsButton || "Ver transfer"}

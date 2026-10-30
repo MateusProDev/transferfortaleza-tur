@@ -87,13 +87,15 @@ export default async function LegacyPackagePage({ params }: PageProps) {
   if (!item) notFound();
 
   const slug = item.item.slug || item.item.id;
-  if (params.slug !== slug) {
-    permanentRedirect(`/pacote/${slug}`);
-  }
 
+  // Redirecionamento 301 para preservar SEO: /pacote/... -> /passeios/... ou /transfers/...
   if (item.type === "tour") {
-    return <TourDetailPage params={{ id: slug }} />;
+    permanentRedirect(`/passeios/${slug}`);
   }
 
-  return <TransferDetailPage params={{ id: slug }} />;
+  if (item.type === "transfer") {
+    permanentRedirect(`/transfers/${slug}`);
+  }
+
+  notFound();
 }

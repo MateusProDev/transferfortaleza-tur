@@ -140,7 +140,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                     description={tour.description}
                     image={tour.mainImageUrl}
                     price={tour.price}
-                    url={`${BRAND_URL}/pacote/${tour.slug || tour.id}`}
+                    url={`${BRAND_URL}/passeios/${tour.slug || tour.id}`}
                   />
                 )}
                 <div className="relative group mx-auto w-full max-w-sm">
@@ -148,7 +148,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                     className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group"
                   >
                 <Link
-                  href={`/pacote/${tour.slug || tour.id}`}
+                  href={`/passeios/${tour.slug || tour.id}`}
                   className="relative block aspect-square w-full overflow-hidden"
                   onClick={() => handleTourClick(tour.name)}
                   aria-label={`Ver passeio: ${tour.name}`}
@@ -176,7 +176,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                 <div className="p-6 flex flex-col flex-1">
                   {isCopyFieldEnabled(copy, "tourCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h4')}>
                     <Link
-                      href={`/pacote/${tour.slug || tour.id}`}
+                      href={`/passeios/${tour.slug || tour.id}`}
                       className="mb-2 block min-h-14 line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
                       onClick={() => handleTourClick(tour.name)}
                     >
@@ -208,7 +208,7 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                       <span className="whitespace-nowrap">{copy?.tourReserveButton || "Reservar pelo WhatsApp"}</span>
                     </WhatsAppConversionLink>
                     <Link
-                      href={`/pacote/${tour.slug || tour.id}`}
+                      href={`/passeios/${tour.slug || tour.id}`}
                       className="flex-shrink-0 text-center bg-primary-800 hover:bg-primary-900 text-white px-3 py-2 rounded-lg transition-colors font-medium text-xs sm:text-sm"
                       onClick={() => handleTourClick(tour.name)}
                     >

@@ -123,7 +123,7 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError, copy
             {filteredTours.map((tour) => (
               <article key={tour.id} className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
                 <Link
-                  href={`/pacote/${tour.slug || tour.id}`}
+                  href={`/passeios/${tour.slug || tour.id}`}
                   className="relative block aspect-square w-full overflow-hidden"
                   aria-label={`Ver passeio: ${tour.name}`}
                 >
@@ -132,14 +132,14 @@ export default function PasseiosClient({ tours, sectionDisabled, loadError, copy
                 </Link>
                 <div className="p-6 flex flex-col flex-1">
                   {isCopyFieldEnabled(copy, "cardTitle") && <EditableHeading level={getHeadingLevel(copy, 'cardTitle', 'h2')} className="text-xl font-bold text-gray-900 mb-2">
-                    <Link href={`/pacote/${tour.slug || tour.id}`} className="hover:text-primary-600" aria-label={`Ver passeio: ${tour.name}`}>{tour.name}</Link>
+                    <Link href={`/passeios/${tour.slug || tour.id}`} className="hover:text-primary-600" aria-label={`Ver passeio: ${tour.name}`}>{tour.name}</Link>
                   </EditableHeading>}
                   {isCopyFieldEnabled(copy, "cardDescription") && <p className="text-gray-600 mb-4 line-clamp-2 flex-1">{tour.description}</p>}
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1"><Clock size={16} /><span>{tour.duration || copy?.durationFallback || 'Consulte'}</span></div>
                     <div className="flex items-center space-x-1"><Users size={16} /><span>{copy?.groupLabel || "Grupos pequenos"}</span></div>
                   </div>
-                  <div className="flex items-center justify-end"><Link href={`/pacote/${tour.slug || tour.id}`} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium" aria-label={`${copy?.detailsButton || "Ver passeio"}: ${tour.name}`}>{copy?.detailsButton || "Ver passeio"}: {tour.name}</Link></div>
+                  <div className="flex items-center justify-end"><Link href={`/passeios/${tour.slug || tour.id}`} className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors font-medium" aria-label={`${copy?.detailsButton || "Ver passeio"}: ${tour.name}`}>{copy?.detailsButton || "Ver passeio"}: {tour.name}</Link></div>
                 </div>
               </article>
             ))}
