@@ -19,6 +19,7 @@ import MarkdownDescription from "@/components/public/MarkdownDescription";
 import EditableHeading, { getHeadingLevel, isCopyFieldEnabled } from "@/components/public/EditableHeading";
 import PackageLocationMap from "@/components/public/PackageLocationMap";
 import PackageReviewHighlights from "@/components/public/PackageReviewHighlights";
+import TourTrustBadges from "@/components/public/TourTrustBadges";
 
 interface PageProps {
   params: { id: string };
@@ -259,6 +260,9 @@ export default async function TransferDetailPage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      {/* Selos de Confiança */}
+      <TourTrustBadges copy={settings?.pageCopy?.transferDetails} />
 
       <PackageReviewHighlights content={googleReviews} />
 
