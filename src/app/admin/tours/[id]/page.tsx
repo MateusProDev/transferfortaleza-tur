@@ -15,6 +15,18 @@ import RichTextEditor from "@/components/admin/RichTextEditor";
 import PackageLocationField from "@/components/admin/PackageLocationField";
 import { getAdminApiError } from "@/lib/admin-api-client";
 
+// Função para gerar slug amigável
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+    .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
+    .trim()
+    .replace(/\s+/g, '-') // Substitui espaços por hífens
+    .replace(/-+/g, '-'); // Remove hífens duplicados
+}
+
 export default function EditTour() {
   const router = useRouter();
   const params = useParams();
@@ -83,6 +95,13 @@ export default function EditTour() {
 
     fetchTour();
   }, [params.id, router]);
+
+  // Gera slug automaticamente quando o nome é alterado
+  useEffect(() => {
+    if (formData.name && !formData.slug) {
+      setFormData({ ...formData, slug: generateSlug(formData.name) });
+    }
+  }, [formData.name]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,9 +178,11 @@ export default function EditTour() {
               <input
                 type="text"
                 value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, slug: generateSlug(e.target.value) })}
                 className="w-full px-3 py-2 border rounded"
+                placeholder="ex: passeio-beach-park"
               />
+              <p className="text-xs text-gray-500 mt-1">Gerado automaticamente a partir do nome. Espaços serão convertidos em hífens.</p>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Descrição Curta</label>
