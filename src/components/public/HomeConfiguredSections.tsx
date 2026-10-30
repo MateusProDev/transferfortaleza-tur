@@ -202,10 +202,10 @@ export default function HomeConfiguredSections({
                         <Image src={image} alt={text(service.alt) || title} fill unoptimized={!shouldOptimizeImage(image)} sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
                       </div>
                     )}
-                    <div className="p-5">
+                    <div className="p-5 flex flex-col h-full">
                       <h3 className="mb-2 text-xl font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{title}</h3>
-                      {text(service.description) && <p className="mb-4 text-gray-600">{text(service.description)}</p>}
-                      <span className="font-semibold text-primary-800 hover:text-primary-950 transition-colors">
+                      {text(service.description) && <p className="mb-4 text-gray-600 line-clamp-2 min-h-[40px]">{text(service.description)}</p>}
+                      <span className="mt-auto font-semibold text-primary-800 hover:text-primary-950 transition-colors">
                         {text(service.linkText)
                           || `${text(copy?.serviceLinkTextPrefix) || "Saiba mais sobre"} ${title}`}
                       </span>

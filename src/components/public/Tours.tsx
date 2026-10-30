@@ -156,9 +156,9 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                     url={`${BRAND_URL}/passeios/${tour.slug || tour.id}`}
                   />
                 )}
-                <div className="relative group mx-auto w-full max-w-sm">
+                <div className="relative group mx-auto w-full max-w-sm h-full">
                   <article
-                    className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group"
+                    className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group h-full min-h-[450px]"
                   >
                 <Link
                   href={`/passeios/${tour.slug || tour.id}`}
@@ -190,16 +190,16 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                   {isCopyFieldEnabled(copy, "tourCardTitle") && <EditableHeading level={getHeadingLevel(copy, 'tourCardTitle', 'h4')}>
                     <Link
                       href={`/passeios/${tour.slug || tour.id}`}
-                      className="mb-2 block min-h-14 line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
+                      className="mb-2 block min-h-[60px] line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
                       onClick={() => handleTourClick(tour.name)}
                     >
                       {tour.name}
                     </Link>
                   </EditableHeading>}
                   {isCopyFieldEnabled(copy, "tourCardDescription") && (
-                    <div className="mb-4">
+                    <div className="mb-4 flex-1">
                       <div className="relative">
-                        <p className={`min-h-12 text-gray-600 ${expandedCards.has(tour.id) ? '' : 'line-clamp-2'} flex-1`}>
+                        <p className={`min-h-[60px] text-gray-600 ${expandedCards.has(tour.id) ? '' : 'line-clamp-2'} flex-1`}>
                           {tour.description}
                         </p>
                         <button

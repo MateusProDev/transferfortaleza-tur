@@ -105,8 +105,8 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
             onTouchCancel={() => setIsPaused(false)}
           >
             {visibleTransfers.map((transfer) => (
-              <div key={transfer.id} className="relative group mx-auto w-full max-w-sm md:max-w-none">
-                <article className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group">
+              <div key={transfer.id} className="relative group mx-auto w-full max-w-sm md:max-w-none h-full">
+                <article className="bg-gray-50 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 ease-out flex flex-col group h-full min-h-[450px]">
                   <Link
                     href={`/transfers/${transfer.slug || transfer.id}`}
                     className="relative block aspect-square w-full overflow-hidden"
@@ -132,7 +132,7 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
                       <EditableHeading level={getHeadingLevel(copy, 'transferCardTitle', 'h3')}>
                         <Link
                           href={`/transfers/${transfer.slug || transfer.id}`}
-                          className="mb-2 block min-h-14 line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
+                          className="mb-2 block min-h-[60px] line-clamp-2 text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors"
                         >
                           {transfer.name}
                         </Link>
@@ -140,9 +140,9 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
                     )}
 
                     {isCopyFieldEnabled(copy, "transferCardDescription") && (
-                      <div className="mb-4">
+                      <div className="mb-4 flex-1">
                         <div className="relative">
-                          <p className={`text-gray-600 text-sm ${expandedCards.has(transfer.id) ? '' : 'line-clamp-2'}`}>
+                          <p className={`text-gray-600 text-sm min-h-[60px] ${expandedCards.has(transfer.id) ? '' : 'line-clamp-2'}`}>
                             {transfer.description}
                           </p>
                           <button
