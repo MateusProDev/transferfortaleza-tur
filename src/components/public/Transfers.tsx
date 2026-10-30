@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Car, Users, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
+import { Car, Users, ChevronLeft, ChevronRight, MessageCircle, ChevronDown } from 'lucide-react';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import { normalizeBrazilianPhone } from '@/lib/phone';
 import type { Transfer } from '@/types';
@@ -20,7 +20,20 @@ interface TransfersProps {
 export default function Transfers({ transfers, whatsappNumber, copy }: TransfersProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const itemsPerPage = useResponsiveCarouselItemsPerPage();
+
+  const toggleCard = (id: string) => {
+    setExpandedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   const featuredTransfers = transfers.filter((transfer) => transfer.featuredOnHome);
   const displayTransfers = featuredTransfers.length > 0 ? featuredTransfers : transfers.slice(0, 6);
@@ -127,7 +140,33 @@ export default function Transfers({ transfers, whatsappNumber, copy }: Transfers
                     )}
 
                     {isCopyFieldEnabled(copy, "transferCardDescription") && (
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{transfer.description}</p>
+                      <div className="mb-4">
+                        <details
+                          className="group"
+                          open={expandedCards.has(transfer.id)}
+                          onToggle={(e) => {
+                            if ((e.target as HTMLDetailsElement).open) {
+                              toggleCard(transfer.id);
+                            } else {
+                              toggleCard(transfer.id);
+                            }
+                          }}
+                        >
+                          <summary className="list-none cursor-pointer">
+                            <p className="text-gray-600 text-sm line-clamp-2 group-open:line-clamp-none">
+                              {transfer.description}
+                            </p>
+                            <div className="flex items-center justify-center mt-2 text-primary-600 text-xs font-medium">
+                              <span className="group-open:hidden flex items-center gap-1">
+                                Ver mais <ChevronDown size={14} />
+                              </span>
+                              <span className="hidden group-open:inline flex items-center gap-1">
+                                Ver menos <ChevronDown size={14} className="rotate-180" />
+                              </span>
+                            </div>
+                          </summary>
+                        </details>
+                      </div>
                     )}
 
                     <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">

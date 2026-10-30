@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Users, ChevronLeft, ChevronRight, MapPin, MessageCircle } from 'lucide-react';
+import { Clock, Users, ChevronLeft, ChevronRight, MapPin, MessageCircle, ChevronDown } from 'lucide-react';
 import { metaPixelEvents } from '@/utils/metaPixel';
 import WhatsAppConversionLink from './WhatsAppConversionLink';
 import { normalizeBrazilianPhone } from '@/lib/phone';
@@ -35,7 +35,20 @@ interface ToursProps {
 export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const itemsPerPage = useResponsiveCarouselItemsPerPage();
+
+  const toggleCard = (id: string) => {
+    setExpandedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   const featuredTours = tours
     .filter((tour) => tour.featured)
@@ -183,7 +196,35 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                       {tour.name}
                     </Link>
                   </EditableHeading>}
-                  {isCopyFieldEnabled(copy, "tourCardDescription") && <p className="mb-4 min-h-12 line-clamp-2 flex-1 text-gray-600">{tour.description}</p>}
+                  {isCopyFieldEnabled(copy, "tourCardDescription") && (
+                    <div className="mb-4">
+                      <details
+                        className="group"
+                        open={expandedCards.has(tour.id)}
+                        onToggle={(e) => {
+                          if ((e.target as HTMLDetailsElement).open) {
+                            toggleCard(tour.id);
+                          } else {
+                            toggleCard(tour.id);
+                          }
+                        }}
+                      >
+                        <summary className="list-none cursor-pointer">
+                          <p className="min-h-12 text-gray-600 line-clamp-2 group-open:line-clamp-none flex-1">
+                            {tour.description}
+                          </p>
+                          <div className="flex items-center justify-center mt-2 text-primary-600 text-xs font-medium">
+                            <span className="group-open:hidden flex items-center gap-1">
+                              Ver mais <ChevronDown size={14} />
+                            </span>
+                            <span className="hidden group-open:inline flex items-center gap-1">
+                              Ver menos <ChevronDown size={14} className="rotate-180" />
+                            </span>
+                          </div>
+                        </summary>
+                      </details>
+                    </div>
+                  )}
 
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center space-x-1">

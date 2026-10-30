@@ -309,7 +309,8 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
 
   if (kind === "transfer") {
     if (has(input, "vehicleType")) result.veiculos = asStrings([input.vehicleType]);
-    copy("capacity", "capacidade");
+    copy("capacity", "capacidade", (value) => asNumber(value));
+    copy("vehicleType", "veiculos", (value) => asStrings([value]));
     if (isCreate) {
       result.categoria = "transfer";
       result.categorias = ["transfer"];
