@@ -1,99 +1,42 @@
-import type { Metadata } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
-import { getCachedTours, getCachedTransfers } from "@/lib/public-data-cache";
-import { getSiteUrl } from "@/lib/site-url";
-import { getHomepageOpenGraphImage, normalizeOpenGraphImage, withBrandSuffix } from "@/lib/open-graph";
+import { redirect } from 'next/navigation';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
-interface PageProps {
-  params: { slug: string };
-}
-
-async function getPackage(slug: string) {
-  const [tours, transfers] = await Promise.all([
-    getCachedTours(true),
-    getCachedTransfers(true),
-  ]);
-
-  const tour = tours.find((item) => item.slug === slug || item.id === slug);
-  if (tour) return { type: "tour" as const, item: tour };
-
-  const transfer = transfers.find((item) => item.slug === slug || item.id === slug);
-  if (transfer) return { type: "transfer" as const, item: transfer };
-
-  return null;
-}
-
-export const revalidate = 86400;
-
-export async function generateStaticParams(): Promise<PageProps["params"][]> {
-  const [tours, transfers] = await Promise.all([
-    getCachedTours(true),
-    getCachedTransfers(true),
-  ]);
-
-  return Array.from(
-    new Set([
-      ...tours.map((tour) => tour.slug || tour.id),
-      ...transfers.map((transfer) => transfer.slug || transfer.id),
-    ])
-  ).map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const item = await getPackage(params.slug);
-  if (!item) {
-    return {
-      title: "Pacote não encontrado",
-      robots: "noindex, nofollow",
-    };
-  }
-
-  const baseUrl = getSiteUrl();
-  const slug = item.item.slug || item.item.id;
-  const canonical = `${baseUrl}/pacote/${slug}`;
-  const title = item.item.name;
-  const description = item.item.description;
-  const productImage = item.type === "tour" ? item.item.mainImageUrl : item.item.imageUrl;
-  const image = productImage
-    ? normalizeOpenGraphImage(productImage)
-    : await getHomepageOpenGraphImage();
-
-  return {
-    title,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      type: "website",
-      locale: "pt_BR",
-      url: canonical,
-      title: withBrandSuffix(title),
-      description,
-      siteName: "Transfer Fortaleza Tur",
-      images: [{ url: image, alt: title }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: withBrandSuffix(title),
-      description,
-      images: [image],
-    },
+interface Props {
+  params: {
+    slug: string;
   };
 }
 
-export default async function LegacyPackagePage({ params }: PageProps) {
-  const item = await getPackage(params.slug);
-  if (!item) notFound();
+export default async function PackageRedirectPage({ params }: Props) {
+  const { slug } = params;
 
-  const slug = item.item.slug || item.item.id;
+  try {
+    if (!db) {
+      // If Firebase is not available, redirect to home
+      redirect('/');
+    }
 
-  // Redirecionamento 301 para preservar SEO: /pacote/... -> /passeios/... ou /transfers/...
-  if (item.type === "tour") {
-    permanentRedirect(`/passeios/${slug}`);
+    // Try to find a tour with this slug
+    const toursQuery = query(collection(db, 'tours'), where('slug', '==', slug));
+    const toursSnapshot = await getDocs(toursQuery);
+
+    if (!toursSnapshot.empty) {
+      redirect(`/passeios/${slug}`);
+    }
+
+    // Try to find a transfer with this slug
+    const transfersQuery = query(collection(db, 'transfers'), where('slug', '==', slug));
+    const transfersSnapshot = await getDocs(transfersQuery);
+
+    if (!transfersSnapshot.empty) {
+      redirect(`/transfers/${slug}`);
+    }
+
+    // If not found, redirect to home
+    redirect('/');
+  } catch (error) {
+    console.error('Error redirecting package:', error);
+    redirect('/');
   }
-
-  if (item.type === "transfer") {
-    permanentRedirect(`/transfers/${slug}`);
-  }
-
-  notFound();
 }
