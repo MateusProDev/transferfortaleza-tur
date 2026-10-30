@@ -198,31 +198,25 @@ export default function Tours({ tours, whatsappNumber, copy }: ToursProps) {
                   </EditableHeading>}
                   {isCopyFieldEnabled(copy, "tourCardDescription") && (
                     <div className="mb-4">
-                      <details
-                        className="group"
-                        open={expandedCards.has(tour.id)}
-                        onToggle={(e) => {
-                          if ((e.target as HTMLDetailsElement).open) {
-                            toggleCard(tour.id);
-                          } else {
-                            toggleCard(tour.id);
-                          }
-                        }}
-                      >
-                        <summary className="list-none cursor-pointer">
-                          <p className="min-h-12 text-gray-600 line-clamp-2 group-open:line-clamp-none flex-1">
-                            {tour.description}
-                          </p>
-                          <div className="flex items-center justify-center mt-2 text-primary-600 text-xs font-medium">
-                            <span className="group-open:hidden flex items-center gap-1">
-                              Ver mais <ChevronDown size={14} />
-                            </span>
-                            <span className="hidden group-open:inline flex items-center gap-1">
+                      <div className="relative">
+                        <p className={`min-h-12 text-gray-600 ${expandedCards.has(tour.id) ? '' : 'line-clamp-2'} flex-1`}>
+                          {tour.description}
+                        </p>
+                        <button
+                          onClick={() => toggleCard(tour.id)}
+                          className="flex items-center justify-center mt-2 text-primary-600 text-xs font-medium w-full"
+                        >
+                          {expandedCards.has(tour.id) ? (
+                            <span className="flex items-center gap-1">
                               Ver menos <ChevronDown size={14} className="rotate-180" />
                             </span>
-                          </div>
-                        </summary>
-                      </details>
+                          ) : (
+                            <span className="flex items-center gap-1">
+                              Ver mais <ChevronDown size={14} />
+                            </span>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   )}
 
