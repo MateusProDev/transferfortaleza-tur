@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import AnimatedCounter from "@/components/public/AnimatedCounter";
@@ -149,6 +150,39 @@ export default async function AboutPage() {
                 ))}
               </div>
             </div>}
+
+            {/* Instagram QR Code Section */}
+            <div className="mt-16 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Acesse Nosso Instagram</h2>
+              <p className="text-gray-600 mb-8">Siga-nos para ver fotos de nossos passeios e destinos incríveis</p>
+              <div className="inline-block bg-white p-6 rounded-xl shadow-lg">
+                <a
+                  href="https://www.instagram.com/transferfortalezatur"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Image
+                    src="/qr-code-lucrazi (19).png"
+                    alt="QR Code do Instagram - Transfer Fortaleza Tur"
+                    width={200}
+                    height={200}
+                    className="mx-auto"
+                  />
+                </a>
+              </div>
+              <p className="mt-4 text-sm text-gray-500">
+                QR Code gerado com{" "}
+                <a
+                  href="https://www.lucrazi.com.br/ferramentas/gerador-qrcode-gratuito"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-600 hover:text-primary-700 underline"
+                >
+                  Gerador de QR Code Grátis Online | Lucrazi
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </section>
