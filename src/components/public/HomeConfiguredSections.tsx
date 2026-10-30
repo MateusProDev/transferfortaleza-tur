@@ -209,21 +209,32 @@ export default function HomeConfiguredSections({
                 const serviceId = text(service.id) || `service-${index}`;
                 const isExpanded = expandedServices.has(serviceId);
                 return (
-                  <a
+                  <div
                     key={serviceId}
-                    href={link}
-                    target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
-                    rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
                     className="group overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm transition-transform hover:scale-105 hover:shadow-md"
                     style={service.color ? { borderTopColor: String(service.color), borderTopWidth: 4 } : undefined}
                   >
-                    {image && (
-                      <div className="relative h-48">
-                        <Image src={image} alt={text(service.alt) || title} fill unoptimized={!shouldOptimizeImage(image)} sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
-                      </div>
-                    )}
+                    <a
+                      href={link}
+                      target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
+                      rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
+                      className="block"
+                    >
+                      {image && (
+                        <div className="relative h-48">
+                          <Image src={image} alt={text(service.alt) || title} fill unoptimized={!shouldOptimizeImage(image)} sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
+                        </div>
+                      )}
+                    </a>
                     <div className="p-5 flex flex-col h-full">
-                      <h3 className="mb-2 text-xl font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{title}</h3>
+                      <a
+                        href={link}
+                        target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
+                        rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
+                        className="mb-2 block"
+                      >
+                        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{title}</h3>
+                      </a>
                       {text(service.description) && (
                         <div className="mb-4">
                           <p className={`text-gray-600 min-h-[40px] ${isExpanded ? '' : 'line-clamp-2'}`}>{text(service.description)}</p>
@@ -232,7 +243,7 @@ export default function HomeConfiguredSections({
                               e.preventDefault();
                               toggleService(serviceId);
                             }}
-                            className="flex items-center justify-center mt-2 text-primary-600 text-xs font-medium w-full"
+                            className="flex items-center mt-2 text-primary-600 text-xs font-medium"
                           >
                             {isExpanded ? (
                               <span className="flex items-center gap-1">
@@ -246,12 +257,17 @@ export default function HomeConfiguredSections({
                           </button>
                         </div>
                       )}
-                      <span className="mt-auto font-semibold text-primary-800 hover:text-primary-950 transition-colors">
+                      <a
+                        href={link}
+                        target={/^https?:\/\//i.test(link) ? "_blank" : undefined}
+                        rel={/^https?:\/\//i.test(link) ? "noopener noreferrer" : undefined}
+                        className="mt-auto font-semibold text-primary-800 hover:text-primary-950 transition-colors"
+                      >
                         {text(service.linkText)
                           || `${text(copy?.serviceLinkTextPrefix) || "Saiba mais sobre"} ${title}`}
-                      </span>
+                      </a>
                     </div>
-                  </a>
+                  </div>
                 );
               })}
             </div>
