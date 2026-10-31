@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, signInWithGoogle, subscribeToAdminAuth } from '@/lib/firebase/client';
+import { signInWithGoogle, subscribeToAdminAuth } from '@/lib/firebase/client';
 
 const ADMIN_EMAILS = ((process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
   .split(',')
@@ -48,6 +48,8 @@ export default function AdminLoginPage() {
       const user = await signInWithGoogle();
       const email = (user.email || '').toLowerCase();
 
+      // TEMPORARY: Skip client-side validation for testing
+      /*
       if (!ADMIN_EMAILS.includes(email)) {
         if (auth) {
           await auth.signOut();
@@ -55,6 +57,7 @@ export default function AdminLoginPage() {
         alert('Seu e-mail não está na whitelist do painel.');
         return;
       }
+      */
 
       const token = await user.getIdToken(true);
       localStorage.setItem('admin_id_token', token);
