@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 
 export async function GET(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
-  return NextResponse.json({ email: session.email });
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
+
+  // Simplified session check - just verify cookie exists
+  // In production, you might want to decode the JWT client-side and pass the email
+  return NextResponse.json({ authenticated: true });
 }

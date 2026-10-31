@@ -43,6 +43,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let active = true;
+    const token = localStorage.getItem('admin_id_token');
+
+    if (!token) {
+      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      setLoading(false);
+      return;
+    }
+
     fetch("/api/auth/session", { cache: "no-store" })
       .then((response) => {
         if (response.ok) {

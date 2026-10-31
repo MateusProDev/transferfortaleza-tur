@@ -58,6 +58,19 @@ export default function AdminLoginPage() {
 
       const token = await user.getIdToken(true);
       localStorage.setItem('admin_id_token', token);
+
+      // Send token to server to create session
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: token, email }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao criar sessão');
+      }
+
       router.replace('/admin/dashboard');
     } catch (error) {
       console.error('[admin/login] error:', error);
