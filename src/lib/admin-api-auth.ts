@@ -24,6 +24,8 @@ function getAllowedAdminEmails(): Set<string> {
   return new Set(emailList);
 }
 
+export { getAllowedAdminEmails };
+
 export function isAllowedAdminEmail(email: string | undefined): email is string {
   return Boolean(email && getAllowedAdminEmails().has(email.toLowerCase()));
 }
