@@ -43,7 +43,7 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
   try {
   const settingsCollection = db.collection("settings");
   const settingsSnapshot = await settingsCollection.get();
-  const siteSettings = settingsSnapshot.docs.find((document) => document.id !== "whatsapp");
+  const siteSettings = settingsSnapshot.docs.find((document: any) => document.id !== "whatsapp");
   const settingsData = { ...data };
   delete settingsData.id;
   const batch = db.batch();
@@ -142,7 +142,7 @@ async function saveSettings(data: SettingsPayload): Promise<void> {
   const whatsappNumber = whatsappConfig.number ?? (data.contactInfo as SettingsPayload | undefined)?.whatsapp;
   if (whatsappNumber !== undefined) {
     const whatsappRef = settingsCollection.doc("whatsapp");
-    if (settingsSnapshot.docs.some((document) => document.id === "whatsapp")) {
+    if (settingsSnapshot.docs.some((document: any) => document.id === "whatsapp")) {
       batch.update(whatsappRef, { number: whatsappNumber, updatedAt: now });
     } else {
       batch.set(whatsappRef, { number: whatsappNumber, createdAt: now, updatedAt: now });

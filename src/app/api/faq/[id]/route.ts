@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const faq = (await getCachedFaqItems()).find((item) => item.id === params.id) || null;
+    const faq = (await getCachedFaqItems()).find((item: any) => item.id === params.id) || null;
     if (!faq) {
       return NextResponse.json(
         { error: "FAQ item not found" },

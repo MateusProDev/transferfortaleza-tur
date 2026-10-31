@@ -63,7 +63,7 @@ export async function PUT(
       return NextResponse.json({ error: "Artigo não encontrado." }, { status: 404 });
     }
     const duplicate = await db.collection("blogPosts").where("slug", "==", body.slug.trim()).limit(2).get();
-    if (duplicate.docs.some((item) => item.id !== params.id)) {
+    if (duplicate.docs.some((item: any) => item.id !== params.id)) {
       return NextResponse.json({ error: "Este slug já está sendo usado por outro artigo." }, { status: 409 });
     }
 

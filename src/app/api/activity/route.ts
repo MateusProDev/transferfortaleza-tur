@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       .orderBy("timestamp", "desc")
       .limit(10)
       .get();
-    const activities = snapshot.docs.map((document) => ({
+    const activities = snapshot.docs.map((document: any) => ({
       id: document.id,
       ...document.data(),
     }));

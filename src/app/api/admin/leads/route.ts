@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     }
 
     const snapshot = await db.collection('leads_tracking').get();
-    let leads = snapshot.docs.map((doc) => ({
+    let leads = snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data(),
     }));

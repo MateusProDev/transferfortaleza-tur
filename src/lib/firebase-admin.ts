@@ -1,4 +1,4 @@
-import admin from 'firebase-admin';
+import admin, { getApps } from 'firebase-admin';
 import { existsSync, readFileSync } from 'fs';
 import path from 'path';
 
@@ -39,14 +39,21 @@ const getServiceAccountFromFile = () => {
 
 if (typeof window === 'undefined') {
   try {
-    const serviceAccountKey = process.env.FIREBASE_ADMIN_SDK
-      ? JSON.parse(process.env.FIREBASE_ADMIN_SDK)
-      : getServiceAccountFromEnv() || getServiceAccountFromFile();
+    let serviceAccountKey = getServiceAccountFromEnv() || getServiceAccountFromFile();
+
+    // Try parsing FIREBASE_ADMIN_SDK only if other methods fail
+    if (!serviceAccountKey && process.env.FIREBASE_ADMIN_SDK) {
+      try {
+        serviceAccountKey = JSON.parse(process.env.FIREBASE_ADMIN_SDK);
+      } catch (parseError) {
+        console.warn('Failed to parse FIREBASE_ADMIN_SDK JSON, using alternative methods');
+      }
+    }
 
     if (serviceAccountKey) {
-      if (!admin.apps.length) {
+      if (!getApps().length) {
         admin.initializeApp({
-          credential: admin.credential.cert(serviceAccountKey),
+          credential: (admin as any).credential.cert(serviceAccountKey),
           projectId: serviceAccountKey.projectId || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'maiatur',
         });
       }
@@ -58,11 +65,11 @@ if (typeof window === 'undefined') {
   }
 }
 
-export const adminDb = admin.apps.length ? admin.firestore() : null;
-export const adminAuth = admin.apps.length ? admin.auth() : null;
+export const adminDb = getApps().length ? (admin as any).firestore() : null;
+export const adminAuth = getApps().length ? (admin as any).auth() : null;
 export const getAdminFirestore = () => adminDb;
 export const getAdminAuth = () => adminAuth;
-export const getAdminProjectId = () => admin.apps[0]?.options.projectId || null;
+export const getAdminProjectId = () => getApps()[0]?.options.projectId || null;
 export const verifyIdToken = async (token: string) => {
   if (!adminAuth) {
     throw new Error('Firebase Admin Auth não inicializado');

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     const snapshot = await db.collection('leads_tracking').get();
-    const leads = snapshot.docs.map((doc) => doc.data());
+    const leads = snapshot.docs.map((doc: any) => doc.data());
     const result = await syncMissingLeads(leads);
 
     return Response.json({ ok: true, ...result });

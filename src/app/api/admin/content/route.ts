@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const snapshot = await db.collection("content").get();
-    const documents = snapshot.docs.map((document) => {
+    const documents = snapshot.docs.map((document: any) => {
       const data = document.data();
       delete data.createdAt;
       delete data.updatedAt;
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
       }
       return { id: document.id, data: serializedData };
     });
-    if (!documents.some((document) => document.id === "googleReviews")) {
+    if (!documents.some((document: any) => document.id === "googleReviews")) {
       documents.push({
         id: "googleReviews",
         data: {

@@ -1,4 +1,5 @@
-import admin, { adminDb } from "@/lib/firebase-admin";
+import { adminDb } from "@/lib/firebase-admin";
+import { FieldValue, Transaction } from "firebase-admin/firestore";
 import type { FAQ, Testimonial, Tour, Transfer, Banner } from "@/types";
 import {
   mapBannerInputToDocument,
@@ -27,7 +28,7 @@ async function logActivity(
       entityType,
       entityId,
       changes,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      timestamp: FieldValue.serverTimestamp(),
     });
   } catch (error) {
     console.error("Error recording activity:", error);
@@ -35,7 +36,7 @@ async function logActivity(
 }
 
 async function createDocument(collectionName: string, data: Record<string, unknown>) {
-  const now = admin.firestore.FieldValue.serverTimestamp();
+  const now = FieldValue.serverTimestamp();
   const document = await getDatabase().collection(collectionName).add({
     ...data,
     createdAt: now,
@@ -52,7 +53,7 @@ async function updateDocument(
 ) {
   await getDatabase().collection(collectionName).doc(id).update({
     ...data,
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
   });
   await logActivity("updated", collectionName, id, data);
 }
@@ -114,9 +115,9 @@ export const adminFaqService = {
   async create(data: Omit<FAQ, "id" | "createdAt" | "updatedAt">) {
     const db = getDatabase();
     const reference = db.collection("content").doc("homeFAQ");
-    const id = await db.runTransaction(async (transaction) => {
+    const id = await db.runTransaction(async (transaction: Transaction) => {
       const snapshot = await transaction.get(reference);
-      const current = snapshot.data();
+      const current = (snapshot as any).data();
       const entries = Array.isArray(current?.faq) ? current.faq : [];
       const nextEntries = [...entries, {
         pergunta: data.question,
@@ -126,7 +127,7 @@ export const adminFaqService = {
       }];
       transaction.set(reference, {
         faq: nextEntries,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       }, { merge: true });
       return `home-faq-${nextEntries.length - 1}`;
     });
@@ -142,9 +143,9 @@ export const adminFaqService = {
   async update(id: string, data: Partial<FAQ>) {
     const db = getDatabase();
     const homeFaqReference = db.collection("content").doc("homeFAQ");
-    const result = await db.runTransaction(async (transaction) => {
+    const result = await db.runTransaction(async (transaction: Transaction) => {
       const snapshot = await transaction.get(homeFaqReference);
-      const current = snapshot.data();
+      const current = (snapshot as any).data();
       if (!current || !Array.isArray(current.faq)) return false;
 
       const entries = [...current.faq];
@@ -164,7 +165,7 @@ export const adminFaqService = {
       };
       transaction.update(homeFaqReference, {
         faq: entries,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
       return true;
     });
@@ -183,9 +184,9 @@ export const adminFaqService = {
   async delete(id: string) {
     const db = getDatabase();
     const homeFaqReference = db.collection("content").doc("homeFAQ");
-    const result = await db.runTransaction(async (transaction) => {
+    const result = await db.runTransaction(async (transaction: Transaction) => {
       const snapshot = await transaction.get(homeFaqReference);
-      const current = snapshot.data();
+      const current = (snapshot as any).data();
       if (!current || !Array.isArray(current.faq)) return false;
 
       const entries = [...current.faq];
@@ -195,7 +196,7 @@ export const adminFaqService = {
       entries.splice(index, 1);
       transaction.update(homeFaqReference, {
         faq: entries,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
       return true;
     });

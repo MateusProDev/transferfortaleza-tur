@@ -23,12 +23,12 @@ export async function GET(request: NextRequest) {
 
       const snapshot = await db.collection("blogPosts").get();
       const posts = snapshot.docs
-        .map((document) => mapBlogPostDocument(document.id, document.data()))
-        .sort((first, second) =>
+        .map((document: any) => mapBlogPostDocument(document.id, document.data()))
+        .sort((first: any, second: any) =>
           (second.views ?? 0) - (first.views ?? 0)
           || second.publishedAt.getTime() - first.publishedAt.getTime()
         )
-        .map((post) => toPlainFirestoreValue(post));
+        .map((post: any) => toPlainFirestoreValue(post));
       return NextResponse.json(posts);
     }
 
