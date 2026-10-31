@@ -1,5 +1,100 @@
 [
   {
+    "source": "/pacote/passeio-beach-park",
+    "destination": "/passeios/passeio-beach-park",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-cumbuco",
+    "destination": "/passeios/passeio-cumbuco",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-jericoacoara-em-1-dia",
+    "destination": "/passeios/passeio-jericoacoara-em-1-dia",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-3-praias-morro-branco-fontes-e-canoa-quebrada",
+    "destination": "/passeios/passeio-3-praias-morro-branco-fontes-e-canoa-quebrada",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-city-tour-em-fortaleza-4h",
+    "destination": "/passeios/passeio-city-tour-em-fortaleza-4h",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-3-praias-morro-branco-praia-das-fontes-barra-nova",
+    "destination": "/passeios/passeio-3-praias-morro-branco-praia-das-fontes-barra-nova",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-aguas-belas",
+    "destination": "/passeios/passeio-aguas-belas",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-barra-nova",
+    "destination": "/passeios/passeio-barra-nova",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-canoa-quebrada",
+    "destination": "/passeios/passeio-canoa-quebrada",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-engenhoca-parque",
+    "destination": "/passeios/passeio-engenhoca-parque",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-flecheiras",
+    "destination": "/passeios/passeio-flecheiras",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-flexau-mundau-flecheiras",
+    "destination": "/passeios/passeio-flexau-mundau-flecheiras",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-icapui",
+    "destination": "/passeios/passeio-icapui",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-icaraizinho-moitas",
+    "destination": "/passeios/passeio-icaraizinho-moitas",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-lagoinha",
+    "destination": "/passeios/passeio-lagoinha",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-morro-branco",
+    "destination": "/passeios/passeio-morro-branco",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-mundau",
+    "destination": "/passeios/passeio-mundau",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-paracuru",
+    "destination": "/passeios/passeio-paracuru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/passeio-prainha",
+    "destination": "/passeios/passeio-prainha",
+    "statusCode": 301
+  },
+  {
     "source": "/pacote/transfer-canoa-quebrada",
     "destination": "/transfers/transfer-canoa-quebrada",
     "statusCode": 301
