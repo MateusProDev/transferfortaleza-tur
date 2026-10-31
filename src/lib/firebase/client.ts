@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAnalytics, isSupported } from 'firebase/analytics';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut, onAuthStateChanged, type User } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -51,6 +51,15 @@ export async function signInWithGoogle() {
   }
 
   const result = await signInWithPopup(auth, googleProvider);
+  return result.user;
+}
+
+export async function signInWithEmail(email: string, password: string) {
+  if (!auth) {
+    throw new Error('Firebase Auth não está configurado. Verifique as variáveis NEXT_PUBLIC_FIREBASE_*');
+  }
+
+  const result = await signInWithEmailAndPassword(auth, email, password);
   return result.user;
 }
 
