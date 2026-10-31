@@ -11,7 +11,8 @@
     "init-site-content": "tsx scripts/initialize-site-content.ts",
     "update-tour-slugs": "tsx scripts/update-tour-slugs.ts",
     "update-transfer-slugs": "tsx scripts/update-transfer-slugs.ts",
-    "firebase:deploy-indexes": "npx --yes firebase-tools deploy --only firestore:indexes --project maiatur"
+    "firebase:deploy-indexes": "npx --yes firebase-tools deploy --only firestore:indexes --project maiatur",
+    "generate-redirects": "node scripts/generate-redirects.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",
@@ -27,7 +28,6 @@
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "firebase": "^10.14.1",
-    "firebase-admin": "^12.0.0",
     "framer-motion": "^10.16.0",
     "googleapis": "^178.1.1",
     "lucide-react": "^0.294.0",
@@ -59,8 +59,10 @@
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "dotenv": "^18.0.9",
     "eslint": "^8.50.0",
     "eslint-config-next": "^14.2.0",
+    "firebase-admin": "^14.5.0",
     "ts-node": "^10.9.0",
     "tsx": "^4.23.12"
   }

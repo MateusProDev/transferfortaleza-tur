@@ -56,7 +56,27 @@ const nextConfig = {
     ];
   },
   redirects: async () => {
+    let dynamicRedirects = [];
+
+    // Try to load dynamic redirects from generated file
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const redirectsPath = path.join(__dirname, 'redirects.json');
+
+      if (fs.existsSync(redirectsPath)) {
+        const redirectsData = fs.readFileSync(redirectsPath, 'utf8');
+        dynamicRedirects = JSON.parse(redirectsData);
+        console.log(`✅ Loaded ${dynamicRedirects.length} dynamic redirects from redirects.json`);
+      } else {
+        console.warn('⚠️  redirects.json not found. Run: node scripts/generate-redirects.js');
+      }
+    } catch (error) {
+      console.warn('⚠️  Could not load dynamic redirects:', error.message);
+    }
+
     return [
+      ...dynamicRedirects,
       {
         source: "/about",
         destination: "/sobre",

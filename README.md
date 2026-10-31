@@ -345,6 +345,22 @@ vercel
 - Configure `NEXT_PUBLIC_APP_URL` with the production origin. Localhost values fall back to the brand domain so they cannot become public canonical URLs.
 - `/sitemap.xml` contains the canonical static pages and active catalog/blog URLs. Submit it in Google Search Console after deployment.
 
+### Generating Redirects for New Packages
+
+When you add new tours or transfers to Firebase, run the redirect generation script to update `vercel.json`:
+
+```bash
+npm run generate-redirects
+```
+
+This script:
+- Fetches all packages from the Firebase `pacotes` collection
+- Generates 301 redirects from `/pacote/[slug]` to `/passeios/[slug]` for tours and `/transfers/[slug]` for transfers
+- Also creates redirects by package ID as a fallback
+- Updates `vercel.json` with the new redirects
+
+After running the script, commit and deploy the updated `vercel.json` to apply the redirects in production.
+
 ## 📝 Environment Variables for Production
 
 Remember to set all environment variables in Vercel project settings:

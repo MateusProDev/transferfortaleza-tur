@@ -1,0 +1,262 @@
+[
+  {
+    "source": "/pacote/transfer-canoa-quebrada",
+    "destination": "/transfers/transfer-canoa-quebrada",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-dom-pedro-laguna",
+    "destination": "/transfers/transfer-dom-pedro-laguna",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-fortim-pontal-de-maceio",
+    "destination": "/transfers/transfer-fortim-pontal-de-maceio",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-beach-park",
+    "destination": "/transfers/transfer-beach-park",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-beberibe-praia-das-fontes",
+    "destination": "/transfers/transfer-beberibe-praia-das-fontes",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-ilha-do-guajiru",
+    "destination": "/transfers/transfer-ilha-do-guajiru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-de-van-em-fortaleza",
+    "destination": "/transfers/transfer-de-van-em-fortaleza",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-guaramiranga",
+    "destination": "/transfers/transfer-guaramiranga",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-jericoacoara",
+    "destination": "/transfers/transfer-jericoacoara",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-aquiraz",
+    "destination": "/transfers/transfer-aquiraz",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-pecem",
+    "destination": "/transfers/transfer-pecem",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-parajuru",
+    "destination": "/transfers/transfer-parajuru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-vila-gale-cumbuco",
+    "destination": "/transfers/transfer-vila-gale-cumbuco",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-lagoinha",
+    "destination": "/transfers/transfer-lagoinha",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-carmel-taiba-exclusive-resort",
+    "destination": "/transfers/transfer-carmel-taiba-exclusive-resort",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-sobral",
+    "destination": "/transfers/transfer-sobral",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-aeroporto-de-fortaleza-hoteis",
+    "destination": "/transfers/transfer-aeroporto-de-fortaleza-hoteis",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-icapui",
+    "destination": "/transfers/transfer-icapui",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-hotel-parque-das-fontes",
+    "destination": "/transfers/transfer-hotel-parque-das-fontes",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-trairi-mundau-flecheiras-e-guajiru",
+    "destination": "/transfers/transfer-trairi-mundau-flecheiras-e-guajiru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-coliseum-beach-hotel",
+    "destination": "/transfers/transfer-coliseum-beach-hotel",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-paracuru",
+    "destination": "/transfers/transfer-paracuru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-cumbuco",
+    "destination": "/transfers/transfer-cumbuco",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-icarai-de-amontada",
+    "destination": "/transfers/transfer-icarai-de-amontada",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-cascavel",
+    "destination": "/transfers/transfer-cascavel",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/transfer-taiba",
+    "destination": "/transfers/transfer-taiba",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/0qIrFvwU1zI5QjPzTIEW",
+    "destination": "/transfers/transfer-canoa-quebrada",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/1qlYt1yBdSNw6gU2uFw2",
+    "destination": "/transfers/transfer-dom-pedro-laguna",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/2HCPWPB2txLbWr0hfe3w",
+    "destination": "/transfers/transfer-fortim-pontal-de-maceio",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/2Jwb3NTVFmJX6tsFQkTP",
+    "destination": "/transfers/transfer-beach-park",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/4rsoQqT2TygMY67QPkRD",
+    "destination": "/transfers/transfer-beberibe-praia-das-fontes",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/7dMSod6yLiMfi2MS5K1I",
+    "destination": "/transfers/transfer-ilha-do-guajiru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/C4l77hoVjByvuDRW5y6F",
+    "destination": "/transfers/transfer-de-van-em-fortaleza",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/CHf2vKBo9Z77RGK5z7MW",
+    "destination": "/transfers/transfer-guaramiranga",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/EcXnh8iTMGW54PIcLqiz",
+    "destination": "/transfers/transfer-jericoacoara",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/Ify3jDvJ97D8JbWErBwj",
+    "destination": "/transfers/transfer-aquiraz",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/IrMLVTMJ9FIpVwHaNZzl",
+    "destination": "/transfers/transfer-pecem",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/JBKPXqSqkeaAPOovVBna",
+    "destination": "/transfers/transfer-parajuru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/Mr5qShFlTqPBN3wcQj4m",
+    "destination": "/transfers/transfer-vila-gale-cumbuco",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/NfCgtnLJA0LrAa3EkjXe",
+    "destination": "/transfers/transfer-lagoinha",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/NkWjKsx0eQf88lqLSZNM",
+    "destination": "/transfers/transfer-carmel-taiba-exclusive-resort",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/Q5FyWWtgNC91fgjf7pna",
+    "destination": "/transfers/transfer-sobral",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/RDatovQiJ3MIUi2ghx2p",
+    "destination": "/transfers/transfer-aeroporto-de-fortaleza-hoteis",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/T44hYJbBp4ZCPBj5Ku1l",
+    "destination": "/transfers/transfer-icapui",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/VxZtzbDkHj3akIaMZsBm",
+    "destination": "/transfers/transfer-hotel-parque-das-fontes",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/X7CbQvyCojqD4MkO6Tsj",
+    "destination": "/transfers/transfer-trairi-mundau-flecheiras-e-guajiru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/eJlM4YCwcIv9PoBXxT4N",
+    "destination": "/transfers/transfer-coliseum-beach-hotel",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/oKP7xaLNEBmBu45RmGW2",
+    "destination": "/transfers/transfer-paracuru",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/oMNNAknsAYeFSnBVH0Af",
+    "destination": "/transfers/transfer-cumbuco",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/qVLj2vJHHWu7CNJM3g7w",
+    "destination": "/transfers/transfer-icarai-de-amontada",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/wJvO5kgiSPEDwZhTmYJV",
+    "destination": "/transfers/transfer-cascavel",
+    "statusCode": 301
+  },
+  {
+    "source": "/pacote/xnysozryKJc4ASKXKJwX",
+    "destination": "/transfers/transfer-taiba",
+    "statusCode": 301
+  }
+]
