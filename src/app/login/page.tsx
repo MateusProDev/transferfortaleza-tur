@@ -2,7 +2,17 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { signInWithGoogle, logoutAdmin } from "@/lib/firebase/client";
+import { signInWithEmail, logoutAdmin } from "@/lib/firebase/client";
+
+const ADMIN_EMAILS = ((process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+  .split(',')
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean)).length > 0
+  ? (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+      .split(',')
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  : ['maiatur000@gmail.com', 'mateusprodev@gmail.com'];
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -10,26 +20,32 @@ function LoginForm() {
   const redirect = requestedRedirect.startsWith("/admin/") && !requestedRedirect.startsWith("//")
     ? requestedRedirect
     : "/admin/dashboard";
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleLogin() {
+  async function handleEmailLogin(e: React.FormEvent) {
+    e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const user = await signInWithGoogle();
-      const idToken = await user.getIdToken(true);
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
-        body: JSON.stringify({ idToken }),
+      const user = await signInWithEmail(email, password);
+      const userEmail = (user.email || '').toLowerCase();
+
+      const token = await user.getIdToken(true);
+      localStorage.setItem('admin_id_token', token);
+
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: token, email: userEmail }),
       });
-      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Não foi possível entrar no painel.");
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao criar sessão');
       }
 
       window.location.assign(redirect);
@@ -51,24 +67,56 @@ function LoginForm() {
         <h1 className="mt-3 text-2xl font-bold text-slate-900">
           Admin Transfer Fortaleza Tur
         </h1>
-        <p className="mt-2 text-sm text-slate-600">
-          Entre com a conta Google autorizada para gerenciar o site.
+
+        <form onSubmit={handleEmailLogin} className="mt-8 space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+              E-mail
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+              placeholder="seu@email.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
+              Senha
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+              placeholder="••••••••"
+            />
+          </div>
+
+          {error && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-md bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-xs text-slate-500">
+          E-mails permitidos: {ADMIN_EMAILS.join(', ')}
         </p>
-
-        {error && (
-          <p role="alert" className="mt-5 rounded-md bg-red-50 p-3 text-sm text-red-700">
-            {error}
-          </p>
-        )}
-
-        <button
-          type="button"
-          onClick={handleLogin}
-          disabled={loading}
-          className="mt-8 w-full rounded-md bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-wait disabled:opacity-60"
-        >
-          {loading ? "Verificando acesso..." : "Entrar com Google"}
-        </button>
       </div>
     </div>
   );
