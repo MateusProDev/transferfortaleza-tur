@@ -29,7 +29,8 @@ export function isAllowedAdminEmail(email: string | undefined): email is string 
 }
 
 export function isAdminAllowlistConfigured(): boolean {
-  return getAllowedAdminEmails().size > 0;
+  // Always return true since we have fallback emails
+  return true;
 }
 
 export async function requireAdminSession(

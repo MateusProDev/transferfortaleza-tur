@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminAuth } from "@/lib/firebase-admin";
-import { isAdminAllowlistConfigured, isAllowedAdminEmail } from "@/lib/admin-api-auth";
+import { isAllowedAdminEmail } from "@/lib/admin-api-auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const auth = getAdminAuth();
-    if (!auth || !isAdminAllowlistConfigured()) {
+    if (!auth) {
       return NextResponse.json(
         { error: "A autenticação administrativa não está configurada." },
         { status: 503 }
