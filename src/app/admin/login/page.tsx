@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signInWithEmail, subscribeToAdminAuth } from '@/lib/firebase/client';
+import { signInWithEmail } from '@/lib/firebase/client';
 
 const ADMIN_EMAILS = ((process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
   .split(',')
@@ -20,32 +20,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    const unsubscribe = subscribeToAdminAuth(async (user) => {
-      if (!user) {
-        localStorage.removeItem('admin_id_token');
-        return;
-      }
-
-      const userEmail = (user.email || '').toLowerCase();
-      if (!ADMIN_EMAILS.includes(userEmail)) {
-        localStorage.removeItem('admin_id_token');
-        return;
-      }
-
-      try {
-        const token = await user.getIdToken(true);
-        localStorage.setItem('admin_id_token', token);
-        router.replace('/admin/dashboard');
-      } catch (error) {
-        console.error('[admin/login] failed to refresh id token:', error);
-        localStorage.removeItem('admin_id_token');
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
 
   async function handleEmailLogin(e: React.FormEvent) {
     e.preventDefault();

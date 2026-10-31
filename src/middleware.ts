@@ -33,10 +33,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
-  if (pathname === "/admin/login") {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
   if (pathname === "/teste-gclid") {
     return new NextResponse(null, { status: 404 });
   }
@@ -47,7 +43,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Allow the admin login page without an authenticated session.
-  if (pathname === "/login") {
+  if (pathname === "/login" || pathname === "/admin/login") {
     return NextResponse.next();
   }
 
@@ -56,7 +52,7 @@ export function middleware(request: NextRequest) {
     const authToken = request.cookies.get("authToken")?.value;
 
     if (!authToken) {
-      const loginUrl = new URL("/login", request.url);
+      const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
     }
