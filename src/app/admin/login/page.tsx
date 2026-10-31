@@ -4,10 +4,15 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, signInWithGoogle, subscribeToAdminAuth } from '@/lib/firebase/client';
 
-const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+const ADMIN_EMAILS = ((process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
   .split(',')
   .map((email) => email.trim().toLowerCase())
-  .filter(Boolean);
+  .filter(Boolean)).length > 0
+  ? (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+      .split(',')
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  : ['maiatur000@gmail.com', 'mateusprodev@gmail.com']; // Fallback for development
 
 export default function AdminLoginPage() {
   const router = useRouter();

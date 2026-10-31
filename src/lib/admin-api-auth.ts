@@ -6,12 +6,22 @@ export interface AdminIdentity {
 }
 
 function getAllowedAdminEmails(): Set<string> {
-  return new Set(
-    (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-      .split(",")
-      .map((email) => email.trim().toLowerCase())
-      .filter(Boolean),
-  );
+  const envEmails = process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "";
+  const emailList = envEmails
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+
+  // Fallback hardcoded emails for development/testing
+  if (emailList.length === 0) {
+    console.warn("ADMIN_EMAILS not configured, using fallback emails");
+    return new Set([
+      "maiatur000@gmail.com",
+      "mateusprodev@gmail.com",
+    ]);
+  }
+
+  return new Set(emailList);
 }
 
 export function isAllowedAdminEmail(email: string | undefined): email is string {

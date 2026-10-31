@@ -7,10 +7,15 @@ import { LEADS_ENABLED, leadsDisabledResponse } from '@/lib/leads-feature';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+const ADMIN_EMAILS = ((process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
   .split(',')
   .map((email) => email.trim().toLowerCase())
-  .filter(Boolean);
+  .filter(Boolean)).length > 0
+  ? (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
+      .split(',')
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  : ['maiatur000@gmail.com', 'mateusprodev@gmail.com']; // Fallback for development
 
 export async function POST(request: NextRequest) {
   if (!LEADS_ENABLED) return leadsDisabledResponse();
