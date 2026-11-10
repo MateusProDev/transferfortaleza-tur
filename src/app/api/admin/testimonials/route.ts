@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminTestimonialsDb, logAdminTestimonialActivity } from "@/lib/admin-testimonials";
 import {
   mapTestimonialDocument,
@@ -14,8 +13,10 @@ export const revalidate = 0;
 const responseHeaders = { "Cache-Control": "private, no-store, max-age=0" };
 
 export async function GET(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const database = getAdminTestimonialsDb();
   if ("error" in database) {
@@ -44,8 +45,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const database = getAdminTestimonialsDb();
   if ("error" in database) {
@@ -89,7 +92,7 @@ export async function POST(request: NextRequest) {
       updatedAt: now,
     });
 
-    await logAdminTestimonialActivity(db, session.email, "created", document.id);
+    await logAdminTestimonialActivity(db, "admin", "created", document.id);
     invalidatePublicDataCache("testimonials");
     return NextResponse.json(
       { id: document.id, message: "Depoimento criado com sucesso." },

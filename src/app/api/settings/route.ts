@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getCachedSiteSettings, invalidatePublicDataCache } from "@/lib/public-data-cache";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminFirestore, getAdminProjectId } from "@/lib/firebase-admin";
 
 export const dynamic = "force-dynamic";
@@ -210,8 +209,10 @@ export async function GET() {
 
 // PUT /api/settings - Update site settings
 export async function PUT(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const databaseResponse = unavailableDatabaseResponse(getSettingsDatabase());
   if (databaseResponse) return databaseResponse;
@@ -232,8 +233,10 @@ export async function PUT(request: NextRequest) {
 
 // POST /api/settings - Create/update site settings (alternative method)
 export async function POST(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const databaseResponse = unavailableDatabaseResponse(getSettingsDatabase());
   if (databaseResponse) return databaseResponse;

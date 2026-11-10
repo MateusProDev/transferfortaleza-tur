@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminFirestore, getAdminProjectId } from "@/lib/firebase-admin";
 import { invalidatePublicDataCache } from "@/lib/public-data-cache";
 
@@ -93,8 +92,10 @@ function contentReadError(error: unknown): NextResponse {
 }
 
 export async function GET(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const db = getAdminFirestore();
   if (!db) {
@@ -162,8 +163,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const db = getAdminFirestore();
   if (!db) {

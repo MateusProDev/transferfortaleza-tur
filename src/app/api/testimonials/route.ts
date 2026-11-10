@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminTestimonialService } from "@/lib/admin-firestore-services";
 import { getCachedTestimonials, invalidatePublicDataCache } from "@/lib/public-data-cache";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/testimonials - Get all testimonials
 export async function GET() {
@@ -19,8 +18,10 @@ export async function GET() {
 
 // POST /api/testimonials - Create testimonial
 export async function POST(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   try {
     const body = await request.json();

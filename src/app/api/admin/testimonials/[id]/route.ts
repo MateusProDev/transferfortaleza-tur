@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminTestimonialsDb, logAdminTestimonialActivity } from "@/lib/admin-testimonials";
 import {
   mapTestimonialDocument,
@@ -18,8 +17,10 @@ interface RouteContext {
 }
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const database = getAdminTestimonialsDb();
   if ("error" in database) {
@@ -53,8 +54,10 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteContext) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const database = getAdminTestimonialsDb();
   if ("error" in database) {
@@ -93,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
       ...(typeof body.text === "string" ? { text: body.text.trim() } : {}),
     });
     await reference.update({ ...updates, updatedAt: new Date() });
-    await logAdminTestimonialActivity(db, session.email, "updated", params.id, updates);
+    await logAdminTestimonialActivity(db, "admin", "updated", params.id, updates);
     invalidatePublicDataCache("testimonials");
 
     return NextResponse.json(
@@ -110,8 +113,10 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteContext) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   const database = getAdminTestimonialsDb();
   if ("error" in database) {
@@ -133,7 +138,7 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
     }
 
     await reference.delete();
-    await logAdminTestimonialActivity(db, session.email, "deleted", params.id);
+    await logAdminTestimonialActivity(db, "admin", "deleted", params.id);
     invalidatePublicDataCache("testimonials");
 
     return NextResponse.json(
