@@ -124,6 +124,8 @@ export default function EditTour() {
           .filter((item) => item.length > 0),
       };
 
+      console.log("Payload enviado:", JSON.stringify(payload, null, 2));
+
       const response = await fetch(`/api/tours/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

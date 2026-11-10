@@ -40,6 +40,9 @@ export async function PUT(
 
   try {
     const body = await request.json();
+    console.log("Body recebido na API:", JSON.stringify(body, null, 2));
+    console.log("imageUrl:", body.imageUrl);
+    console.log("galleryImages:", body.galleryImages);
     await adminTransferService.update(params.id, body);
     invalidatePublicDataCache("catalog");
     return NextResponse.json({ message: "Transfer updated successfully" });

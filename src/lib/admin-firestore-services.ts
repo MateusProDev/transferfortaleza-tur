@@ -62,6 +62,8 @@ async function updateDocument(
     }
   }
   
+  console.log(`Atualizando ${collectionName}/${id}:`, JSON.stringify(updateData, null, 2));
+  
   await docRef.update({
     ...updateData,
     updatedAt: FieldValue.serverTimestamp(),

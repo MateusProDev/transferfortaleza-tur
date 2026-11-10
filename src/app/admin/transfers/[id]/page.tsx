@@ -120,6 +120,8 @@ export default function EditTransfer() {
         faqs: formData.faqs.filter((faq) => faq.question.trim() && faq.answer.trim()),
       };
 
+      console.log("Payload enviado:", JSON.stringify(payload, null, 2));
+
       const response = await fetch(`/api/transfers/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
