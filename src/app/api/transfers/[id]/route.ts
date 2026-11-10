@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminTransferService } from "@/lib/admin-firestore-services";
 import { getCachedTransferById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // GET /api/transfers/[id] - Get single transfer
 export async function GET(
   _request: NextRequest,

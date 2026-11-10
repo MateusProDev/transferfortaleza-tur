@@ -51,8 +51,19 @@ async function updateDocument(
   id: string,
   data: Record<string, unknown>,
 ) {
-  await getDatabase().collection(collectionName).doc(id).update({
-    ...data,
+  const db = getDatabase();
+  const docRef = db.collection(collectionName).doc(id);
+  
+  // Remove fields with FieldValue.delete() before the update
+  const updateData: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      updateData[key] = value;
+    }
+  }
+  
+  await docRef.update({
+    ...updateData,
     updatedAt: FieldValue.serverTimestamp(),
   });
   await logActivity("updated", collectionName, id, data);

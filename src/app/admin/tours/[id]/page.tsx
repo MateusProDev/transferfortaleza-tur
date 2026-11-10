@@ -56,7 +56,9 @@ export default function EditTour() {
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const response = await fetch(`/api/tours/${params.id}`);
+        const response = await fetch(`/api/tours/${params.id}`, {
+          cache: "no-store",
+        });
         if (!response.ok) {
           if (response.status === 404) {
             toast.error("Tour não encontrado");

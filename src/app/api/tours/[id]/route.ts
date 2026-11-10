@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminTourService } from "@/lib/admin-firestore-services";
 import { getCachedTourById, invalidatePublicDataCache } from "@/lib/public-data-cache";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // GET /api/tours/[id] - Get single tour
 export async function GET(
   _request: NextRequest,

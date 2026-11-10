@@ -55,7 +55,9 @@ export default function EditTransfer() {
   useEffect(() => {
     const fetchTransfer = async () => {
       try {
-        const response = await fetch(`/api/transfers/${params.id}`);
+        const response = await fetch(`/api/transfers/${params.id}`, {
+          cache: "no-store",
+        });
         if (!response.ok) {
           if (response.status === 404) {
             toast.error("Transfer não encontrado");

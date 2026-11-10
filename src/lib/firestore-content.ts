@@ -1,4 +1,5 @@
 import type { Banner, BlogPost, FAQ, GalleryImage, GoogleReviewsContent, SiteSettings, Testimonial, Tour, TourFAQ, Transfer } from "@/types";
+import { FieldValue } from "firebase-admin/firestore";
 
 type FirestoreDocument = Record<string, unknown>;
 type CatalogKind = "tour" | "transfer";
@@ -297,14 +298,22 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
     const remainingImages = images
       .map((image) => asDocument(image))
       .filter((image) => firstString(image.url) && image.url !== mainImageUrl);
-    result.imagens = [
-      ...(mainImageUrl ? [mainImageUrl] : []),
-      ...remainingImages.map((image) => firstString(image.url)),
-    ];
-    result.imagensAlt = [
-      firstString(input[imageAltInputKey], asDocument(images[0]).alt),
-      ...remainingImages.map((image) => firstString(image.alt)),
-    ];
+    
+    // Only set image fields if there are actual images
+    if (mainImageUrl || remainingImages.length > 0) {
+      result.imagens = [
+        ...(mainImageUrl ? [mainImageUrl] : []),
+        ...remainingImages.map((image) => firstString(image.url)),
+      ];
+      result.imagensAlt = [
+        firstString(input[imageAltInputKey], asDocument(images[0]).alt),
+        ...remainingImages.map((image) => firstString(image.alt)),
+      ];
+    } else {
+      // Explicitly delete image fields when empty
+      result.imagens = FieldValue.delete();
+      result.imagensAlt = FieldValue.delete();
+    }
   }
 
   if (kind === "transfer") {
