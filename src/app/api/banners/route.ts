@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { adminBannerService } from "@/lib/admin-firestore-services";
 import { getCachedBanners, invalidatePublicDataCache } from "@/lib/public-data-cache";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/banners - Get all banners
 export async function GET() {
@@ -20,8 +19,10 @@ export async function GET() {
 
 // POST /api/banners - Create banner
 export async function POST(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   try {
     const body = await request.json();

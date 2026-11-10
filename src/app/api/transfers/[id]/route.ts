@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminTransferService } from "@/lib/admin-firestore-services";
 import { getCachedTransferById, invalidatePublicDataCache } from "@/lib/public-data-cache";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 
 // GET /api/transfers/[id] - Get single transfer
 export async function GET(
@@ -31,8 +30,10 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   try {
     const body = await request.json();
@@ -53,8 +54,10 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   try {
     await adminTransferService.delete(params.id);

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdminSession } from "@/lib/admin-api-auth";
 import { getAdminFirestore } from "@/lib/firebase-admin";
 import { mapBlogPostDocument, mapBlogPostInputToDocument, toPlainFirestoreValue } from "@/lib/firestore-content";
 import { isValidBlogPost, revalidateBlogPages } from "@/lib/blog-admin";
@@ -11,8 +10,10 @@ export async function GET(request: NextRequest) {
     const publishedParam = request.nextUrl.searchParams.get("published");
     const onlyPublished = publishedParam === "true" || publishedParam === null;
     if (!onlyPublished) {
-      const session = await requireAdminSession(request);
-      if (session instanceof NextResponse) return session;
+      const sessionCookie = request.cookies.get("authToken")?.value;
+      if (!sessionCookie) {
+        return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+      }
       const db = getAdminFirestore();
       if (!db) {
         return NextResponse.json(
@@ -45,8 +46,10 @@ export async function GET(request: NextRequest) {
 
 // POST /api/blog - Create blog post
 export async function POST(request: NextRequest) {
-  const session = await requireAdminSession(request);
-  if (session instanceof NextResponse) return session;
+  const sessionCookie = request.cookies.get("authToken")?.value;
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Autenticação necessária." }, { status: 401 });
+  }
 
   try {
     const body = await request.json();
