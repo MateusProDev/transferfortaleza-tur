@@ -292,6 +292,8 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
 
   const imageInputKey = kind === "transfer" ? "imageUrl" : "mainImageUrl";
   const imageAltInputKey = kind === "transfer" ? "imageAlt" : "mainImageAlt";
+  
+  // Always process images if the key exists (even if empty) to handle deletion
   if (has(input, imageInputKey) || has(input, "galleryImages")) {
     const images = Array.isArray(input.galleryImages) ? input.galleryImages : [];
     const mainImageUrl = firstString(input[imageInputKey], asDocument(images[0]).url);
@@ -309,10 +311,23 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
         firstString(input[imageAltInputKey], asDocument(images[0]).alt),
         ...remainingImages.map((image) => firstString(image.alt)),
       ];
+      // Also delete old individual image fields to avoid conflicts
+      result.imagem = FieldValue.delete();
+      result.imagemAlt = FieldValue.delete();
+      result.imageUrl = FieldValue.delete();
+      result.imageAlt = FieldValue.delete();
+      result.mainImageUrl = FieldValue.delete();
+      result.mainImageAlt = FieldValue.delete();
     } else {
-      // Explicitly delete image fields when empty
+      // Explicitly delete ALL image fields when empty
       result.imagens = FieldValue.delete();
       result.imagensAlt = FieldValue.delete();
+      result.imagem = FieldValue.delete();
+      result.imagemAlt = FieldValue.delete();
+      result.imageUrl = FieldValue.delete();
+      result.imageAlt = FieldValue.delete();
+      result.mainImageUrl = FieldValue.delete();
+      result.mainImageAlt = FieldValue.delete();
     }
   }
 
