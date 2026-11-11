@@ -2,14 +2,10 @@ import admin, { getApps } from 'firebase-admin';
 import { existsSync, readFileSync } from 'fs';
 import path from 'path';
 
-console.log('[firebase-admin] Module loaded, admin exists:', !!admin);
-
 const getServiceAccountFromEnv = () => {
   const projectId = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
   const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-
-  console.log('[firebase-admin] getServiceAccountFromEnv - projectId:', !!projectId, 'clientEmail:', !!clientEmail, 'privateKey:', !!privateKey);
 
   if (projectId && clientEmail && privateKey) {
     return {
@@ -43,42 +39,34 @@ const getServiceAccountFromFile = () => {
 
 if (typeof window === 'undefined') {
   try {
-    console.log('[firebase-admin] Initializing Firebase Admin SDK...');
-    
     let serviceAccountKey = getServiceAccountFromEnv() || getServiceAccountFromFile();
 
     // Try parsing FIREBASE_ADMIN_SDK only if other methods fail
     if (!serviceAccountKey && process.env.FIREBASE_ADMIN_SDK) {
       try {
-        console.log('[firebase-admin] Trying FIREBASE_ADMIN_SDK env var...');
         serviceAccountKey = JSON.parse(process.env.FIREBASE_ADMIN_SDK);
-        console.log('[firebase-admin] FIREBASE_ADMIN_SDK parsed successfully');
       } catch (parseError) {
         console.warn('Failed to parse FIREBASE_ADMIN_SDK JSON, using alternative methods');
       }
     }
 
-    if (serviceAccountKey) {
-      console.log('[firebase-admin] Service account key found, initializing app...');
+    if (serviceAccountKey && admin) {
       if (!getApps().length) {
         admin.initializeApp({
           credential: (admin as any).credential.cert(serviceAccountKey),
           projectId: serviceAccountKey.projectId || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'maiatur',
         });
-        console.log('[firebase-admin] Firebase Admin initialized successfully');
-      } else {
-        console.log('[firebase-admin] Firebase Admin already initialized');
       }
     } else {
-      console.warn('Firebase Admin SDK credentials not found. Admin features will be limited.');
+      console.warn('Firebase Admin SDK credentials not available. Admin features will be limited.');
     }
   } catch (error) {
     console.error('Error initializing Firebase Admin:', error);
   }
 }
 
-export const adminDb = getApps().length ? (admin as any).firestore() : null;
-export const adminAuth = getApps().length ? (admin as any).auth() : null;
+export const adminDb = admin && getApps().length ? (admin as any).firestore() : null;
+export const adminAuth = admin && getApps().length ? (admin as any).auth() : null;
 export const getAdminFirestore = () => adminDb;
 export const getAdminAuth = () => adminAuth;
 export const getAdminProjectId = () => getApps()[0]?.options.projectId || null;
