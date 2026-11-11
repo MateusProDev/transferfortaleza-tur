@@ -1,4 +1,4 @@
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import type * as Types from "@/types";
 import {
   bannerService,
@@ -192,4 +192,9 @@ export function invalidatePublicDataCache(
   >
 ) {
   for (const tag of tags) revalidateTag(tag);
+}
+
+export function revalidateCatalogPages() {
+  invalidatePublicDataCache("catalog");
+  revalidatePath("/", "layout");
 }

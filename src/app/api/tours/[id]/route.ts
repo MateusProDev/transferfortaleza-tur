@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminTourService } from "@/lib/admin-firestore-services";
-import { getCachedTourById, invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { getCachedTourById, revalidateCatalogPages } from "@/lib/public-data-cache";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -41,7 +41,7 @@ export async function PUT(
   try {
     const body = await request.json();
     await adminTourService.update(params.id, body);
-    invalidatePublicDataCache("catalog");
+    revalidateCatalogPages();
     return NextResponse.json({ message: "Tour updated successfully" });
   } catch (error) {
     console.error("Error updating tour:", error);
@@ -64,7 +64,7 @@ export async function DELETE(
 
   try {
     await adminTourService.delete(params.id);
-    invalidatePublicDataCache("catalog");
+    revalidateCatalogPages();
     return NextResponse.json({ message: "Tour deleted successfully" });
   } catch (error) {
     console.error("Error deleting tour:", error);

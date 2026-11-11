@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminTransferService } from "@/lib/admin-firestore-services";
-import { getCachedTransferById, invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { getCachedTransferById, revalidateCatalogPages } from "@/lib/public-data-cache";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -40,11 +40,8 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    console.log("Body recebido na API:", JSON.stringify(body, null, 2));
-    console.log("imageUrl:", body.imageUrl);
-    console.log("galleryImages:", body.galleryImages);
     await adminTransferService.update(params.id, body);
-    invalidatePublicDataCache("catalog");
+    revalidateCatalogPages();
     return NextResponse.json({ message: "Transfer updated successfully" });
   } catch (error) {
     console.error("Error updating transfer:", error);
@@ -67,7 +64,7 @@ export async function DELETE(
 
   try {
     await adminTransferService.delete(params.id);
-    invalidatePublicDataCache("catalog");
+    revalidateCatalogPages();
     return NextResponse.json({ message: "Transfer deleted successfully" });
   } catch (error) {
     console.error("Error deleting transfer:", error);

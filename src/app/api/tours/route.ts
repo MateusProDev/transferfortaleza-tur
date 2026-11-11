@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminTourService } from "@/lib/admin-firestore-services";
-import { getCachedTours, invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { getCachedTours, revalidateCatalogPages } from "@/lib/public-data-cache";
 
 // GET /api/tours - Get all tours
 export async function GET(request: NextRequest) {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await adminTourService.create(body);
-    invalidatePublicDataCache("catalog");
+    revalidateCatalogPages();
     return NextResponse.json(
       { id, message: "Tour created successfully" },
       { status: 201 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminTransferService } from "@/lib/admin-firestore-services";
-import { getCachedTransfers, invalidatePublicDataCache } from "@/lib/public-data-cache";
+import { getCachedTransfers, revalidateCatalogPages } from "@/lib/public-data-cache";
 
 // GET /api/transfers - Get all transfers
 export async function GET(request: NextRequest) {
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const id = await adminTransferService.create(body);
-    invalidatePublicDataCache("catalog");
+    revalidateCatalogPages();
     return NextResponse.json(
       { id, message: "Transfer created successfully" },
       { status: 201 }

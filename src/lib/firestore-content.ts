@@ -260,11 +260,6 @@ function has(input: FirestoreDocument, key: string): boolean {
 
 export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCreate = false): FirestoreDocument {
   const input = Object.assign({}, value) as FirestoreDocument;
-  console.log(`[mapCatalogInputToPackage] kind=${kind}, isCreate=${isCreate}`);
-  console.log(`[mapCatalogInputToPackage] input keys:`, Object.keys(input));
-  console.log(`[mapCatalogInputToPackage] imageUrl:`, input.imageUrl, `mainImageUrl:`, input.mainImageUrl);
-  console.log(`[mapCatalogInputToPackage] galleryImages:`, input.galleryImages);
-  
   const result: FirestoreDocument = {};
   const copy = (inputKey: string, outputKey: string, transform: (value: unknown) => unknown = (item) => item) => {
     if (has(input, inputKey)) result[outputKey] = transform(input[inputKey]);
@@ -301,22 +296,16 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
   // Always process images if the key exists OR galleryImages exists
   const hasImageInput = has(input, imageInputKey);
   const hasGalleryImages = has(input, "galleryImages");
-  
-  console.log(`[mapCatalogInputToPackage] hasImageInput=${hasImageInput}, hasGalleryImages=${hasGalleryImages}`);
-  console.log(`[mapCatalogInputToPackage] imageInputKey=${imageInputKey}, value=${input[imageInputKey]}`);
-  
+
   if (hasImageInput || hasGalleryImages) {
     const images = Array.isArray(input.galleryImages) ? input.galleryImages : [];
     const mainImageUrl = firstString(input[imageInputKey], asDocument(images[0]).url);
     const remainingImages = images
       .map((image) => asDocument(image))
       .filter((image) => firstString(image.url) && image.url !== mainImageUrl);
-    
-    console.log(`[mapCatalogInputToPackage] mainImageUrl=${mainImageUrl}, remainingImages.length=${remainingImages.length}`);
-    
+
     // Only set image fields if there are actual images
     if (mainImageUrl || remainingImages.length > 0) {
-      console.log(`[mapCatalogInputToPackage] Setting images with data`);
       result.imagens = [
         ...(mainImageUrl ? [mainImageUrl] : []),
         ...remainingImages.map((image) => firstString(image.url)),
@@ -332,8 +321,8 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
       result.imageAlt = FieldValue.delete();
       result.mainImageUrl = FieldValue.delete();
       result.mainImageAlt = FieldValue.delete();
+      result.galleryImages = FieldValue.delete();
     } else {
-      console.log(`[mapCatalogInputToPackage] Deleting ALL image fields (empty)`);
       // Explicitly delete ALL image fields when empty
       result.imagens = FieldValue.delete();
       result.imagensAlt = FieldValue.delete();
@@ -343,9 +332,9 @@ export function mapCatalogInputToPackage(value: object, kind: CatalogKind, isCre
       result.imageAlt = FieldValue.delete();
       result.mainImageUrl = FieldValue.delete();
       result.mainImageAlt = FieldValue.delete();
+      result.galleryImages = FieldValue.delete();
     }
   } else {
-    console.log(`[mapCatalogInputToPackage] No image keys, deleting legacy fields`);
     // If neither key exists, still delete legacy fields to ensure clean state
     result.imagem = FieldValue.delete();
     result.imagemAlt = FieldValue.delete();
